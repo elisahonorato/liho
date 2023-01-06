@@ -1,70 +1,25 @@
-# Getting Started with Create React App
+# Liho
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+From an epistemological perspective, we have missed an evolutionary adaptation, visual pattern recognition, as a means of identifying relationships of interest in the data we generate. And although the premise "Cum hoc ergo propter hoc", which in Latin means "with this, therefore because of this", or more colloquially: "correlation does not imply causation" calls us to proceed with caution in the search for patterns between distant sources of information, it is perceived as of great value to advance in platforms and tools that make it easier for us to transform data into shapes and colors with potential as channels of knowledge.
 
-## Available Scripts
+In short, the opportunity to integrate a visualization with the potential not only to show data, but also to generate knowledge, can be justified under three fundamental pillars:
 
-In the project directory, you can run:
+The vast amount of data available
+The usual way of viewing information is subject to showing only a summary of what we discover
+Our evolutionary ability to discover visual patterns
 
-### `npm start`
+What
+Open-source online platform for multivariate three-dimensional visualization of scientific databases with correlation potential through the detection of patterns or representation of their discoveries from the manipulation, discrimination and analysis of information.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Why
+The complexity and abundance of information sources and databases from scientific research, represents a disciplinary opportunity that emerges from an exploratory integration using these data as raw material.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+So that
+Visually link divergent or complementary sources of information from open source digital tools that promote a form of inquiry based on the visual capacities of people and the scientific community.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+objectives
 
-### `npm run build`
+General objective
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Develop an online platform, which through the three-dimensional and multivariable visualization of scientific data, promotes a form of inquiry through the detection of patterns.
