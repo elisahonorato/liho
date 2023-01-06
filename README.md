@@ -8,18 +8,15 @@ The vast amount of data available
 The usual way of viewing information is subject to showing only a summary of what we discover
 Our evolutionary ability to discover visual patterns
 
-What
+## What
 Open-source online platform for multivariate three-dimensional visualization of scientific databases with correlation potential through the detection of patterns or representation of their discoveries from the manipulation, discrimination and analysis of information.
 
-Why
+## Why
 The complexity and abundance of information sources and databases from scientific research, represents a disciplinary opportunity that emerges from an exploratory integration using these data as raw material.
 
-So that
+## So that
 Visually link divergent or complementary sources of information from open source digital tools that promote a form of inquiry based on the visual capacities of people and the scientific community.
 
-
-objectives
-
-General objective
+## General objective
 
 Develop an online platform, which through the three-dimensional and multivariable visualization of scientific data, promotes a form of inquiry through the detection of patterns.
