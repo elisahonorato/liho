@@ -31,6 +31,8 @@ function Canvas() {
     scene.add(boxMesh);
 
     const animate = () => {
+      boxMesh.rotation.x += 0.01;
+      boxMesh.rotation.y += 0.03;
       renderer.render(scene, camera);
       window.requestAnimationFrame(animate);
     };
