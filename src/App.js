@@ -1,4 +1,5 @@
 import logo from './logo.svg';
+import About from './component/About';
 import './App.css';
 import React from 'react';
 
@@ -28,9 +29,11 @@ function App() {
                 
             </form>
         </div>
+        <About></About>
       </header>
   
     </div>
   );
 }
 export default App;
+
