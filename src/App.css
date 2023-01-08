@@ -53,3 +53,7 @@ p, a, h1 {
   font-family: monospace;
   font-size: 12px;
 }
+.anim {
+  width: 100vw;
+  height: 100vh;
+}
