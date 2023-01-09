@@ -2,12 +2,12 @@ import React, { useEffect, useRef } from 'react';
 
 const WebSocketClient = () => {
   const ws = useRef(null);
-
+  console.log("hello")
   useEffect(() => {
-    console.log("hello")
     ws.current = new WebSocket('ws://localhost:3000/ws');
 
     ws.current.onopen = () => {
+      ws.send('Hello from the React app!');
       console.log('WebSocket connection opened');
     };
 
