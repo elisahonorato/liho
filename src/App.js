@@ -22,6 +22,7 @@ import React from 'react';
           </form>
           
       <div><canvas id="Threejs"></canvas></div>
+      <Cube></Cube>
   
     </div>
   );
