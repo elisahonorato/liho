@@ -49,9 +49,10 @@ html {
     transform: rotate(360deg);
   }
 }
-p, a, h1 {
+p, a, h1, tr, th {
   font-family: monospace;
   font-size: 12px;
+  color: white;
 }
 .anim {
   width: 100vw;
