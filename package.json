@@ -12,7 +12,6 @@
     "aos": "^2.3.4",
     "csv-reader": "^1.0.11",
     "fsevents": "^2.3.2",
-    "gh-pages": "^4.0.0",
     "html-react-parser": "^3.0.7",
     "html-to-react": "^1.5.0",
     "pandas": "^0.0.3",
@@ -50,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
   }
 }
