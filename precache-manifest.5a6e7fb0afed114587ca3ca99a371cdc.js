@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "784220308a08338a4a58",
+    "revision": "f8df492fdc4b1ce3d2a1",
     "url": "/liho/static/css/main.b8227789.chunk.css"
   },
   {
-    "revision": "784220308a08338a4a58",
-    "url": "/liho/static/js/main.78422030.chunk.js"
+    "revision": "f8df492fdc4b1ce3d2a1",
+    "url": "/liho/static/js/main.f8df492f.chunk.js"
   },
   {
     "revision": "e2723de9d6e9385cbe1e",
@@ -28,7 +28,7 @@ self.__precacheManifest = [
     "url": "/liho/static/media/logo.e8fbf654.svg"
   },
   {
-    "revision": "f52706dc7d2580d1a5dc80fa2ec67eea",
+    "revision": "d4b549b422ebafce3467fc36f944b5a1",
     "url": "/liho/index.html"
   }
 ];
