@@ -1,5 +1,6 @@
 import React from 'react';
 import * as py from './Python_Blender_Csv.py';
+import WebSocketClient from './WebSocket'
 
 class CSVReader extends React.Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class CSVReader extends React.Component {
 
   updateData(result) {
     const data = result.data;
+    <WebSocketClient />
     // do something with the data
   }
 
