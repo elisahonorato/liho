@@ -21,7 +21,7 @@ import React from 'react';
                 <button>IMPORT CSV</button>
           </form>
           
-      <div><canvas id="Threejs"><Cube></Cube></canvas></div>
+      <div><canvas id="Threejs"></canvas></div>
 
   
     </div>
