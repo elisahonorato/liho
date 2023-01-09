@@ -4,6 +4,7 @@ const WebSocketClient = () => {
   const ws = useRef(null);
 
   useEffect(() => {
+    console.log("hello")
     ws.current = new WebSocket('ws://localhost:3000/ws');
 
     ws.current.onopen = () => {
