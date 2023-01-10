@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 // Components
+import UploadData from './component/UploadData';
 import About from './component/About';
 import Cube from './component/Cube';
 import Point from './component/Points';
@@ -14,13 +15,10 @@ import React from 'react';
       <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
         <About></About>
+        <UploadData></UploadData>
       </header>
       {/* create a form for the user to select a file */}
-      <form>
-                <input type={"file"} accept={".csv"} />
-                <button>IMPORT CSV</button>
-          </form>
-          
+
       <div><canvas id="Threejs"></canvas></div>
 
   
