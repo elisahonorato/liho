@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["Elisa Honorato <elisahonoratolira@uc.cl>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.11.0"
+django = "^4.1.7"
+psycopg2 = "^2.9.5"
+django-rest-framework = "^0.1.0"
+bpy = "^3.4.0"
+pandas = "^1.5.3"
+m2r = "^0.3.1"
+dracopy = "^1.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
