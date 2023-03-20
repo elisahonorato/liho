@@ -1,21 +1,22 @@
 from django.shortcuts import render
-from rest_framework import generics
 from rest_framework.views import APIView
-from rest_framework.request import Request
-from .serializers import RoomSerializer
-from .models import Room
-
-from api.resources.blender import Blender
-
+from . models import *
+from rest_framework.response import Response
+from .serializers import *
 # Create your views here.
 
+class ReactView(APIView):
 
-class RoomView(generics.ListAPIView):
-    queryset = Room.objects.all()
-    serializer_class = RoomSerializer
-    
-class CreateModel(APIView):
-    def post(self, request: Request):
-        csv = request.FILES.get('modelo_csv')
-        svg = Blender(csv).generate_model()
-        return svg
+    serializer_class = ReactSerializer
+
+    def get(self, request):
+        detail = [ {"name": detail.name,"detail": detail.detail}
+        for detail in React.objects.all()]
+        return Response(detail)
+
+    def post(self, request):
+
+        serializer = ReactSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return  Response(serializer.data)
