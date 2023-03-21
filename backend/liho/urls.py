@@ -1,12 +1,10 @@
-
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
-from api.views import ReactView
-
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('wel/', ReactView.as_view(), name="something"),
-]
+    path('', include('api.urls')),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

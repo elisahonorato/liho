@@ -1,10 +1,12 @@
 from django.db import models
 
-class React(models.Model):
-    name = models.CharField(max_length=30)
-    detail = models.CharField(max_length=500)
 
+# lets us explicitly set upload path and filename
+def upload_to(instance, filename):
+    return 'images/{filename}'.format(filename=filename)
 
-
+class File(models.Model):
+    title = models.CharField(max_length=80, blank=False, null=False)
+    csv_url = models.FileField(upload_to=upload_to, blank=True)
 
 

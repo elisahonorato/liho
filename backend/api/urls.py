@@ -1,23 +1,13 @@
 
-from django.shortcuts import render
-from rest_framework.views import APIView
-from . models import *
-from rest_framework.response import Response
-from .serializers import *
-# Create your views here.
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from api.views import FilesViewSet, PruebaView
 
-class ReactView(APIView):
 
-    serializer_class = ReactSerializer
-
-    def get(self, request):
-        detail = [ {"name": detail.name,"detail": detail.detail}
-        for detail in React.objects.all()]
-        return Response(detail)
-
-    def post(self, request):
-
-        serializer = ReactSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return  Response(serializer.data)
+router = DefaultRouter()
+router.register('files', FilesViewSet, basename='files')
+urlpatterns = [
+    path('api/', include(router.urls)),
+    path('probando', PruebaView.as_view())
+]

@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from . models import *
 
-class ReactSerializer(serializers.ModelSerializer):
+
+class FilesSerializer(serializers.ModelSerializer):
+
+    csv_url = serializers.FileField(required=False)
     class Meta:
-        model = React
-        fields = ['name', 'detail']
+        model = File
+        fields = ['id', 'csv']
+
