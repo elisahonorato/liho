@@ -1,3 +1,5 @@
 import LihoClient from "./LihoClient";
+import  useApiFetch  from "./useLihoApi";
 
-export {LihoClient};
+export {LihoClient, useApiFetch};
+

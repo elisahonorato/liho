@@ -1,38 +1,43 @@
 import logo from './logo.svg';
 import './App.css';
-import React, {useState} from 'react';
-import { LihoClient } from './client';
-import useApiFetch from './client/useLihoApi';
+import React, { useState } from 'react';
+import { LihoClient, useApiFetch } from './client';
 import axios from 'axios';
 
 function App() {
-  const {data, loading, error, sendRequest} = useApiFetch();
-  const [file, setFile] = useState()
-  const handleselectedFile = (event) => {
-    setFile(event.target.files[0])
-  }
-  console.log(data, loading, error,)
+  const [file, setFile] = useState();
+  const [response, setResponse] = useState('');
+
+  const handleSelectedFile = (event) => {
+    setFile(event.target.files[0]);
+  };
+
   const handleUpload = () => {
     let formData = new FormData();
     formData.append('file', file, file.name);
     console.log(formData);
-    axios.post('http://localhost:8000/probando', formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-    },
-    })
-    // sendRequest('/probando', {
-    //   headers: {
-    //     // 'content-type': file.type,
-    //     'content-length': `${file.size}`, // 👈 Headers need to be a string
-    //   },
-    //   body: file,
-    // });
-  }
+    axios
+      .post('http://localhost:8000/probando', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        console.log(response.data); // log the response data to the console
+        setResponse(JSON.stringify(response.data)); // update the state with the response data
+      })
+      .catch((error) => {
+        console.log(error.response.data)
+        setResponse(JSON.stringify(error.response.data));
+
+      });
+  };
+
   return (
     <div className="App">
-      <input type="file" name="" id="" onChange={handleselectedFile} />
-        <button onClick={handleUpload}>Upload</button>
+      <input type="file" name="" id="" onChange={handleSelectedFile} />
+      <button onClick={handleUpload}>Upload</button>
+      <div>{response}</div> {/* render the response data on the screen */}
     </div>
   );
 }
@@ -41,4 +46,4 @@ export default () => (
   <LihoClient>
     <App />
   </LihoClient>
-)
+);
