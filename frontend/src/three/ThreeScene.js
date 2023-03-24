@@ -67,7 +67,7 @@ const ThreeScene = ({ data }) => {
           metalness: 0.5,
           roughness: 0.9,
           transparent: true,
-          opacity: 0.6,
+          opacity: 0.5,
           fog: true,
           depthWrite: true,
           depthTest: true,
@@ -80,7 +80,21 @@ const ThreeScene = ({ data }) => {
     }, undefined, function (error) {
       console.error(error);
     });
-    console.log(model);
+    renderer.domElement.addEventListener('click', (event) => {
+      const mouse = new THREE.Vector2();
+      mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+      mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera( mouse, camera );
+      const intersects = raycaster.intersectObjects( scene.children, true );
+      if (intersects.length > 0) {
+        const object = intersects[0].object;
+        if (object.type === 'Mesh') {
+          console.log( object );
+          object.material.color.setHex( 0x000000 );
+        }
+      }
+    });
 
     function animate() {
       requestAnimationFrame( animate );
