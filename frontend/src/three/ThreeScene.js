@@ -67,7 +67,7 @@ const ThreeScene = ({ data }) => {
           metalness: 0.5,
           roughness: 0.9,
           transparent: true,
-          opacity: 0.5,
+          opacity: 0.8,
           fog: true,
           depthWrite: true,
           depthTest: true,
