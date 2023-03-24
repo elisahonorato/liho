@@ -6,6 +6,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import file from './file.glb';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { getRandomColorArray } from './RandomColorArray';
 
 const ThreeScene = ({ data }) => {
 
@@ -51,16 +53,17 @@ const ThreeScene = ({ data }) => {
 
     let model;
 
+
     const loader = new GLTFLoader();
 
     loader.load(file, function (gltf) {
       model = gltf.scene;
-      const color_num = 254/ model.children.length;
-      console.log(color_num);
+      const colorArray = getRandomColorArray(model.children.length);
       const color = new THREE.Color();
       for (let i = 0; i < model.children.length ; i++) {
+        const component = colorArray[i];
         const material = new THREE.MeshStandardMaterial({
-          color: getRandomColor(color_num*i, color_num*(i+1)),
+          color: color.setRGB(component[0]*0.01, component[1]*0.01, component[2]*0.01),
           metalness: 0.5,
           roughness: 0.9,
           transparent: true,
@@ -72,7 +75,6 @@ const ThreeScene = ({ data }) => {
 
         });
         model.children[i].material = material;
-        console.log(color);
       }
       scene.add(model);
 
@@ -95,7 +97,7 @@ const ThreeScene = ({ data }) => {
       return Math.floor(Math.random() * (max - min + 1) ) + min;
     }
     function getRandomColor(min, max) {
-      const r = Math.floor(Math.random() * (max - min + 1) ) + min;
+      const r = Math.floor(Math.random() * (max/2 - min + 1) ) + min;
       const g = Math.random();
       const b = Math.random();
       const components = [r, g, b];
