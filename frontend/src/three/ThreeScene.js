@@ -20,6 +20,7 @@ const ThreeScene = ({ data }) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff );
     const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    camera.setFocalLength( 18 );
 
     // renderer
     const renderer = new THREE.WebGLRenderer();
@@ -34,6 +35,8 @@ const ThreeScene = ({ data }) => {
 
     // lights
     const light = new THREE.PointLight(0xffffff, 1, 50);
+    const ambientLight = new THREE.AmbientLight( 0x222222 );
+    scene.add( ambientLight );
     light.position.set(0, 0, 0);
     scene.add(light);
     scene.add( new THREE.AxesHelper( 20 ) );
@@ -47,24 +50,32 @@ const ThreeScene = ({ data }) => {
     controls.update();
 
     let model;
+
     const loader = new GLTFLoader();
+
     loader.load(file, function (gltf) {
       model = gltf.scene;
+      const color_num = 254/ model.children.length;
+      console.log(color_num);
       const color = new THREE.Color();
-      for (let i = 0; i < model.children.length; i++) {
+      for (let i = 0; i < model.children.length ; i++) {
         const material = new THREE.MeshStandardMaterial({
-          color: color.setRGB(Math.random(), Math.random(), Math.random()),
+          color: getRandomColor(color_num*i, color_num*(i+1)),
           metalness: 0.5,
-          roughness: 0.5,
+          roughness: 0.9,
           transparent: true,
-          opacity: 0.7,
+          opacity: 0.6,
+          fog: true,
+          depthWrite: true,
+          depthTest: true,
+          side: THREE.DoubleSide,
+
         });
         model.children[i].material = material;
+        console.log(color);
       }
-
-
-
       scene.add(model);
+
     }, undefined, function (error) {
       console.error(error);
     });
@@ -73,12 +84,23 @@ const ThreeScene = ({ data }) => {
     function animate() {
       requestAnimationFrame( animate );
       if (model){
-        model.rotation.x += 0.01;
-        model.rotation.y += 0.01;
+        model.rotation.x += 0.007;
+        model.rotation.y += 0.007;
       }
       light.position.copy(camera.position);
       controls.update();
       renderer.render( scene, camera );
+    }
+    function getRndInteger(min, max) {
+      return Math.floor(Math.random() * (max - min + 1) ) + min;
+    }
+    function getRandomColor(min, max) {
+      const r = Math.floor(Math.random() * (max - min + 1) ) + min;
+      const g = Math.random();
+      const b = Math.random();
+      const components = [r, g, b];
+      components.sort(() => Math.random() - 0.5);
+      return new THREE.Color(components[0], components[1], components[2]);
     }
 
     animate();
