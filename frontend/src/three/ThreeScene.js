@@ -71,7 +71,6 @@ const ThreeScene = ({ data }) => {
           fog: true,
           depthWrite: true,
           depthTest: true,
-          side: THREE.DoubleSide,
 
         });
         model.children[i].material = material;
