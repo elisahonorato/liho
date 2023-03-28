@@ -23,7 +23,11 @@ class PruebaView(APIView):
             return HttpResponse({"File not Uploaded"},status=400)
 
     def view_gltf(self, file):
-        generate_gltf(file, "hola.gltf")
+        string = str(file).replace("csv", "gltf")
+        string = "gltf/" + string.split("/")[1] + ".glb"
+        string = "holi.glb"
+        generate_gltf(file, string)
+        self.gltf = Gltf.objects.create(url=string)
 
 
 
