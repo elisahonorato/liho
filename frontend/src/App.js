@@ -23,7 +23,7 @@ function App() {
     formData.append('file', file, file.name);
     console.log(formData);
     axios
-      .post('http://localhost:8000/probando', formData, {
+      .post('http://localhost:8000/probando/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

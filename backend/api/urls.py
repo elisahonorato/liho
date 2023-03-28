@@ -8,5 +8,5 @@ from api.views import PruebaView
 router = DefaultRouter()
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('probando', PruebaView.as_view())
+    path('probando/', PruebaView.as_view())
 ]
