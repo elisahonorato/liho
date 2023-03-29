@@ -15,12 +15,18 @@ class PruebaView(APIView):
             self.file = File.objects.create(url = uploaded_file)
             self.gltf = GLTFFile.objects.create(file = self.file)
             self.gltf.save()
-            response = FileResponse(open(self.gltf.path, 'rb'))
-            response['Content-Disposition'] = 'attachment; filename="file.gltf"'
+            with open(self.gltf.path, 'rb') as f:
+                gltf = f.read()
+            response = FileResponse(gltf)
+
+            response['Content-Type'] = 'model/gltf-binary'
             return response
 
+        elif uploaded_file.content_type != 'text/csv':
+            return HttpResponse({"Archivo con el formato incorrecto"},status=400)
+
         else:
-            return HttpResponse({"File not Uploaded"},status=400)
+            return HttpResponse({"Error desconocido"},status=400)
 
 
 
