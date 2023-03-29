@@ -4,44 +4,42 @@ import React, { useCallback, useState } from 'react';
 import { LihoClient, useApiFetch } from './client';
 import axios from 'axios';
 import Papa from 'papaparse';
-import * as THREE from 'three';
 import ThreeScene from './three/ThreeScene';
-
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 
 
 function App() {
   const [file, setFile] = useState();
+  const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');
+
+  const [count, setCount] = useState(0);
   const [papaParseData, setPapaParseData] = useState();
 
+  // Handle File Upload
   const handleSelectedFile = (event) => {
     setFile(event.target.files[0]);
   };
 
+  // Handle Request from File
   const handleUpload = useCallback(() => {
     let formData = new FormData();
     formData.append('file', file, file.name);
-    console.log(formData);
+    setLoading(true);
     axios
       .post('http://localhost:8000/probando/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then((response) => {
-        console.log(response.data); // log the response data to the console
-        setResponse(JSON.stringify(response.data)); // update the state with the response data
+      .then((res) => {
+        setResponse("File Uploaded");
+        setLoading(false);
+        setFile(undefined);
 
-        // Parse the CSV file and create a mesh for each row
-        Papa.parse(file, {
-          header: true,
-          dynamicTyping: true,
-          complete: (results) => {
-            setPapaParseData(results.data);
-          },
-        });
-
+        // Hacer algo con gltfData
       })
       .catch((error) => {
         console.log(error.response.data)
@@ -49,13 +47,17 @@ function App() {
       });
 
   }, [file]);
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+
   return (
     <div className="App">
       <input type="file" name="" id="" onChange={handleSelectedFile} />
       <button onClick={handleUpload}>Upload</button>
-      <div>{response}</div> {/* render the response data on the screen */}
-      {papaParseData && <ThreeScene data={papaParseData} />}
-
+      <MyButton />
+      <p>{loading ? 'Cargando Modelo..' : response}</p>
     </div>
   );
 }
@@ -65,3 +67,12 @@ export default () => (
     <App />
   </LihoClient>
 );
+function MyButton() {
+  const [count, setCount] = useState(0);
+  function handleClick() {
+    setCount(count + 1);
+  }
+  return (
+    <button onClick={handleClick}>Clicked {count}</button>
+  );
+};

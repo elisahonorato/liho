@@ -21,15 +21,8 @@ def generate_gltf(csv_path, gltf_path):
     # Link the object to the scene
 
 
-    print("\n--")
-    print("Estos son los objetos de tu escena")
 
-
-    # Leer el archivo CSV
-    print("\n--")
-    print("Este es tu Csv")
     df = pd.read_csv(csv_path)
-    print(df)
     # Load the material file
 
 
@@ -44,14 +37,16 @@ def generate_gltf(csv_path, gltf_path):
         mat.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = (0.05*x, 0.05*y, 0.05*z, 0.1)
         mat.cycles.use_backface_culling = True
         sphere = bpy.context.active_object
+        print(sphere)
         sphere.data.materials.append(mat)
+
 
 
     # Exportar el modelo a SVG
     bpy.context.scene.render.film_transparent = True
     export_path = gltf_path
 
-    print(export_path)
+
 
 
     # Export the active object

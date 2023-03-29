@@ -5,9 +5,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-import modelo from './file.glb';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { getRandomColorArray } from './RandomColorArray';
+import file from './file.glb'
 
 const ThreeScene = ({ data }) => {
 
@@ -16,6 +16,7 @@ const ThreeScene = ({ data }) => {
   useEffect(() => {
 
     // doc
+
     const container = sceneRef.current
 
 
@@ -55,9 +56,12 @@ const ThreeScene = ({ data }) => {
 
 
     const loader = new GLTFLoader();
+    console.log(data)
 
-    loader.load(modelo, function (gltf) {
+
+    loader.load(data, function (gltf) {
       model = gltf.scene;
+      console.log("model",model)
       const colorArray = getRandomColorArray(model.children.length);
       const color = new THREE.Color();
       for (let i = 0; i < model.children.length ; i++) {

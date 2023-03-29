@@ -1,5 +1,6 @@
 from django.db import models
 from .resources.blender import generate_gltf
+from pygltflib import GLTF2, Scene
 
 
 
@@ -22,8 +23,11 @@ class GLTFFile(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        print(self.file.url.path)
-        generate_gltf(self.file.url.path, self.file.url.path.replace(".csv", ".gltf"))
+        self.path = self.file.url.path.replace(".csv", ".glb")
+        generate_gltf(self.file.url.path, self.path)
+        self.gltf_file = GLTF2().load(self.path)
+
+
 
 
 
