@@ -5,7 +5,7 @@ from .resources.blender import generate_gltf
 
 # lets us explicitly set upload path and filename
 def upload_to(instance, filename):
-    return 'frontend/%s/%s' % (instance.type, filename)
+    return '%s/%s' % (instance.type, filename)
 
 
 

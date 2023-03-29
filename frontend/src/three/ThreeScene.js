@@ -5,8 +5,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-import modelo from 'https://github.com/elisahonorato/liho/blob/master/mediafiles/csv/modelo.glb'
-
+import modelo from './file.glb';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { getRandomColorArray } from './RandomColorArray';
 
