@@ -9,6 +9,7 @@ import ThreeScene from './three/ThreeScene';
 
 
 
+
 function App() {
   const [file, setFile] = useState();
   const [response, setResponse] = useState('');
@@ -53,7 +54,7 @@ function App() {
       <input type="file" name="" id="" onChange={handleSelectedFile} />
       <button onClick={handleUpload}>Upload</button>
       <div>{response}</div> {/* render the response data on the screen */}
-      {papaParseData && <ThreeScene data={papaParseData } />}
+      {papaParseData && <ThreeScene data={papaParseData} />}
 
     </div>
   );

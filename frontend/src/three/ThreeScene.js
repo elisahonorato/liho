@@ -5,7 +5,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-import file from './file.glb';
+import modelo from 'https://github.com/elisahonorato/liho/blob/master/mediafiles/csv/modelo.glb'
+
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { getRandomColorArray } from './RandomColorArray';
 
@@ -56,7 +57,7 @@ const ThreeScene = ({ data }) => {
 
     const loader = new GLTFLoader();
 
-    loader.load(file, function (gltf) {
+    loader.load(modelo, function (gltf) {
       model = gltf.scene;
       const colorArray = getRandomColorArray(model.children.length);
       const color = new THREE.Color();

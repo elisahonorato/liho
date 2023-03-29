@@ -12,22 +12,19 @@ class PruebaView(APIView):
     def post(self, request):
         uploaded_file = request.FILES['file']
         if uploaded_file.content_type == 'text/csv':
-            self.file = File.objects.create(url=uploaded_file)
+            self.file = File.objects.create(url = uploaded_file)
             self.file.save()
+            self.gltf = GLTFFile.objects.create(file = self.file)
 
 
-            self.gltf = self.view_gltf(self.file.url)
 
-            return HttpResponse({self.gltf}, status=200)
+
+            return HttpResponse({"Uploaded"}, status=200)
         else:
             return HttpResponse({"File not Uploaded"},status=400)
 
-    def view_gltf(self, file):
-        string = str(file).replace("csv", "gltf")
-        string = "gltf/" + string.split("/")[1] + ".glb"
-        string = "holi.glb"
-        generate_gltf(file, string)
-        self.gltf = Gltf.objects.create(url=string)
+
+
 
 
 
