@@ -33,7 +33,7 @@ const ThreeScene = ({ data }) => {
     camera.position.z = 5;
 
     // lights
-    const light = new THREE.PointLight(0xffffff, 1, 50);
+    const light = new THREE.PointLight(0xffffff, 1000, 2000);
     const ambientLight = new THREE.AmbientLight( 0xffffff );
     scene.add( ambientLight );
     light.position.set(0, 0, 0);
@@ -87,7 +87,7 @@ const ThreeScene = ({ data }) => {
     const material8 = new THREE.MeshNormalMaterial( { color: 0x000000, specular: 0x00000, shininess: 10, opacity: 0.9, transparent: true } );
     const material9 = new THREE.MeshLambertMaterial( { color: 0x666666, specular: 0x00000, shininess: 10, opacity: 0.9, transparent: true } );
 
-    const material10 = new THREE.MeshStandardMaterial( { color: 0xff0000, emissive: 0x004cff, roughness: 0.198, metalness: 0.517} );
+
 
 
     var model;
@@ -99,21 +99,33 @@ const ThreeScene = ({ data }) => {
 
         for (let i = 0; i < model.children.length; i++) {
 
-          const blue = data['model']['samples'][i]['colors'][0];
-          const red = data['model']['samples'][i]['colors'][1];
+          const blue = data.model.samples[i]?.colors[0];
+          const red = data.model.samples[i]?.colors[1];
 
-
-          material10.color = new THREE.Color(0x000000);
-
-          model.children[i].material = material10;
-
-          if (!list.includes(model.children[i].name)) {
-            list.push(model.children[i].name);
+          if (!blue || !red) {
+            model.children[i].material = volume_material
+            continue;
           }
+          if (blue && red) {
+
+            const color_blue = parseInt(blue * 1000).toString().slice(0, 2);
+            const color_red = parseInt(red * 1000).toString().slice(0, 2);
+            console.log(color_blue, color_red)
+            const material10 = new THREE.MeshStandardMaterial( {roughness: 0.0198, metalness: 1} );
+
+
+            material10.color = new THREE.Color(0x000000);
+            material10.color.setRGB(color_red, 0, 0);
+            material10.emissive.setRGB(0, 0, color_blue);
+
+            model.children[i].material = material10;
+
+            if (!list.includes(model.children[i].name)) {
+              list.push(model.children[i].name);
+              }
         }
+      }
         list.push("Todos");
-        const volumen = model.getObjectByName("Volumen")
-        volumen.material = volume_material;
         createGui(list);
         scene.add(model);
       }, undefined, function (error) {
