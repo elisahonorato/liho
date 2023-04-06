@@ -30,3 +30,5 @@ yarn-error.log*
 
 # exploring
 /src/component/Points.js
+
+mediafiles/
