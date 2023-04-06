@@ -4,6 +4,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import modelo from './modelo.glb';
 import { CSS2DRenderer , CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { Lut } from 'three/addons/math/Lut.js';
+
 
 
 const ThreeScene = ({ data }) => {
@@ -11,7 +14,7 @@ const ThreeScene = ({ data }) => {
     // doc
     if (!sceneRef) return;
     const container = sceneRef
-
+    const list = [];
 
 
     const scene = new THREE.Scene();
@@ -58,6 +61,15 @@ const ThreeScene = ({ data }) => {
 
     const texture = new THREE.Texture( generateTexture() );
 		texture.needsUpdate = true;
+
+    var lut = new Lut( 'rainbow', 512 );
+    lut.setColorMap([
+        0x0000ff, // blue
+        0x00ff00, // green
+        0xff0000, // red
+    ]);
+
+
     const material = new THREE.MeshBasicMaterial( { color: 0xffaa00, wireframe: true } )
     const material2 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, map: texture, transparent: true } )
     const material3 = new THREE.MeshBasicMaterial( { color: 0xffaa00, transparent: true, blending: THREE.AdditiveBlending } )
@@ -69,9 +81,9 @@ const ThreeScene = ({ data }) => {
       transparent: true,
       blending: THREE.AdditiveBlending // Set the blending mode to additive
     });
+    const material6 = new THREE.ShaderMaterial({  uniforms: { lut: { value: lut },  }, });
 
     material.color.lerp(endColor, 0.8); // Define the gradient
-
 
     var model;
 
@@ -89,10 +101,15 @@ const ThreeScene = ({ data }) => {
 
           const p = document.createElement('p');
           p.textContent = model.children[i].name;
+          list.push(model.children[i].name);
+
+
+
           const cPointLabel = new CSS2DObject(p);
 
 
         }
+        createGui(list);
         scene.add(model);
       }, undefined, function (error) {
         console.error(error);
@@ -125,6 +142,23 @@ const ThreeScene = ({ data }) => {
 
 				return canvas;
 			}
+    function createGui( list ) {
+      let params = {
+        'Muestra': 0,
+      };
+
+      const gui = new GUI();
+
+      gui.add(params, 'Número de muestra', list).onChange(function(value) {
+        for (let i = 0; i < model.children.length; i++) {
+          model.children[i].visible = false;
+        }
+        const selected_model = model.getObjectByName(value)
+        selected_model.visible = true;
+        console.log(selected_model);
+
+    } );
+    }
 
 
     // animate
@@ -132,8 +166,8 @@ const ThreeScene = ({ data }) => {
       requestAnimationFrame( animate );
 
       if (model) {
-        model.rotation.x += 0.007;
-        model.rotation.y += 0.007;
+        model.rotation.x += 0.001;
+        model.rotation.y += 0.001;
       }
       light.position.copy(camera.position);
       controls.update();

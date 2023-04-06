@@ -66,14 +66,18 @@ class GLTFFile(models.Model):
 
             for i, row in df.iterrows():
                 columns = df.columns
-                x, y, z = row[0], row[1], row[2]
+                sample_name, volumen, feopigmentos, clor_a, clorofila_total = row[0], row[1], row[2], row[3], row[4]
+
+
                 # Create a UV sphere
-                bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = z)
+                bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = clorofila_total)
 
                 sphere = bpy.context.active_object
                 sphere.name = str(i)
-                sample_dict = { 'colors' : [x, y], 'variables': [columns[0], columns[1]]}
+                sample_dict = {'sample_name': sample_name ,'colors' : [feopigmentos, clor_a], 'variables': [columns[0], columns[1]]}
                 samples.append(sample_dict)
+
+            dict['model']["vol"] = volumen
 
 
 

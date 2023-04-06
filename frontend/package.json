@@ -16,7 +16,9 @@
     "react-scripts": "5.0.1",
     "react-three-fiber": "^6.0.13",
     "three": "^0.150.1",
+    "three-addons": "^1.2.0",
     "three-dat.gui": "^2.0.7",
+    "three-lut": "^79.0.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
