@@ -32,3 +32,4 @@ mediafiles/
 *.sqlite3
 *.csv
 backend/media
+*.glb
