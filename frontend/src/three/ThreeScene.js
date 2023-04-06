@@ -95,20 +95,11 @@ const ThreeScene = ({ data }) => {
         for (let i = 0; i < model.children.length; i++) {
 
           model.children[i].material = material;
-          console.log(data['model']['samples'][i]);
-
-
-
-          const p = document.createElement('p');
-          p.textContent = model.children[i].name;
-          list.push(model.children[i].name);
-
-
-
-          const cPointLabel = new CSS2DObject(p);
-
-
+          if (!list.includes(model.children[i].name)) {
+            list.push(model.children[i].name);
+          }
         }
+        list.push("Todos");
         createGui(list);
         scene.add(model);
       }, undefined, function (error) {
@@ -144,7 +135,7 @@ const ThreeScene = ({ data }) => {
 			}
     function createGui( list ) {
       let params = {
-        'Muestra': 0,
+        'Nombre Muestra': "Todos",
       };
 
       const gui = new GUI();
@@ -152,6 +143,12 @@ const ThreeScene = ({ data }) => {
       gui.add(params, 'Número de muestra', list).onChange(function(value) {
         for (let i = 0; i < model.children.length; i++) {
           model.children[i].visible = false;
+        }
+        while (value === "Todos") {
+          for (let i = 0; i < model.children.length; i++) {
+            model.children[i].visible = true;
+          }
+          return;
         }
         const selected_model = model.getObjectByName(value)
         selected_model.visible = true;

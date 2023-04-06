@@ -73,8 +73,8 @@ class GLTFFile(models.Model):
                 bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = clorofila_total)
 
                 sphere = bpy.context.active_object
-                sphere.name = str(i)
-                sample_dict = {'sample_name': sample_name ,'colors' : [feopigmentos, clor_a], 'variables': [columns[0], columns[1]]}
+                sphere.name = sample_name
+                sample_dict = {'colors' : [feopigmentos, clor_a], 'variables': [columns[0], columns[1]]}
                 samples.append(sample_dict)
 
             dict['model']["vol"] = volumen
