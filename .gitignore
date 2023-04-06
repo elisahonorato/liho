@@ -32,3 +32,6 @@ yarn-error.log*
 /src/component/Points.js
 
 mediafiles/
+*.sqlite3
+*.csv
+backend/media
