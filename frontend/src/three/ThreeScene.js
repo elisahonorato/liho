@@ -1,19 +1,18 @@
 import * as THREE from 'three';
-import React, { useEffect, useRef} from 'react';
+import React from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import modelo from './modelo.glb';
-import { getRandomColorArray } from './Components/RandomColorArray';
 import { CSS2DRenderer , CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 
 const ThreeScene = ({ data }) => {
-
-  const sceneRef = useRef();
-
-  useEffect(() => {
+  const refChangeHandler = (sceneRef) => {
     // doc
-    const container = sceneRef.current
+    if (!sceneRef) return;
+    const container = sceneRef
+
+
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x000000 );
@@ -75,7 +74,6 @@ const ThreeScene = ({ data }) => {
 
 
     var model;
-
 
     const loader = new GLTFLoader();
     loader.load(modelo, function (gltf) {
@@ -144,8 +142,8 @@ const ThreeScene = ({ data }) => {
     }
     animate();
 
-  }, []);
-  return <div ref={sceneRef} id='container' />;
+  };
+  return <div ref={refChangeHandler} id='container' />;
 };
 
 export default ThreeScene;
