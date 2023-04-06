@@ -26,6 +26,7 @@ class GLTFFile(models.Model):
     exists = False
 
     def save(self, *args, **kwargs):
+        self.dict = None
         super().save(*args, **kwargs)
         self.path = self.file.url.path.replace(".csv", ".glb")
         self.generate_gltf()
@@ -74,7 +75,7 @@ class GLTFFile(models.Model):
 
                 sphere = bpy.context.active_object
                 sphere.name = sample_name
-                sample_dict = {'colors' : [feopigmentos, clor_a], 'variables': [columns[0], columns[1]]}
+                sample_dict = {'colors' : [float(feopigmentos), float(clor_a)], 'variables': [columns[0], columns[1]]}
                 samples.append(sample_dict)
 
 

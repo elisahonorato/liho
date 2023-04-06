@@ -34,7 +34,7 @@ const ThreeScene = ({ data }) => {
 
     // lights
     const light = new THREE.PointLight(0xffffff, 1, 50);
-    const ambientLight = new THREE.AmbientLight( 0x222222 );
+    const ambientLight = new THREE.AmbientLight( 0xffffff );
     scene.add( ambientLight );
     light.position.set(0, 0, 0);
     scene.add(light);
@@ -44,7 +44,7 @@ const ThreeScene = ({ data }) => {
     const controls = new OrbitControls( camera, renderer.domElement );
     controls.target.set( 0, 0, 0 );
     controls.dynamicDampingFactor = 0.3;
-    controls.minDistance = 1;
+    controls.minDistance = 0;
     controls.maxDistance = 300;
     controls.update();
 
@@ -70,6 +70,7 @@ const ThreeScene = ({ data }) => {
     ]);
 
 
+    const volume_material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, transparent: true, opacity: 0.3} )
     const material = new THREE.MeshBasicMaterial( { color: 0xffaa00, wireframe: true } )
     const material2 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, map: texture, transparent: true } )
     const material3 = new THREE.MeshBasicMaterial( { color: 0xffaa00, transparent: true, blending: THREE.AdditiveBlending } )
@@ -82,8 +83,12 @@ const ThreeScene = ({ data }) => {
       blending: THREE.AdditiveBlending // Set the blending mode to additive
     });
     const material6 = new THREE.ShaderMaterial({  uniforms: { lut: { value: lut },  }, });
+    const material7 = new THREE.MeshPhongMaterial( { color: 0x000000, specular: 0x666666, emissive: 0xff0000, shininess: 10, opacity: 0.9, transparent: true } );
+    const material8 = new THREE.MeshNormalMaterial( { color: 0x000000, specular: 0x00000, shininess: 10, opacity: 0.9, transparent: true } );
+    const material9 = new THREE.MeshLambertMaterial( { color: 0x666666, specular: 0x00000, shininess: 10, opacity: 0.9, transparent: true } );
 
-    material.color.lerp(endColor, 0.8); // Define the gradient
+    const material10 = new THREE.MeshStandardMaterial( { color: 0xff0000, emissive: 0x004cff, roughness: 0.198, metalness: 0.517} );
+
 
     var model;
 
@@ -94,12 +99,21 @@ const ThreeScene = ({ data }) => {
 
         for (let i = 0; i < model.children.length; i++) {
 
-          model.children[i].material = material;
+          const blue = data['model']['samples'][i]['colors'][0];
+          const red = data['model']['samples'][i]['colors'][1];
+
+
+          material10.color = new THREE.Color(0x000000);
+
+          model.children[i].material = material10;
+
           if (!list.includes(model.children[i].name)) {
             list.push(model.children[i].name);
           }
         }
         list.push("Todos");
+        const volumen = model.getObjectByName("Volumen")
+        volumen.material = volume_material;
         createGui(list);
         scene.add(model);
       }, undefined, function (error) {
