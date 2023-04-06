@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from . models import *
 from rest_framework.parsers import MultiPartParser
 from .serializers import *
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, JsonResponse
 from .resources.blender import generate_gltf
 
 
@@ -14,26 +14,13 @@ class PruebaView(APIView):
         if uploaded_file.content_type == 'text/csv':
             self.file = File.objects.create(url = uploaded_file)
             self.gltf = GLTFFile.objects.create(file = self.file)
-            self.gltf.save()
-            with open(self.gltf.path, 'rb') as f:
-                gltf = f.read()
-            response = FileResponse(gltf)
-
-            response['Content-Type'] = 'model/gltf-binary'
-            return response
+            if self.gltf.exists:
+                print(self.gltf.dict)
+                return JsonResponse(self.gltf.dict, status=200)
+            return HttpResponse({"Error al generar el archivo"},status=400)
 
         elif uploaded_file.content_type != 'text/csv':
             return HttpResponse({"Archivo con el formato incorrecto"},status=400)
 
         else:
             return HttpResponse({"Error desconocido"},status=400)
-
-
-
-
-
-
-
-
-
-

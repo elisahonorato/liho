@@ -3,10 +3,7 @@ import './App.css';
 import React, { useCallback, useState } from 'react';
 import { LihoClient, useApiFetch } from './client';
 import axios from 'axios';
-import Papa from 'papaparse';
 import ThreeScene from './three/ThreeScene';
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 
 
@@ -14,9 +11,11 @@ function App() {
   const [file, setFile] = useState();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');
+  const [gltfData, setGltfData] = useState(null);
+
 
   const [count, setCount] = useState(0);
-  const [papaParseData, setPapaParseData] = useState();
+
 
   // Handle File Upload
   const handleSelectedFile = (event) => {
@@ -35,16 +34,22 @@ function App() {
         },
       })
       .then((res) => {
-        setResponse("File Uploaded");
+        setGltfData(res.data);
+        setResponse("Archivo subido con Exito");
         setLoading(false);
-        setFile(undefined);
 
-        // Hacer algo con gltfData
+
+
+
       })
-      .catch((error) => {
-        console.log(error.response.data)
-        setResponse(JSON.stringify(error.response.data));
-      });
+      .catch((err) => {
+        setResponse(err.response.data);
+        setLoading(false);
+
+
+      }
+      );
+
 
   }, [file]);
   function handleClick() {
@@ -58,6 +63,8 @@ function App() {
       <button onClick={handleUpload}>Upload</button>
       <MyButton />
       <p>{loading ? 'Cargando Modelo..' : response}</p>
+      {gltfData != null && <ThreeScene data={gltfData} />}
+
     </div>
   );
 }
