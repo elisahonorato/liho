@@ -45,7 +45,7 @@ const ThreeScene = ({ data }) => {
     controls.target.set( 0, 0, 0 );
     controls.dynamicDampingFactor = 0.3;
     controls.minDistance = 1;
-    controls.maxDistance = 100;
+    controls.maxDistance = 300;
     controls.update();
 
     const labelRenderer = new CSS2DRenderer();
@@ -151,6 +151,7 @@ const ThreeScene = ({ data }) => {
           return;
         }
         const selected_model = model.getObjectByName(value)
+        model.getObjectByName("Volumen").visible = true;
         selected_model.visible = true;
         console.log(selected_model);
 
