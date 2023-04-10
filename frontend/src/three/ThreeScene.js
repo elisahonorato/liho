@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import modelo from './modelo.glb';
 import { CSS2DRenderer , CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { Lut } from 'three/addons/math/Lut.js';
+
 
 
 
@@ -18,7 +18,7 @@ const ThreeScene = ({ data }) => {
 
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x000000 );
+    scene.background = new THREE.Color( 0xffffff );
     const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
     camera.setFocalLength( 18 );
 
@@ -55,42 +55,23 @@ const ThreeScene = ({ data }) => {
     labelRenderer.domElement.style.top = '0px';
     container.appendChild( labelRenderer.domElement );
 
-    // model
-    const startColor = new THREE.Color(0xff0000);
-    const endColor = new THREE.Color(0x0000ff);
-
-    const texture = new THREE.Texture( generateTexture() );
-		texture.needsUpdate = true;
-
-    var lut = new Lut( 'rainbow', 512 );
-    lut.setColorMap([
-        0x0000ff, // blue
-        0x00ff00, // green
-        0xff0000, // red
-    ]);
 
 
-    const volume_material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, transparent: true, opacity: 0.3} )
-    const material = new THREE.MeshBasicMaterial( { color: 0xffaa00, wireframe: true } )
-    const material2 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, map: texture, transparent: true } )
-    const material3 = new THREE.MeshBasicMaterial( { color: 0xffaa00, transparent: true, blending: THREE.AdditiveBlending } )
-    const material4 = new THREE.MeshPhongMaterial( { color: 0x000000, specular: 0x666666, emissive: 0xff0000, shininess: 10, opacity: 0.9, transparent: true } )
-  // Create a linear gradient material using the start and end colors
-    const material5 = new THREE.MeshBasicMaterial({
-      color: startColor,
-      opacity: 0.4, // Set the opacity to create transparency
-      transparent: true,
-      blending: THREE.AdditiveBlending // Set the blending mode to additive
-    });
-    const material6 = new THREE.ShaderMaterial({  uniforms: { lut: { value: lut },  }, });
-    const material7 = new THREE.MeshPhongMaterial( { color: 0x000000, specular: 0x666666, emissive: 0xff0000, shininess: 10, opacity: 0.9, transparent: true } );
-    const material8 = new THREE.MeshNormalMaterial( { color: 0x000000, specular: 0x00000, shininess: 10, opacity: 0.9, transparent: true } );
-    const material9 = new THREE.MeshLambertMaterial( { color: 0x666666, specular: 0x00000, shininess: 10, opacity: 0.9, transparent: true } );
-
-
+    const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} )
 
 
     var model;
+
+    const p0 = document.createElement("p");
+    const p = document.createElement("p");
+    const pContainer = document.createElement("div");
+    pContainer.appendChild(p);
+    pContainer.appendChild(p0);
+    const cPointLabel = new CSS2DObject(pContainer);
+    scene.add(cPointLabel);
+    cPointLabel.visible = false;
+    p.visible = false;
+
 
     const loader = new GLTFLoader();
     loader.load(modelo, function (gltf) {
@@ -113,14 +94,15 @@ const ThreeScene = ({ data }) => {
             console.log(color_blue, color_red)
             const material10 = new THREE.MeshStandardMaterial( {roughness: 0.0198, metalness: 1} );
 
-
             material10.color = new THREE.Color(0x000000);
             material10.color.setRGB(color_red, 0, 0);
             material10.emissive.setRGB(0, 0, color_blue);
 
             model.children[i].material = material10;
 
+
             if (!list.includes(model.children[i].name)) {
+              console.log("nombre",model.children[i].name);
               list.push(model.children[i].name);
               }
         }
@@ -132,41 +114,37 @@ const ThreeScene = ({ data }) => {
         console.error(error);
       });
 
-      function generateTexture() {
+    function showVolumen( visibility ) {
+        model.getObjectByName("Volumen").visible = visibility;
+    }
+    function showData( model ) {
+      for (let muestra of data.model.samples) {
+        if (model.userData.name === muestra.name) {
+          console.log("muestra", muestra)
+          p.textContent = muestra.variables
+          p.textContent = `Nombre Muestra: ${model.name}`;
+          p0.textContent = `Clorofila A: (${muestra.colors[0]}) Clorofila B: (${muestra.colors[1]})`
+      }
+    }
 
-				const canvas = document.createElement( 'canvas' );
-				canvas.width = 256;
-				canvas.height = 256;
+      p.visible = true;
+      cPointLabel.visible = true;
 
-				const context = canvas.getContext( '2d' );
-				const image = context.getImageData( 0, 0, 256, 256 );
 
-				let x = 0, y = 0;
-
-				for ( let i = 0, j = 0, l = image.data.length; i < l; i += 4, j ++ ) {
-
-					x = j % 256;
-					y = ( x === 0 ) ? y + 1 : y;
-
-					image.data[ i ] = 255;
-					image.data[ i + 1 ] = 255;
-					image.data[ i + 2 ] = 255;
-					image.data[ i + 3 ] = Math.floor( x ^ y );
-
-				}
-
-				context.putImageData( image, 0, 0 );
-
-				return canvas;
-			}
+    }
     function createGui( list ) {
-      let params = {
-        'Nombre Muestra': "Todos",
-      };
 
       const gui = new GUI();
+      gui.domElement.id = "gui";
+      const folder1 = gui.addFolder( 'Muestras' );
+      const settings = {
+        'Número de muestra': "Todos",
+        "Mostrar Volumen": true,
+        "Mostrar Datos": true
 
-      gui.add(params, 'Número de muestra', list).onChange(function(value) {
+      }
+
+      folder1.add(settings, 'Número de muestra', list).onChange(function(value) {
         for (let i = 0; i < model.children.length; i++) {
           model.children[i].visible = false;
         }
@@ -176,13 +154,26 @@ const ThreeScene = ({ data }) => {
           }
           return;
         }
-        const selected_model = model.getObjectByName(value)
+        const index = list.indexOf(value);
+        const selected_model = model.getObjectByName(value, index)
         model.getObjectByName("Volumen").visible = true;
         selected_model.visible = true;
         console.log(selected_model);
+        showData(selected_model);
+
 
     } );
+    folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen );
+
+
     }
+
+
+
+
+
+
+
 
 
     // animate

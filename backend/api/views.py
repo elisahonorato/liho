@@ -12,11 +12,11 @@ class PruebaView(APIView):
     def post(self, request):
         uploaded_file = request.FILES['file']
         if uploaded_file.content_type == 'text/csv':
-            self.file = File.objects.create(url = uploaded_file)
-            self.gltf = GLTFFile.objects.create(file = self.file)
-            if self.gltf.exists:
-                print(self.gltf.dict)
-                return JsonResponse(self.gltf.dict, status=200)
+            file = File.objects.create(url = uploaded_file)
+            gltf = GLTFFile.objects.create(file = file)
+            if gltf.exists:
+                print('dict',gltf.dict)
+                return JsonResponse(gltf.dict, status=200)
             return HttpResponse({"Error al generar el archivo"},status=400)
 
         elif uploaded_file.content_type != 'text/csv':
