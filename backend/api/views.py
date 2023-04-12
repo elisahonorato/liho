@@ -3,7 +3,6 @@ from . models import *
 from rest_framework.parsers import MultiPartParser
 from .serializers import *
 from django.http import HttpResponse, FileResponse, JsonResponse
-from .resources.blender import generate_gltf
 
 
 # Create your views here.
@@ -15,7 +14,6 @@ class PruebaView(APIView):
             file = File.objects.create(url = uploaded_file)
             gltf = GLTFFile.objects.create(file = file)
             if gltf.exists:
-                print('dict',gltf.dict)
                 return JsonResponse(gltf.dict, status=200)
             return HttpResponse({"Error al generar el archivo"},status=400)
 
