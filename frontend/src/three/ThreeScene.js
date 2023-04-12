@@ -5,6 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import modelo from './modelo.glb';
 import { CSS2DRenderer , CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { colorDict } from './colorDict.js';
 
 
 
@@ -77,7 +78,8 @@ const ThreeScene = ({ data }) => {
     loader.load(modelo, function (gltf) {
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
-        const colorDict = {0 : (0, 1, 255)}
+        const color_dict = {0: (0,0,0)}
+        console.log(color_dict);
 
         for (let i = 0; i < data.samples.length; i++) {
           list.push(data.samples[i]);
@@ -87,11 +89,10 @@ const ThreeScene = ({ data }) => {
           for (let j = 0; j < parent.children.length; j++) {
             parent.children[j].visible = true;
             parent.children[j].material = new THREE.MeshBasicMaterial( {wireframe: true, transparent: true, opacity: 0.5} );
-            parent.children[j].material.color.set(colorDict[0]);
+            parent.children[j].material.color.set(color_dict[0]);
             parent.children[j].userData.name = data.samples[i];
 
           }}
-
 
 
         const volumen = model.getObjectByName("Volumen").material = volume_material;
@@ -186,5 +187,6 @@ const ThreeScene = ({ data }) => {
   };
   return <div ref={refChangeHandler} id='container' />;
 };
+
 
 export default ThreeScene;

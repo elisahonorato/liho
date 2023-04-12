@@ -59,6 +59,8 @@ class GLTFFile(models.Model):
 
 
                 # Create a UV sphere
+                if len(columns) > 30:
+                    columns = columns[0:40]
 
                 for column in columns[1:]:
 
