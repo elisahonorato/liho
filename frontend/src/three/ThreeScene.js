@@ -57,7 +57,7 @@ const ThreeScene = ({ data }) => {
 
 
 
-    const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} )
+    const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.2} )
 
 
     var model;
@@ -78,35 +78,31 @@ const ThreeScene = ({ data }) => {
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
 
-        for (let i = 0; i < model.children.length; i++) {
+        for (let i = 0; i < data.samples.length; i++) {
+          list.push(data.samples[i]);
+          const parent = model.getObjectByName(data.samples[i]);
+          parent.material = volume_material;
+          console.log(parent.children.length);
+          for (let j = 0; j < parent.children.length; j++) {
+            parent.children[j].visible = true;
+            if (parent.children[j].name.includes(data.variables[1]) || parent.children[j].name.includes(data.variables[2])) {
+              parent.children[j].material = new THREE.MeshBasicMaterial( { color: 0x0000ff, wireframe: true, transparent: true, opacity: 0.5} );
+            }
+            else {
+              parent.children[j].material = new THREE.MeshBasicMaterial( { color: 0xfff000, wireframe: true, transparent: true, opacity: 0.5} );
+            }
 
-          const blue = data.model.samples[i]?.colors[0];
-          const red = data.model.samples[i]?.colors[1];
+            console.log(data.variables)
 
-          if (!blue || !red) {
-            model.children[i].material = volume_material
-            continue;
+
+
+            console.log("child",parent.children[j]);
           }
-          if (blue && red) {
 
-            const color_blue = parseInt(blue * 1000).toString().slice(0, 2);
-            const color_red = parseInt(red * 1000).toString().slice(0, 2);
-            console.log(color_blue, color_red)
-            const material10 = new THREE.MeshStandardMaterial( {roughness: 0.0198, metalness: 1} );
-
-            material10.color = new THREE.Color(0x000000);
-            material10.color.setRGB(color_red, 0, 0);
-            material10.emissive.setRGB(0, 0, color_blue);
-
-            model.children[i].material = material10;
-
-
-            if (!list.includes(model.children[i].name)) {
-              console.log("nombre",model.children[i].name);
-              list.push(model.children[i].name);
-              }
         }
-      }
+
+        const volumen = model.getObjectByName("Volumen").material = volume_material;
+        volumen.visible = true;
         list.push("Todos");
         createGui(list);
         scene.add(model);
@@ -118,15 +114,7 @@ const ThreeScene = ({ data }) => {
         model.getObjectByName("Volumen").visible = visibility;
     }
     function showData( model ) {
-      for (let muestra of data.model.samples) {
-        if (model.userData.name === muestra.name) {
-          console.log("muestra", muestra)
-          p.textContent = muestra.variables
-          p.textContent = `Nombre Muestra: ${model.name}`;
-          p0.textContent = `Clorofila A: (${muestra.colors[0]}) Clorofila B: (${muestra.colors[1]})`
-      }
-    }
-
+      p.textContent = model.userData.name;
       p.visible = true;
       cPointLabel.visible = true;
 
@@ -138,57 +126,68 @@ const ThreeScene = ({ data }) => {
       gui.domElement.id = "gui";
       const folder1 = gui.addFolder( 'Muestras' );
       const settings = {
-        'Número de muestra': "Todos",
+        'Elegir Muestra': "Todos",
         "Mostrar Volumen": true,
-        "Mostrar Datos": true
+        "Mostrar Datos": true,
+        "Elegir Variable": data.variables[0],
 
       }
-
-      folder1.add(settings, 'Número de muestra', list).onChange(function(value) {
-        for (let i = 0; i < model.children.length; i++) {
-          model.children[i].visible = false;
-        }
-        while (value === "Todos") {
-          for (let i = 0; i < model.children.length; i++) {
-            model.children[i].visible = true;
+      folder1.add(settings, 'Elegir Muestra', list).onChange(function(value) {
+        for (let i = 0; i < data.samples.length; i++) {
+          if (value === "Todos") {
+            const parent = model.getObjectByName(data.samples[i]);
+            parent.visible = true;
           }
-          return;
-        }
-        const index = list.indexOf(value);
-        const selected_model = model.getObjectByName(value, index)
-        model.getObjectByName("Volumen").visible = true;
-        selected_model.visible = true;
-        console.log(selected_model);
-        showData(selected_model);
+          else {
+            const parent = model.getObjectByName(data.samples[i]);
+            parent.visible = false;
+            if (value === data.samples[i]) {
+              parent.visible = true;
+              showData(parent);
+            }
+          }}
+      });
+      folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen );
+      var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true, transparent: true, opacity: 0.5} );
 
+      const values = [];
+      const folder2 = gui.addFolder( 'Colores' );
+      folder2.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
+        if (!values.includes(value)) {
 
-    } );
-    folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen );
-
+          folder2.addColor(material, 'color').name(value).onChange(function(color) {
+            for (let i = 0; i < data.samples.length; i++) {
+              const parent = model.getObjectByName(data.samples[i]);
+              for (let j = 0; j < parent.children.length; j++) {
+                if (parent.children[j].name.includes(value)) {
+                  parent.children[j].material.color.set(color);
+                }
+              }
+        }});
+        values.push(value);
+      }
+    });
 
     }
-
-
-
-
-
-
-
-
-
     // animate
     function animate() {
       requestAnimationFrame( animate );
 
       if (model) {
-        model.rotation.x += 0.001;
-        model.rotation.y += 0.001;
-      }
+          model.rotation.x += 0.001;
+          model.rotation.y += 0.001;
+          if (model.position.x > data.vol || model.position.y > data.vol) {
+            model.rotation.x -= 0.001;
+            model.rotation.y -= 0.001;
+          }
+
       light.position.copy(camera.position);
       controls.update();
       renderer.render( scene, camera );
       labelRenderer.render( scene, camera );
+      }
     }
+
     animate();
 
   };
