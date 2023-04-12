@@ -77,6 +77,7 @@ const ThreeScene = ({ data }) => {
     loader.load(modelo, function (gltf) {
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
+        const colorDict = {0 : (0, 1, 255)}
 
         for (let i = 0; i < data.samples.length; i++) {
           list.push(data.samples[i]);
@@ -85,21 +86,13 @@ const ThreeScene = ({ data }) => {
           console.log(parent.children.length);
           for (let j = 0; j < parent.children.length; j++) {
             parent.children[j].visible = true;
-            if (parent.children[j].name.includes(data.variables[1]) || parent.children[j].name.includes(data.variables[2])) {
-              parent.children[j].material = new THREE.MeshBasicMaterial( { color: 0x0000ff, wireframe: true, transparent: true, opacity: 0.5} );
-            }
-            else {
-              parent.children[j].material = new THREE.MeshBasicMaterial( { color: 0xfff000, wireframe: true, transparent: true, opacity: 0.5} );
-            }
+            parent.children[j].material = new THREE.MeshBasicMaterial( {wireframe: true, transparent: true, opacity: 0.5} );
+            parent.children[j].material.color.set(colorDict[0]);
+            parent.children[j].userData.name = data.samples[i];
 
-            console.log(data.variables)
+          }}
 
 
-
-            console.log("child",parent.children[j]);
-          }
-
-        }
 
         const volumen = model.getObjectByName("Volumen").material = volume_material;
         volumen.visible = true;
@@ -151,7 +144,7 @@ const ThreeScene = ({ data }) => {
       var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true, transparent: true, opacity: 0.5} );
 
       const values = [];
-      const folder2 = gui.addFolder( 'Colores' );
+      const folder2 = gui.addFolder( 'Materiales' );
       folder2.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
         if (!values.includes(value)) {
 
