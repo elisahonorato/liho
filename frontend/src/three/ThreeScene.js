@@ -5,19 +5,20 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import modelo from './modelo.glb';
 import { CSS2DRenderer , CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { colorDict } from './colorDict.js';
+
 
 
 
 
 const ThreeScene = ({ data }) => {
+
   const refChangeHandler = (sceneRef) => {
-    // doc
     if (!sceneRef) return;
     const container = sceneRef
     const list = [];
 
 
+    // scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff );
     const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -34,7 +35,7 @@ const ThreeScene = ({ data }) => {
     camera.position.z = 5;
 
     // lights
-    const light = new THREE.PointLight(0xffffff, 1000, 2000);
+    const light = new THREE.PointLight(0xfffff0, 1000, 2000);
     const ambientLight = new THREE.AmbientLight( 0xffffff );
     scene.add( ambientLight );
     light.position.set(0, 0, 0);
@@ -57,11 +58,8 @@ const ThreeScene = ({ data }) => {
     container.appendChild( labelRenderer.domElement );
 
 
-
     const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.2} )
 
-
-    var model;
 
     const p0 = document.createElement("p");
     const p = document.createElement("p");
@@ -72,30 +70,33 @@ const ThreeScene = ({ data }) => {
     scene.add(cPointLabel);
     cPointLabel.visible = false;
     p.visible = false;
+    let model;
 
 
     const loader = new GLTFLoader();
     loader.load(modelo, function (gltf) {
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
-        const color_dict = {0: (0,0,0)}
-        console.log(color_dict);
+
 
         for (let i = 0; i < data.samples.length; i++) {
           list.push(data.samples[i]);
           const parent = model.getObjectByName(data.samples[i]);
           parent.material = volume_material;
-          console.log(parent.children.length);
           for (let j = 0; j < parent.children.length; j++) {
             parent.children[j].visible = true;
-            parent.children[j].material = new THREE.MeshBasicMaterial( {wireframe: true, transparent: true, opacity: 0.5} );
-            parent.children[j].material.color.set(color_dict[0]);
             parent.children[j].userData.name = data.samples[i];
-
+            parent.children[j].material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.7} );
+            const random_color = randomColor();
+            parent.children[j].material.color = random_color;
           }}
 
 
-        const volumen = model.getObjectByName("Volumen").material = volume_material;
+        const volumen = model.getObjectByName("Volumen")
+
+          // Create a material using the texture
+
+        volumen.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
         volumen.visible = true;
         list.push("Todos");
         createGui(list);
@@ -111,6 +112,8 @@ const ThreeScene = ({ data }) => {
       p.textContent = model.userData.name;
       p.visible = true;
       cPointLabel.visible = true;
+      p0.textContent = model.children.name
+      p0.visible = true;
 
 
     }
@@ -163,6 +166,11 @@ const ThreeScene = ({ data }) => {
     });
 
     }
+    function randomColor(){
+      return new THREE.Color(Math.random(), Math.random(), Math.random());
+    }
+
+
     // animate
     function animate() {
       requestAnimationFrame( animate );

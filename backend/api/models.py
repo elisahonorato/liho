@@ -49,7 +49,7 @@ class GLTFFile(models.Model):
             # Link the object to the scene
             df = pd.read_csv(self.file.url.path, sep=';', decimal=',',header=1, )
 
-            for i, row in df.iloc[0:4].iterrows():
+            for i, row in df.iloc[0:10].iterrows():
                 columns = df.columns
                 sample_name = str(row[0])
                 dict['samples'].append(sample_name)
@@ -79,6 +79,7 @@ class GLTFFile(models.Model):
 
 
 
+
             bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = volume)
             sphere = bpy.context.active_object
             sphere.name = "Volumen"
@@ -87,6 +88,7 @@ class GLTFFile(models.Model):
             dict['vol'] = volume
             self.dict = dict
             self.exists = True
+            print(self.dict)
 
         except Exception as e:
             response = str(e) + "Error al generar el archivo GLTF"
