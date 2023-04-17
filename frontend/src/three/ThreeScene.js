@@ -47,7 +47,7 @@ const ThreeScene = ({ data }) => {
     controls.target.set( 0, 0, 0 );
     controls.dynamicDampingFactor = 0.3;
     controls.minDistance = 0;
-    controls.maxDistance = 300;
+    controls.maxDistance = 1500;
     controls.update();
 
     const labelRenderer = new CSS2DRenderer();
@@ -134,6 +134,17 @@ const ThreeScene = ({ data }) => {
       p0.textContent = model.children.name
       p0.visible = true;
     }
+    function distribuir(visibility){
+
+      for (let i = 0; i < data.samples.length; i++) {
+        const parent = model.getObjectByName(data.samples[i]);
+        if (visibility) {
+          parent.position.x = i * data.vol * 3;
+        } else {
+          parent.position.x = 0;
+        }
+    }
+    }
 
     function createGui( list ) {
 
@@ -143,10 +154,11 @@ const ThreeScene = ({ data }) => {
       const settings = {
         'Elegir Muestra': "Todos",
         "Mostrar Volumen": true,
-        "Mostrar Volumen Total": false,
+        "Mostrar Volumen Total": true,
         "Mostrar Datos": true,
         "Elegir Variable": data.variables[0],
         "Colores por Default": false,
+        "Distribuir": false
 
       }
       folder1.add(settings, 'Elegir Muestra', list).onChange(function(value) {
@@ -154,8 +166,6 @@ const ThreeScene = ({ data }) => {
           if (value === "Todos") {
             const parent = model.getObjectByName(data.samples[i]);
             parent.visible = true;
-            showVolumen_total(true);
-            showVolumen_relativo(false);
           }
           else {
             const parent = model.getObjectByName(data.samples[i]);
@@ -168,6 +178,7 @@ const ThreeScene = ({ data }) => {
       });
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
       folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
+      folder1.add(settings, 'Distribuir').onChange( distribuir );
 
 
 
