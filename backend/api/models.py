@@ -67,7 +67,7 @@ class GLTFFile(models.Model):
                     r = round_number(row[column])//10
                     if r > 0:
                         print(column)
-                        x = random.randint(-(volume-r) + 1, volume-r -1)
+                        x = random.randint(-(volume-r), volume-r)
                         bpy.ops.mesh.primitive_uv_sphere_add(location=(x, 0, 0), radius = r)
                         sphere = bpy.context.active_object
                         sphere.name = sample_name + "_" + column
@@ -83,6 +83,10 @@ class GLTFFile(models.Model):
             bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = volume)
             sphere = bpy.context.active_object
             sphere.name = "Volumen"
+            print(len(sphere.children))
+            bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = volume*10)
+            spher = bpy.context.active_object
+            spher.name = "Volumen_Total"
             bpy.ops.export_scene.gltf(filepath=self.path, check_existing=True, convert_lighting_mode='SPEC', export_format='GLB', ui_tab='GENERAL', export_copyright='', export_image_format='AUTO', export_keep_originals=False, export_texcoords=True, export_normals=False, use_mesh_edges=False, use_mesh_vertices=True, export_cameras=False, use_selection=False, use_visible=True, use_renderable=False, use_active_collection_with_nested=True, use_active_collection=False, use_active_scene=True, export_extras=True, export_yup=True, export_apply=False, export_animations=True, export_frame_range=True, export_frame_step=1, export_force_sampling=True, export_nla_strips=True, export_nla_strips_merged_animation_name='Animation', export_def_bones=False, export_optimize_animation_size=False, export_anim_single_armature=False, export_reset_pose_bones=False, export_current_frame=False, export_skins=False, export_all_influences=False, export_morph=False, export_morph_normal=False, export_morph_tangent=False, export_lights=False, will_save_settings=False, filter_glob='*.glb;*.gltf')
             dict['path'] = self.path
             dict['vol'] = volume

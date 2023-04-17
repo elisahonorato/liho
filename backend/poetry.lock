@@ -599,6 +599,17 @@ files = [
 marshmallow = ">=2.0.0"
 
 [[package]]
+name = "mathutils"
+version = "3.3.0"
+description = "A general math utilities library providing Matrix, Vector, Quaternion, Euler and Color classes, written in C for speed."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mathutils-3.3.0.tar.gz", hash = "sha256:b9371af8149f3f3f05ee165cb583b2df7b3fbc9935406d1c505a5276b8e563af"},
+]
+
+[[package]]
 name = "mistune"
 version = "0.8.4"
 description = "The fastest markdown parser in pure Python"
@@ -1081,4 +1092,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.11.0"
-content-hash = "66b33c80b0effe985efaa47ac75b25f9af22919d6db62d652e62a0ede3b212cc"
+content-hash = "f26fa26c6b249025393a5fc4c48fc13346ddbd382190990229d3193af68cc7ef"

@@ -56,7 +56,7 @@ function App() {
 
   return (
     <div className="App">
-      <label for="input-tag">Seleccionar Archivo</label>
+      <label htmlFor="input-tag">Seleccionar Archivo</label>
       <input type="file" hidden name="" id="input-tag" onChange={handleSelectedFile} />
       <button onClick={handleUpload}>Upload</button>
       <p>{loading ? 'Cargando Modelo..' : response}</p>

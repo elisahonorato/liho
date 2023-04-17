@@ -21,7 +21,7 @@ const ThreeScene = ({ data }) => {
     // scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff );
-    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
     camera.setFocalLength( 18 );
 
     // renderer
@@ -32,7 +32,7 @@ const ThreeScene = ({ data }) => {
     renderer.shadowMap.enabled = true;
     container.appendChild( renderer.domElement );
 
-    camera.position.z = 5;
+    camera.position.z = data.vol * 2/3;
 
     // lights
     const light = new THREE.PointLight(0xfffff0, 1000, 2000);
@@ -70,7 +70,12 @@ const ThreeScene = ({ data }) => {
     scene.add(cPointLabel);
     cPointLabel.visible = false;
     p.visible = false;
+
     let model;
+    let volumen_relativo;
+    let volumen_total;
+
+
 
 
     const loader = new GLTFLoader();
@@ -81,42 +86,51 @@ const ThreeScene = ({ data }) => {
 
         for (let i = 0; i < data.samples.length; i++) {
           list.push(data.samples[i]);
+          // Obtener Muestra
           const parent = model.getObjectByName(data.samples[i]);
           parent.material = volume_material;
-          for (let j = 0; j < parent.children.length; j++) {
-            parent.children[j].visible = true;
-            parent.children[j].userData.name = data.samples[i];
-            parent.children[j].material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.7} );
-            const random_color = randomColor();
-            parent.children[j].material.color = random_color;
+          // Obtener Variables
+          for (let j = 0; j < data.variables.length; j++) {
+            for(let k = 0; k < parent.children.length; k++) {
+              if (parent.children[k].name.includes(data.variables[j])) {
+                console.log(parent.children[k].name);
+                parent.children[k].visible = true;
+                var color = new THREE.Color( colorSamples[j]);
+                parent.children[k].material = new THREE.MeshBasicMaterial( { color: color,wireframe: true, transparent: true, opacity: 0.8});
+
+              }
+            }
+
+
           }}
+        volumen_relativo = model.getObjectByName("Volumen")
+        volumen_relativo.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
+        volumen_total = model.getObjectByName("Volumen_Total")
+        volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
 
-
-        const volumen = model.getObjectByName("Volumen")
-
-          // Create a material using the texture
-
-        volumen.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
-        volumen.visible = true;
         list.push("Todos");
         createGui(list);
+
         scene.add(model);
+
       }, undefined, function (error) {
         console.error(error);
       });
 
-    function showVolumen( visibility ) {
-        model.getObjectByName("Volumen").visible = visibility;
+    function showVolumen_relativo( visibility ) {
+      volumen_relativo.visible = visibility;
     }
+    function showVolumen_total( visibility ) {
+      volumen_total.visible = visibility;
+  }
     function showData( model ) {
       p.textContent = model.userData.name;
       p.visible = true;
       cPointLabel.visible = true;
       p0.textContent = model.children.name
       p0.visible = true;
-
-
     }
+
     function createGui( list ) {
 
       const gui = new GUI();
@@ -125,6 +139,7 @@ const ThreeScene = ({ data }) => {
       const settings = {
         'Elegir Muestra': "Todos",
         "Mostrar Volumen": true,
+        "Mostrar Volumen Total": false,
         "Mostrar Datos": true,
         "Elegir Variable": data.variables[0],
 
@@ -134,6 +149,8 @@ const ThreeScene = ({ data }) => {
           if (value === "Todos") {
             const parent = model.getObjectByName(data.samples[i]);
             parent.visible = true;
+            showVolumen_total(true);
+            showVolumen_relativo(false);
           }
           else {
             const parent = model.getObjectByName(data.samples[i]);
@@ -144,14 +161,15 @@ const ThreeScene = ({ data }) => {
             }
           }}
       });
-      folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen );
-      var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true, transparent: true, opacity: 0.5} );
+      folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
+      folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
+      var material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.5} );
+
 
       const values = [];
       const folder2 = gui.addFolder( 'Materiales' );
       folder2.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
         if (!values.includes(value)) {
-
           folder2.addColor(material, 'color').name(value).onChange(function(color) {
             for (let i = 0; i < data.samples.length; i++) {
               const parent = model.getObjectByName(data.samples[i]);
@@ -166,9 +184,34 @@ const ThreeScene = ({ data }) => {
     });
 
     }
-    function randomColor(){
-      return new THREE.Color(Math.random(), Math.random(), Math.random());
-    }
+
+    const colorSamples = [
+      0xff0000,   // red
+      0x98da1f,   // light green
+      0x147df5,   // blue
+      0xffee32,   // yellow
+      0xff8700,   // orange
+      0xbe0aff,   // light purple
+      0x0aefff,   // light blue
+      0x136a7a2,  // turquoise
+      0x580aff,   // purple
+      0xd283ff,   // light pink
+      0xff6176,   // light magenta
+      0xc0d7503,  // dark green
+      0x0b525b,   // petroleum
+      0xe56b6f,   // salmon
+      0xFA69FF,   // ultra pink
+      0x9cf945,   // lime
+      0x6E69FF,   // purple
+      // these colors can be found on https://coolors.co/palette/ff0000-ff8700-ffd300-deff0a-a1ff0a-0aff99-0aefff-147df5-580aff-be0aff
+
+
+
+
+    ];
+
+
+
 
 
     // animate
@@ -176,7 +219,7 @@ const ThreeScene = ({ data }) => {
       requestAnimationFrame( animate );
 
       if (model) {
-          model.rotation.x += 0.001;
+          model.rotation.x += 0.0001;
           model.rotation.y += 0.001;
           if (model.position.x > data.vol || model.position.y > data.vol) {
             model.rotation.x -= 0.001;
