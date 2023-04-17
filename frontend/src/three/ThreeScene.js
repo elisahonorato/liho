@@ -208,7 +208,7 @@ const ThreeScene = ({ data }) => {
       0xff0000,   // red
       0x98da1f,   // light green
       0x147df5,   // blue
-      0xffee32,   // yellow
+      0xffff00,   // yellow
       0xff8700,   // orange
       0xbe0aff,   // light purple
       0x0aefff,   // light blue
