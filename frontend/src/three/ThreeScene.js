@@ -82,27 +82,7 @@ const ThreeScene = ({ data }) => {
     loader.load(modelo, function (gltf) {
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
-
-
-        for (let i = 0; i < data.samples.length; i++) {
-          list.push(data.samples[i]);
-          // Obtener Muestra
-          const parent = model.getObjectByName(data.samples[i]);
-          parent.material = volume_material;
-          // Obtener Variables
-          for (let j = 0; j < data.variables.length; j++) {
-            for(let k = 0; k < parent.children.length; k++) {
-              if (parent.children[k].name.includes(data.variables[j])) {
-                console.log(parent.children[k].name);
-                parent.children[k].visible = true;
-                var color = new THREE.Color( colorSamples[j]);
-                parent.children[k].material = new THREE.MeshBasicMaterial( { color: color,wireframe: true, transparent: true, opacity: 0.8});
-
-              }
-            }
-
-
-          }}
+        defaultColors();
         volumen_relativo = model.getObjectByName("Volumen")
         volumen_relativo.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
         volumen_total = model.getObjectByName("Volumen_Total")
@@ -122,7 +102,29 @@ const ThreeScene = ({ data }) => {
     }
     function showVolumen_total( visibility ) {
       volumen_total.visible = visibility;
-  }
+    }
+    function defaultColors() {
+      for (let i = 0; i < data.samples.length; i++) {
+        list.push(data.samples[i]);
+        // Obtener Muestra
+        const parent = model.getObjectByName(data.samples[i]);
+        parent.material = volume_material;
+        // Obtener Variables
+        for (let j = 0; j < data.variables.length; j++) {
+          for(let k = 0; k < parent.children.length; k++) {
+            if (parent.children[k].name.includes(data.variables[j])) {
+              console.log(parent.children[k].name);
+              parent.children[k].visible = true;
+              var color = new THREE.Color( colorSamples[j]);
+              parent.children[k].material = new THREE.MeshBasicMaterial( { color: color,wireframe: true, transparent: true, opacity: 0.8});
+            }
+          }
+
+        }}
+    }
+
+
+
     function showData( model ) {
       p.textContent = model.userData.name;
       p.visible = true;
@@ -142,6 +144,7 @@ const ThreeScene = ({ data }) => {
         "Mostrar Volumen Total": false,
         "Mostrar Datos": true,
         "Elegir Variable": data.variables[0],
+        "Colores por Default": false,
 
       }
       folder1.add(settings, 'Elegir Muestra', list).onChange(function(value) {
@@ -168,6 +171,7 @@ const ThreeScene = ({ data }) => {
 
       const values = [];
       const folder2 = gui.addFolder( 'Materiales' );
+      folder2.add(settings, 'Colores por Default').onChange( defaultColors );
       folder2.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
         if (!values.includes(value)) {
           var index = data.variables.indexOf(value);
