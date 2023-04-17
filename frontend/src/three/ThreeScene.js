@@ -108,24 +108,22 @@ const ThreeScene = ({ data }) => {
         list.push(data.samples[i]);
         // Obtener Muestra
         const parent = model.getObjectByName(data.samples[i]);
-        parent.material = volume_material;
-        // Obtener Variables
-        for (let j = 0; j < data.variables.length; j++) {
-          for(let k = 0; k < parent.children.length; k++) {
-            if (parent.children[k].name.includes(data.variables[j])) {
-              console.log(parent.children[k].name);
-              parent.children[k].visible = true;
-              if (colorSamples.hasOwnProperty(j)) {
-                var color = new THREE.Color( colorSamples[j]);
-              } else {
-                color = new THREE.Color( Math.random() * 0xffffff );
+        if (parent) {
+          parent.material = volume_material;
+          // Obtener Variables
+          for (let j = 0; j < data.variables.length; j++) {
+            for(let k = 0; k < parent.children.length; k++) {
+              if (parent.children[k].name.includes(data.variables[j])) {
+                console.log(parent.children[k].name);
+                parent.children[k].visible = true;
+                if (colorSamples.hasOwnProperty(j)) {
+                  var color = new THREE.Color( colorSamples[j]);
+                } else {
+                  color = new THREE.Color( Math.random() * 0xffffff );
+                }
+                parent.children[k].material = new THREE.MeshBasicMaterial( { color: color, wireframe: true, transparent: true, opacity: 0.8});
               }
-              parent.children[k].material = new THREE.MeshBasicMaterial( { color: color, wireframe: true, transparent: true, opacity: 0.8});
-            }
-          }
-
-        }}
-    }
+            }}}}}
 
     function showData( model ) {
       p.textContent = model.userData.name;
@@ -134,17 +132,15 @@ const ThreeScene = ({ data }) => {
       p0.textContent = model.children.name
       p0.visible = true;
     }
-    function distribuir(visibility){
 
+    function distribuir(visibility){
       for (let i = 0; i < data.samples.length; i++) {
         const parent = model.getObjectByName(data.samples[i]);
         if (visibility) {
           parent.position.x = i * data.vol * 3;
         } else {
           parent.position.x = 0;
-        }
-    }
-    }
+        }}}
 
     function createGui( list ) {
 

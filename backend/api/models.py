@@ -47,35 +47,41 @@ class GLTFFile(models.Model):
             dict['variables'] = []
 
             # Link the object to the scene
-            df = pd.read_csv(self.file.url.path, sep=';', decimal=',',header=1, )
+            if self.has_headers():
+                header = 1
+            else:
+                header = None
+
+            df = pd.read_csv(self.file.url.path, sep=';', decimal=',',header=header, na_values=['', ' ', '"', ""])
 
             for i, row in df.iloc[0:10].iterrows():
                 columns = df.columns
                 sample_name = str(row[0])
-                dict['samples'].append(sample_name)
-                bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = volume/10000)
-                parent = bpy.context.active_object
-                parent.name = sample_name
+                if sample_name != None:
+                    dict['samples'].append(sample_name)
+                    bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = volume/10000)
+                    parent = bpy.context.active_object
+                    parent.name = sample_name
 
 
-                # Create a UV sphere
-                if len(columns) > 30:
-                    columns = columns[0:40]
+                    # Create a UV sphere
+                    if len(columns) > 30:
+                        columns = columns[0:40]
 
-                for column in columns[1:]:
+                    for column in columns[1:]:
 
-                    r = round_number(row[column])//10
-                    if r > 0:
-                        print(column)
-                        x = random.randint(-(volume-r), volume-r)
-                        bpy.ops.mesh.primitive_uv_sphere_add(location=(x, 0, 0), radius = r)
-                        sphere = bpy.context.active_object
-                        sphere.name = sample_name + "_" + column
-                        sphere.parent = parent
-                        if column not in dict['variables']:
-                            dict['variables'].append(column)
+                        r = round_number(row[column])//10
+                        if r > 0:
+                            print(column)
+                            x = random.randint(-(volume-r), volume-r)
+                            bpy.ops.mesh.primitive_uv_sphere_add(location=(x, 0, 0), radius = r)
+                            sphere = bpy.context.active_object
+                            sphere.name = sample_name + "_" + column
+                            sphere.parent = parent
+                            if column not in dict['variables']:
+                                dict['variables'].append(column)
 
-                parent.select_set(True)
+                    parent.select_set(True)
 
 
 
@@ -98,6 +104,20 @@ class GLTFFile(models.Model):
             response = str(e) + "Error al generar el archivo GLTF"
             self.dict = None
             return response
+    def has_headers(self):
+    # read the first row of the dataset
+        with open(self.file.url.path) as f:
+            first_row = f.readline().strip()
+
+        # check if each value in the first row is a valid column name
+        for col in first_row.split(','):
+            try:
+                pd.DataFrame(columns=[col])
+            except ValueError:
+                return False
+
+        # if all values are valid column names, assume that the dataset has headers
+        return True
 
 
 def round_number(number):
