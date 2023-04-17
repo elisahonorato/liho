@@ -115,15 +115,17 @@ const ThreeScene = ({ data }) => {
             if (parent.children[k].name.includes(data.variables[j])) {
               console.log(parent.children[k].name);
               parent.children[k].visible = true;
-              var color = new THREE.Color( colorSamples[j]);
-              parent.children[k].material = new THREE.MeshBasicMaterial( { color: color,wireframe: true, transparent: true, opacity: 0.8});
+              if (colorSamples.hasOwnProperty(j)) {
+                var color = new THREE.Color( colorSamples[j]);
+              } else {
+                color = new THREE.Color( Math.random() * 0xffffff );
+              }
+              parent.children[k].material = new THREE.MeshBasicMaterial( { color: color, wireframe: true, transparent: true, opacity: 0.8});
             }
           }
 
         }}
     }
-
-
 
     function showData( model ) {
       p.textContent = model.userData.name;
