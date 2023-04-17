@@ -163,7 +163,7 @@ const ThreeScene = ({ data }) => {
       });
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
       folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
-      var material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.5} );
+      var material = new THREE.MeshBasicMaterial( { wireframe: true, transparent: true, opacity: 0.5} );
 
 
       const values = [];
