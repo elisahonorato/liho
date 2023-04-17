@@ -163,14 +163,16 @@ const ThreeScene = ({ data }) => {
       });
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
       folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
-      var material = new THREE.MeshBasicMaterial( { color: colorSamples[0], wireframe: true, transparent: true, opacity: 0.5} );
+
 
 
       const values = [];
       const folder2 = gui.addFolder( 'Materiales' );
       folder2.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
         if (!values.includes(value)) {
-          folder2.addColor(material, 'color').name(value).onChange(function(color) {
+          var index = data.variables.indexOf(value);
+          var material2 = new THREE.MeshBasicMaterial( { color: colorSamples[index], wireframe: true, transparent: true, opacity: 0.5} );
+          folder2.addColor(material2, 'color').name(value).onChange(function(color) {
             for (let i = 0; i < data.samples.length; i++) {
               const parent = model.getObjectByName(data.samples[i]);
               for (let j = 0; j < parent.children.length; j++) {
