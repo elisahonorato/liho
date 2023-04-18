@@ -18,4 +18,4 @@ Visually link divergent or complementary sources of information from open source
 ## General objective
 Develop an online platform, which through the three-dimensional and multivariable visualization of scientific data, promotes a form of inquiry through the detection of patterns.
 
-
+![Alt text](https://github.com/elisahonorato/liho/blob/master/mediafiles/assets/diagram.png)
