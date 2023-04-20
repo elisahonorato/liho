@@ -1,8 +1,9 @@
+
 import { createTheme} from '@mui/material/styles';
 
 const theme = createTheme({
     typography: {
-      fontFamily: 'Roboto',
+      fontFamily: 'monospace',
       fontSize: 10,
       body1: {
         fontSize: '1rem',
@@ -12,10 +13,25 @@ const theme = createTheme({
     },
     palette: {
         primary: {
-            main: '#3f51b5',
+            main: '#ffff00',
+            light: '#ffffff',
+            dark: '#000000',
         },
         secondary: {
-            main: '#f50057',
+            main: '#808080',
+        },
+    },
+    shape: {
+        borderRadius: 20,
+    },
+    spacing: 10,
+    breakpoints: {
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 960,
+            lg: 1280,
+            xl: 1920,
         },
     },
   });

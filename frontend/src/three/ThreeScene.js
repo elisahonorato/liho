@@ -5,7 +5,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import modelo from './modelo.glb';
 import { CSS2DRenderer , CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-
+import { MuiGui } from '../components/theme/MuiGui/MuiGui';
+import Typography from '@mui/material/Typography';
+import { createRoot } from 'react-dom/client';
 
 
 
@@ -61,15 +63,23 @@ const ThreeScene = ({ data }) => {
     const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.2} )
 
 
-    const p0 = document.createElement("p");
     const p = document.createElement("p");
+    const root = createRoot(p);
+    const typography = (text) => (
+      <Typography variant="body1">
+        {text}
+      </Typography>
+    );
+
     const pContainer = document.createElement("div");
     pContainer.appendChild(p);
-    pContainer.appendChild(p0);
     const cPointLabel = new CSS2DObject(pContainer);
     scene.add(cPointLabel);
     cPointLabel.visible = false;
     p.visible = false;
+
+
+
 
     let model;
     let volumen_relativo;
@@ -126,11 +136,9 @@ const ThreeScene = ({ data }) => {
             }}}}}
 
     function showData( model ) {
-      p.textContent = model.userData.name;
+      root.render(typography(model.name), p);
       p.visible = true;
       cPointLabel.visible = true;
-      p0.textContent = model.children.name
-      p0.visible = true;
     }
 
     function distribuir(visibility){
@@ -197,6 +205,12 @@ const ThreeScene = ({ data }) => {
         values.push(value);
       }
     });
+    return (
+      <MuiGui variant="contained">
+      {folder1}
+      {/* add additional folders and components here */}
+    </MuiGui>
+    );
 
     }
 
@@ -226,9 +240,6 @@ const ThreeScene = ({ data }) => {
     ];
 
 
-
-
-
     // animate
     function animate() {
       requestAnimationFrame( animate );
@@ -251,7 +262,7 @@ const ThreeScene = ({ data }) => {
     animate();
 
   };
-  return <div ref={refChangeHandler} id='container' />;
+  return <div ref={refChangeHandler} id='container'><div id="gui">{GUI.domElement}</div></div>;
 };
 
 

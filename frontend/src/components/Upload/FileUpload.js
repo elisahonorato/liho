@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import axios from 'axios';
-import { Input, Button, InputLabel } from '@mui/material';
+import { Input, InputLabel, Typography } from '@mui/material';
+import { MuiButton } from '../theme/MuiButton/MuiButton';
 
 
 function UploadFile({ onUpload }) {
@@ -35,10 +36,10 @@ function UploadFile({ onUpload }) {
 
   return (
     <div>
-      <InputLabel htmlFor="input-tag">Seleccionar Archivo</InputLabel>
-      <Input type="file" id="input-tag" onChange={handleSelectedFile} />
-      <Button variant='contained' onClick={handleUpload}>Upload</Button>
-      <p>{loading ? 'Cargando Modelo..' : response}</p>
+      <MuiButton variant='contained' color='secondary' ><InputLabel htmlFor="input-tag"><Typography variant="body2" color="primary">Seleccionar Archivo</Typography></InputLabel></MuiButton>
+      <Input type="file" id="input-tag" inputProps={{ style: { display: 'none' } }} onChange={handleSelectedFile} />
+      <MuiButton variant='contained' color='secondary' onClick={handleUpload}><Typography variant="body2" color="primary">Upload</Typography></MuiButton>
+      <Typography>{loading ? `Cargando Modelo...` : response}</Typography>
     </div>
   );
 }

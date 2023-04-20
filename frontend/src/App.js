@@ -5,7 +5,7 @@ import HeaderItems from './HeaderItems';
 import Header from './components/Header';
 import UploadFile from './components/Upload/FileUpload';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from './components/Theme';
+import theme from './components/theme/theme'
 
 function App() {
   const [gltfData, setGltfData] = useState(null);
