@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import axios from 'axios';
+import { Input, Button, InputLabel } from '@mui/material';
+
 
 function UploadFile({ onUpload }) {
   const [file, setFile] = useState();
@@ -33,9 +35,9 @@ function UploadFile({ onUpload }) {
 
   return (
     <div>
-      <label htmlFor="input-tag">Seleccionar Archivo</label>
-      <input type="file" hidden name="" id="input-tag" onChange={handleSelectedFile} />
-      <button onClick={handleUpload}>Upload</button>
+      <InputLabel htmlFor="input-tag">Seleccionar Archivo</InputLabel>
+      <Input type="file" id="input-tag" onChange={handleSelectedFile} />
+      <Button variant='contained' onClick={handleUpload}>Upload</Button>
       <p>{loading ? 'Cargando Modelo..' : response}</p>
     </div>
   );
