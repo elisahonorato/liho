@@ -8,8 +8,7 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { MuiGui } from '../components/theme/MuiGui/MuiGui';
 import Typography from '@mui/material/Typography';
 import { createRoot } from 'react-dom/client';
-
-
+import {Box} from '@mui/material';
 
 
 const ThreeScene = ({ data }) => {
@@ -22,17 +21,25 @@ const ThreeScene = ({ data }) => {
 
     // scene
     const scene = new THREE.Scene();
+
     scene.background = new THREE.Color( 0xffffff );
     const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
     camera.setFocalLength( 18 );
 
     // renderer
     const renderer = new THREE.WebGLRenderer();
+    const canvas = document.getElementById('canvas');
+    const width = canvas.clientWidth;
+    const height = width * (window.innerHeight / window.innerWidth);
+    renderer.setSize(width, height);
     renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1;
     container.appendChild( renderer.domElement );
+
 
     camera.position.z = data.vol * 2/3;
 
@@ -52,13 +59,6 @@ const ThreeScene = ({ data }) => {
     controls.maxDistance = 1500;
     controls.update();
 
-    const labelRenderer = new CSS2DRenderer();
-    labelRenderer.setSize( window.innerWidth, window.innerHeight );
-    labelRenderer.domElement.style.position = 'absolute';
-    labelRenderer.domElement.style.pointerEvents = 'none';
-    labelRenderer.domElement.style.top = '0px';
-    container.appendChild( labelRenderer.domElement );
-
 
     const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.2} )
 
@@ -77,7 +77,6 @@ const ThreeScene = ({ data }) => {
     scene.add(cPointLabel);
     cPointLabel.visible = false;
     p.visible = false;
-
 
 
 
@@ -307,14 +306,14 @@ const ThreeScene = ({ data }) => {
       light.position.copy(camera.position);
       controls.update();
       renderer.render( scene, camera );
-      labelRenderer.render( scene, camera );
+      renderer.render( scene, camera );
       }
     }
 
     animate();
 
   };
-  return <div ref={refChangeHandler} id='container'><div id="gui">{GUI.domElement}</div></div>;
+  return  <Box ref={refChangeHandler}></Box>;
 };
 
 
