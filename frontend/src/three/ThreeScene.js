@@ -66,7 +66,7 @@ const ThreeScene = ({ data }) => {
     const p = document.createElement("p");
     const root = createRoot(p);
     const typography = (text) => (
-      <Typography variant="body1">
+      <Typography variant="body2">
         {text}
       </Typography>
     );
@@ -92,7 +92,7 @@ const ThreeScene = ({ data }) => {
     loader.load(modelo, function (gltf) {
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
-        defaultColors();
+        defaultColors(colorDefault);
         volumen_relativo = model.getObjectByName("Volumen")
         volumen_relativo.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
         volumen_total = model.getObjectByName("Volumen_Total")
@@ -113,7 +113,7 @@ const ThreeScene = ({ data }) => {
     function showVolumen_total( visibility ) {
       volumen_total.visible = visibility;
     }
-    function defaultColors() {
+    function defaultColors (color_dict) {
       for (let i = 0; i < data.samples.length; i++) {
         list.push(data.samples[i]);
         // Obtener Muestra
@@ -126,8 +126,8 @@ const ThreeScene = ({ data }) => {
               if (parent.children[k].name.includes(data.variables[j])) {
                 console.log(parent.children[k].name);
                 parent.children[k].visible = true;
-                if (colorSamples.hasOwnProperty(j)) {
-                  var color = new THREE.Color( colorSamples[j]);
+                if (color_dict.hasOwnProperty(j)) {
+                  var color = new THREE.Color( color_dict[j]);
                 } else {
                   color = new THREE.Color( Math.random() * 0xffffff );
                 }
@@ -161,7 +161,7 @@ const ThreeScene = ({ data }) => {
         "Mostrar Volumen Total": true,
         "Mostrar Datos": true,
         "Elegir Variable": data.variables[0],
-        "Colores por Default": false,
+        "Colores por Default": "Default",
         "Distribuir": false
 
       }
@@ -188,23 +188,23 @@ const ThreeScene = ({ data }) => {
 
       const values = [];
       const folder2 = gui.addFolder( 'Materiales' );
-      folder2.add(settings, 'Colores por Default').onChange( defaultColors );
-      folder2.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
-        if (!values.includes(value)) {
-          var index = data.variables.indexOf(value);
-          var material2 = new THREE.MeshBasicMaterial( { color: colorSamples[index], wireframe: true, transparent: true, opacity: 0.5} );
-          folder2.addColor(material2, 'color').name(value).onChange(function(color) {
-            for (let i = 0; i < data.samples.length; i++) {
-              const parent = model.getObjectByName(data.samples[i]);
-              for (let j = 0; j < parent.children.length; j++) {
-                if (parent.children[j].name.includes(value)) {
-                  parent.children[j].material.color.set(color);
-                }
-              }
-        }});
-        values.push(value);
-      }
-    });
+      folder2.add(settings, 'Colores por Default', ["Default", "Daltonismo", "Secuencia", "Divergente"]).onChange( function(value) {
+        if (value === "Default") {
+          defaultColors(colorDefault);
+        } else if (value === "Daltonismo") {
+          defaultColors(colorDaltonic);
+        } else if (value === "Secuencia") {
+          defaultColors(colorSequential);
+        } else if (value === "Divergente") {
+          defaultColors(colorDivergent);
+        } else {
+          defaultColors(colorDefault);
+        }
+
+
+      });
+
+
     return (
       <MuiGui variant="contained">
       {folder1}
@@ -214,7 +214,7 @@ const ThreeScene = ({ data }) => {
 
     }
 
-    const colorSamples = [
+    const colorDefault = [
       0xff0000,   // red
       0x98da1f,   // light green
       0x147df5,   // blue
@@ -234,10 +234,62 @@ const ThreeScene = ({ data }) => {
       0x6E69FF,   // purple
       // these colors can be found on https://coolors.co/palette/ff0000-ff8700-ffd300-deff0a-a1ff0a-0aff99-0aefff-147df5-580aff-be0aff
 
-
-
-
     ];
+    const colorDaltonic = [
+      0xffffb3,
+      0x8dd3c7,
+      0xbebada,
+      0xfb8072,
+      0x80b1d3,
+      0xfdb462,
+      0xb3de69,
+      0xfccde5,
+      0xd9d9d9,
+      0xbc80bd,
+      0xccebc5,
+      0xffed6f,
+      0xa65628,
+      0xe6f5d0,
+      0x1f78b4
+    ];
+    const colorSequential = [
+      0xeff8e9,
+      0xc7e9c0,
+      0xa1d99b,
+      0x74c476,
+      0x41ab5d,
+      0x238b45,
+      0x006d2c,
+      0x005a20,
+      0x00441b,
+      0x003816,
+      0x002c10,
+      0x00220b,
+      0x001a08,
+      0x001206,
+      0x000a03
+    ];
+    const colorDivergent= [
+      0x4d4d4d,
+      0x5da5da,
+      0xfaa43a,
+      0x60bd68,
+      0xf17cb0,
+      0xb2912f,
+      0xb276b2,
+      0xdecf3f,
+      0xf15854,
+      0x4c72b0,
+      0x76b7b2,
+      0xffa8a8,
+      0xa6daff,
+      0xffd1a8,
+      0xb1c1c0
+    ];
+
+
+
+
 
 
     // animate
