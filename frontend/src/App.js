@@ -5,7 +5,7 @@ import HeaderItems from './HeaderItems';
 import Header from './components/Header';
 import UploadFile from './components/Upload/FileUpload';
 import { ThemeProvider } from '@mui/material/styles';
-import { Grid, Typography, Paper, Container } from '@mui/material';
+import { Grid, Typography, Paper, Container, Box } from '@mui/material';
 import theme from './components/theme/theme'
 
 function App() {
@@ -37,10 +37,10 @@ function App() {
           </Grid>
 
           {/* Right column */}
-          <Grid item xs={10} md={10} id="canvas">
+          <Grid item xs={10} md={10}>
             {gltfData != null && (
               <Paper elevation={3} sx={{ p: 2 }}>
-                <ThreeScene data={gltfData} />
+                <Box id='canvas'><ThreeScene data={gltfData} /></Box>
               </Paper>
             )}
           </Grid>
