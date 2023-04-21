@@ -40,7 +40,10 @@ function App() {
           <Grid item xs={10} md={10}>
             {gltfData != null && (
               <Paper elevation={3} sx={{ p: 2 }}>
-                <Box id='canvas'><ThreeScene data={gltfData} /></Box>
+                <Box id='canvas'>
+                  <Typography id= "texto" variant="h6" gutterBottom></Typography>
+                  <ThreeScene data={gltfData} />
+                  </Box>
               </Paper>
             )}
           </Grid>
