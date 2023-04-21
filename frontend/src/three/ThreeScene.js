@@ -153,6 +153,9 @@ const ThreeScene = ({ data }) => {
 
       const gui = new GUI();
       gui.domElement.id = "gui";
+      gui.domElement.style.position = "relative";
+      gui.domElement.style.top = "0px";
+      canvas.appendChild(gui.domElement);
       const folder1 = gui.addFolder( 'Muestras' );
       const settings = {
         'Elegir Muestra': "Todos",
