@@ -9,6 +9,7 @@ import { MuiGui } from '../components/theme/MuiGui/MuiGui';
 import Typography from '@mui/material/Typography';
 import { createRoot } from 'react-dom/client';
 import {Box} from '@mui/material';
+import ReactDOM from 'react-dom';
 
 
 const ThreeScene = ({ data }) => {
@@ -63,20 +64,15 @@ const ThreeScene = ({ data }) => {
     const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.2} )
 
 
-    const p = document.createElement("p");
-    const root = createRoot(p);
-    const typography = (text) => (
-      <Typography variant="body2">
+
+
+    const Typography_text = (text) => (
+      <Typography id= "texto" variant="body2">
         {text}
       </Typography>
     );
+    const texto = document.getElementById("texto");
 
-    const pContainer = document.createElement("div");
-    pContainer.appendChild(p);
-    const cPointLabel = new CSS2DObject(pContainer);
-    scene.add(cPointLabel);
-    cPointLabel.visible = false;
-    p.visible = false;
 
 
 
@@ -135,9 +131,9 @@ const ThreeScene = ({ data }) => {
             }}}}}
 
     function showData( model ) {
-      root.render(typography(model.name), p);
-      p.visible = true;
-      cPointLabel.visible = true;
+      const string = "Muestra: " + model.name;
+      ReactDOM.render(Typography_text(string), texto);
+
     }
 
     function distribuir(visibility){
@@ -152,9 +148,13 @@ const ThreeScene = ({ data }) => {
     function createGui( list ) {
 
       const gui = new GUI();
-      gui.domElement.id = "gui";
       gui.domElement.style.position = "relative";
       gui.domElement.style.top = "0px";
+      gui.domElement.style.left = "0px";
+
+
+
+      gui.domElement.style.zIndex = "1";
       canvas.appendChild(gui.domElement);
       const folder1 = gui.addFolder( 'Muestras' );
       const settings = {
@@ -316,7 +316,7 @@ const ThreeScene = ({ data }) => {
     animate();
 
   };
-  return  <Box ref={refChangeHandler}></Box>;
+  return  <Box id="canvas" ref={refChangeHandler}></Box>;
 };
 
 
