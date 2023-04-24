@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { LihoClient, useApiFetch } from './client';
 import ThreeScene from './three/ThreeScene';
 import HeaderItems from './HeaderItems';
 import Header from './components/Header';
 import UploadFile from './components/Upload/FileUpload';
 import { ThemeProvider } from '@mui/material/styles';
-import { Grid, Typography, Paper, Container, Box } from '@mui/material';
+import { Grid, Typography, Paper, Container, Box, Button} from '@mui/material';
 import theme from './components/theme/theme'
+import html2canvas from 'html2canvas';
 
 function App() {
   const [gltfData, setGltfData] = useState(null);
+  const componentRef = useRef(null);
 
+  const handleCapture = () => {
+    console.log(componentRef)
+    html2canvas(componentRef).then(canvas => {
+      const screenshot = canvas.toDataURL();
+      // Do something with the screenshot
+      const link = document.createElement('a');
+      console.log(screenshot);
+      link.download = 'screenshot.png';
+      link.href = screenshot;
+      link.click();
 
+    });
+  };
 
   const handleUpload = (data) => {
     setGltfData(data);
@@ -34,6 +48,16 @@ function App() {
               </Typography>
               <UploadFile onUpload={handleUpload} />
             </Paper>
+            {gltfData != null && (
+              <Paper elevation={3} sx={{ p: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  2. Descarga tu gráfico
+                </Typography>
+                <Button variant="contained" color="primary" onClick={handleCapture}>Descargar</Button>
+
+              </Paper>
+            )}
+
           </Grid>
 
           {/* Right column */}
@@ -42,7 +66,7 @@ function App() {
               <Paper elevation={3} sx={{ p: 2 }}>
                 <Box id='canvas'>
                   <Typography id= "texto" variant="h6" gutterBottom></Typography>
-                  <ThreeScene data={gltfData} />
+                  < ThreeScene ref={componentRef} data={gltfData} />
                   </Box>
               </Paper>
             )}
