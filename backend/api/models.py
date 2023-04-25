@@ -53,7 +53,7 @@ class GLTFFile(models.Model):
                 header = None
 
             df = pd.read_csv(self.file.url.path, sep=';', decimal=',',header=header, na_values=['', ' ', '"', ""])
-            sample_number = 10
+            sample_number = 15
 
             for i, row in df.iloc[0:sample_number].iterrows():
                 columns = df.columns
@@ -73,7 +73,6 @@ class GLTFFile(models.Model):
 
                         r = round_number(row[column])//10
                         if r > 0:
-                            print(column)
                             x = random.randint(-(volume-r), volume-r)
                             bpy.ops.mesh.primitive_uv_sphere_add(location=(x, 0, 0), radius = r)
                             sphere = bpy.context.active_object

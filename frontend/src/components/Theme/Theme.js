@@ -34,7 +34,19 @@ const theme = createTheme({
             xl: 1920,
         },
     },
-  });
+    components: {
+        MuiDivider: {
+          styleOverrides: {
+            root: {
+              height: 0.5,
+            backgroundColor: '#000000',
 
+            },
+          },
+        },
+    },
+
+
+    })
 
   export default theme;

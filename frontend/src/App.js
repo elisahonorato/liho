@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { LihoClient, useApiFetch } from './client';
 import ThreeScene from './three/ThreeScene';
 import HeaderItems from './HeaderItems';
 import Header from './components/Header';
