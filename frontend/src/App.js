@@ -60,9 +60,9 @@ function App() {
           </Grid>
 
           {/* Right column */}
-          <Grid item xs={10} md={10}>
+          <Grid item xs={10} md={10} id="canvas_container">
             {gltfData != null && (
-              <Paper elevation={3} sx={{ p: 2 }}>
+              <Paper elevation={3} sx={{ p: 2 }} id="paper_container">
                 <Box id='canvas'>
                   <Typography id= "texto" variant="h6" gutterBottom></Typography>
                   < ThreeScene ref={componentRef} data={gltfData} />

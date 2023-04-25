@@ -6,7 +6,7 @@ export default function Header({ menuItems }) {
   return (
     <>
       <AppBar position="sticky" color="primary" elevation={0}>
-      <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Toolbar>
           <Link href="/">
             <img src={process.env.PUBLIC_URL + '/logo_liho.png'} alt="Logo" height="60" />
           </Link>

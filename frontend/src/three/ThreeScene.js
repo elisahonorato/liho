@@ -8,6 +8,7 @@ import { MuiGui } from '../components/theme/MuiGui/MuiGui';
 import Typography from '@mui/material/Typography';
 import ReactDOM from 'react-dom';
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
+import theme from '../components/theme';
 
 
 
@@ -29,6 +30,7 @@ const ThreeScene = ({ data }) => {
     // renderer
     const renderer = new THREE.WebGLRenderer();
     const canvas = document.getElementById('canvas');
+    const canvas_container = document.getElementById('canvas_container');
     const width = canvas.clientWidth;
     const height = width * (window.innerHeight / window.innerWidth);
     renderer.setSize(width, height);
@@ -60,7 +62,7 @@ const ThreeScene = ({ data }) => {
     controls.update();
 
 
-    const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.2} )
+    const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} )
 
 
 
@@ -108,10 +110,8 @@ const ThreeScene = ({ data }) => {
             }
           }
         }}
-
-
-
     }
+
     function showVolumen_total( visibility ) {
       volumen_total.visible = visibility;
     }
@@ -171,24 +171,32 @@ const ThreeScene = ({ data }) => {
       showVolumen_total(false);
 
     }
-
-
-
-
+    function guiStyle(element) {
+      element.domElement.style.setProperty('font-family', theme.typography.fontFamily);
+      element.domElement.style.setProperty('font-size', `${theme.typography.fontSize}px`);
+      element.domElement.style.setProperty('font-weight', theme.typography.fontWeightRegular);
+      element.domElement.style.setProperty('line-height', 'normal');
+      element.domElement.style.setProperty('background-color', theme.palette.background.paper);
+      element.domElement.style.setProperty('color', theme.palette.text.primary);
+      element.domElement.style.setProperty('border-radius', theme.shape.borderRadius);
+      element.domElement.querySelector('.title').style.setProperty('background-color', theme.palette.background.paper);
+      element.domElement.querySelector('.title').style.setProperty('color', theme.palette.text.primary);
+      element.domElement.querySelector('.title').style.setProperty('border-radius', theme.shape.borderRadius);
+      element.domElement.querySelector('.display').style.setProperty('background-color', theme.palette.secondary.main);
+      element.domElement.style.setProperty('padding', '0 14px');
+    }
 
 
     function createGui( list ) {
 
       const gui = new GUI();
-      gui.domElement.style.position = "relative";
-      gui.domElement.style.top = "0px";
-      gui.domElement.style.left = "0px";
+      canvas_container.appendChild(gui.domElement);
+      gui.domElement.style.zIndex = "100000";
+      gui.domElement.style.position = "absolute";
 
 
-
-      gui.domElement.style.zIndex = "1";
-      canvas.appendChild(gui.domElement);
       const folder1 = gui.addFolder( 'Muestras' );
+
       const settings = {
         'Elegir Muestra': "Todos",
         "Mostrar Volumen": true,
@@ -237,6 +245,10 @@ const ThreeScene = ({ data }) => {
 
 
       });
+      guiStyle(gui)
+      guiStyle(folder1);
+      guiStyle(folder2);
+
 
 
     return (
