@@ -5,10 +5,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import modelo from './modelo.glb';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { MuiGui } from '../components/theme/MuiGui/MuiGui';
-import Typography from '@mui/material/Typography';
 import ReactDOM from 'react-dom';
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
 import theme from '../components/theme';
+import { Typography } from '@mui/material';
 
 
 
@@ -64,19 +64,13 @@ const ThreeScene = ({ data }) => {
 
     const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} )
 
-
-
-
-    const Typography_text = (text) => (
-      <Typography id= "texto" variant="body2">
-        {text}
-      </Typography>
-    );
     const texto = document.getElementById("texto");
 
     let model;
     let volumen_relativo;
     let volumen_total;
+    const leyendaColores = document.getElementById("leyendaColores");
+    let new_color;
 
 
 
@@ -84,7 +78,8 @@ const ThreeScene = ({ data }) => {
     loader.load(modelo, function (gltf) {
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
-        defaultColors(colorDefault);
+        new_color = true;
+        defaultColors(colorDefault, new_color);
         volumen_total = model.getObjectByName("Volumen_Total")
         volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
         showVolumen_relativo(false);
@@ -112,10 +107,18 @@ const ThreeScene = ({ data }) => {
         }}
     }
 
+
     function showVolumen_total( visibility ) {
       volumen_total.visible = visibility;
     }
-    function defaultColors (color_dict) {
+    function showLeyendaColores(visibility) {
+      leyendaColores.visible = visibility;
+      leyendaColores.style.display = visibility ? 'block' : 'none';
+    }
+
+
+    function defaultColors (color_dict, new_color) {
+      const list_colores = [];
       for (let i = 0; i < data.samples.length; i++) {
         list.push(data.samples[i]);
         // Obtener Muestra
@@ -124,6 +127,36 @@ const ThreeScene = ({ data }) => {
           parent.material = volume_material;
           // Obtener Variables
           for (let j = 0; j < data.variables.length; j++) {
+            if (!list_colores.includes(data.variables[j])) {
+              if (new_color) {
+                var div = leyendaColores.appendChild(document.createElement("div"));
+                div.style.lineHeight = "0";
+                div.style.display = "flex";
+                div.style.flexDirection = "row";
+                div.style.alignItems = "center";
+
+
+                var cube = div.appendChild(document.createElement("div"));
+                cube.style.backgroundColor = color_dict[j];
+                cube.id = data.variables[j];
+                cube.style.width = "10px";
+                cube.style.height = "10px";
+                cube.style.borderRadius = "1px";
+                cube.style.marginRight = "5px";
+
+                var p = div.appendChild(document.createElement("p"));
+                renderTypography(data.variables[j], p);
+              }
+              cube = document.getElementById(data.variables[j]);
+              cube.style.backgroundColor = color_dict[j];
+
+
+
+              list_colores.push(data.variables[j]);
+
+            }
+
+
             for(let k = 0; k < parent.children.length; k++) {
               if (parent.children[k].name.includes(data.variables[j])) {
                 console.log(parent.children[k].name);
@@ -137,9 +170,14 @@ const ThreeScene = ({ data }) => {
               }
             }}}}}
 
-    function showData( model ) {
-      const string = "Muestra: " + model.name;
-      texto.innerHTML = string;
+    function renderTypography( texto, componente ) {
+      const typography = (
+        <Typography variant="p" fontFamily={theme.typography.fontFamily} lineHeight={theme.typography.p.lineHeight} fontSize={theme.typography.p.fontSize}>
+          {texto}
+        </Typography>
+      );
+      ReactDOM.render(typography, componente);
+
 
     }
     function distribuir(visibility){
@@ -194,9 +232,6 @@ const ThreeScene = ({ data }) => {
       gui.domElement.style.zIndex = "100000";
       gui.domElement.style.position = "absolute";
 
-
-      const folder1 = gui.addFolder( 'Muestras' );
-
       const settings = {
         'Elegir Muestra': "Todos",
         "Mostrar Volumen": true,
@@ -204,9 +239,12 @@ const ThreeScene = ({ data }) => {
         "Mostrar Datos": true,
         "Elegir Variable": data.variables[0],
         "Colores por Default": "Default",
-        "Distribuir": false
+        "Distribuir": false,
+        "Mostrar Leyenda": true,
 
       }
+
+      const folder1 = gui.addFolder( 'Muestras' );
       folder1.add(settings, 'Elegir Muestra', list).onChange(function(value) {
         for (let i = 0; i < data.samples.length; i++) {
           if (value === "Todos") {
@@ -218,7 +256,6 @@ const ThreeScene = ({ data }) => {
             parent.visible = false;
             if (value === data.samples[i]) {
               parent.visible = true;
-              showData(parent);
             }
           }}
       });
@@ -228,26 +265,46 @@ const ThreeScene = ({ data }) => {
 
 
 
-      const values = [];
       const folder2 = gui.addFolder( 'Materiales' );
       folder2.add(settings, 'Colores por Default', ["Default", "Daltonismo", "Secuencia", "Divergente"]).onChange( function(value) {
+        new_color = false;
         if (value === "Default") {
-          defaultColors(colorDefault);
+          defaultColors(colorDefault, new_color);
         } else if (value === "Daltonismo") {
-          defaultColors(colorDaltonic);
+          defaultColors(colorDaltonic, new_color);
         } else if (value === "Secuencia") {
-          defaultColors(colorSequential);
+          defaultColors(colorSequential, new_color);
         } else if (value === "Divergente") {
-          defaultColors(colorDivergent);
+          defaultColors(colorDivergent, new_color);
         } else {
-          defaultColors(colorDefault);
+          defaultColors(colorDefault, new_color);
         }
 
 
       });
+      const folder3 = gui.addFolder( 'Descripción' );
+      folder3.add(settings, 'Mostrar Datos').onChange( showLeyendaColores );
+
+      folder3.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
+        if (value === "Volumen") {
+          showVolumen_relativo(true);
+          showVolumen_total(false);
+        } else if (value === "Volumen Total") {
+          showVolumen_relativo(false);
+          showVolumen_total(true);
+        } else {
+          showVolumen_relativo(false);
+          showVolumen_total(false);
+        }
+      });
+
+
+
+
       guiStyle(gui)
       guiStyle(folder1);
       guiStyle(folder2);
+      guiStyle(folder3);
 
 
 

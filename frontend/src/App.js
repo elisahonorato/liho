@@ -63,7 +63,9 @@ function App() {
           <Grid item xs={10} md={10} id="canvas_container">
             {gltfData != null && (
               <Paper elevation={3} sx={{ p: 2 }} id="paper_container">
-                <Box id='canvas'>
+                <Box id='canvas' sx={{display: "flex"}}>
+                  <Paper elevation={0} sx={{ display: 'content' , padding: 0, margin:0}} id='leyendaColores'>
+                  </Paper>
                   <Typography id= "texto" variant="h6" gutterBottom></Typography>
                   < ThreeScene ref={componentRef} data={gltfData} />
                   </Box>
