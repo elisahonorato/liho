@@ -141,8 +141,8 @@ const ThreeScene = ({ data }) => {
                 cube.id = data.variables[j];
                 cube.style.width = "10px";
                 cube.style.height = "10px";
-                cube.style.borderRadius = "1px";
                 cube.style.marginRight = "5px";
+                cube.style.borderRadius = "50%";
 
                 var p = div.appendChild(document.createElement("p"));
                 renderTypography(data.variables[j], p);

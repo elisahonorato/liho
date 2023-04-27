@@ -48,7 +48,7 @@ function App() {
               <UploadFile onUpload={handleUpload} />
             </Paper>
             {gltfData != null && (
-              <Paper elevation={3} sx={{ p: 2 }}>
+              <Paper elevation={3} sx={{ p: 2, mt: 2}}>
                 <Typography variant="h6" gutterBottom>
                   2. Descarga tu gráfico
                 </Typography>
@@ -64,7 +64,7 @@ function App() {
             {gltfData != null && (
               <Paper elevation={3} sx={{ p: 2 }} id="paper_container">
                 <Box id='canvas' sx={{display: "flex"}}>
-                  <Paper elevation={0} sx={{ display: 'content' , padding: 0, margin:0}} id='leyendaColores'>
+                  <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'>
                   </Paper>
                   <Typography id= "texto" variant="h6" gutterBottom></Typography>
                   < ThreeScene ref={componentRef} data={gltfData} />

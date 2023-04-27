@@ -43,7 +43,7 @@ const theme = createTheme({
     shape: {
         borderRadius: 20,
     },
-    spacing: 10,
+    spacing: 5,
 
     breakpoints: {
         values: {
@@ -65,6 +65,7 @@ const theme = createTheme({
           },
         },
     },
+
 
 
     })
