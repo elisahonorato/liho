@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useApi } from 'react-rest-api'
 
-const useApiFetch = () => {
+const useLihoApi = () => {
     const [data, setData] = useState();
     const [loading, setLoading] = useState(false);
     const [error,_] = useState();
@@ -19,4 +19,4 @@ const useApiFetch = () => {
     return {data, loading, error, sendRequest: postForm}
 }
 
-export default useApiFetch;
+export default useLihoApi;

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import LihoClient from './client/LihoClient';
 import ThreeScene from './three/ThreeScene';
 import HeaderItems from './HeaderItems';
 import Header from './components/Header';
@@ -31,57 +32,59 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container maxWidth="xl">
-        <Grid container spacing={1}>
-          {/* Header */}
-          <Grid item xs={12}>
-            <Header menuItems={HeaderItems} />
-          </Grid>
+    <LihoClient>
+      <ThemeProvider theme={theme}>
+        <Container maxWidth="xl">
+          <Grid container spacing={1}>
+            {/* Header */}
+            <Grid item xs={12}>
+              <Header menuItems={HeaderItems} />
+            </Grid>
 
-          {/* Left column */}
-          <Grid item xs={12} md={2}>
-            <Paper elevation={3} sx={{ p: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                1. Sube tu archivo CSV
-              </Typography>
-              <UploadFile onUpload={handleUpload} />
-            </Paper>
-            {gltfData != null && (
-              <Paper elevation={3} sx={{ p: 2, mt: 2}}>
+            {/* Left column */}
+            <Grid item xs={12} md={2}>
+              <Paper elevation={3} sx={{ p: 2 }}>
                 <Typography variant="h6" gutterBottom>
-                  2. Descarga tu gráfico
+                  1. Sube tu archivo CSV
                 </Typography>
-                <Button variant="contained" color="primary" onClick={handleCapture}>Descargar</Button>
-
+                <UploadFile onUpload={handleUpload}/>
               </Paper>
-            )}
+              {gltfData != null && (
+                <Paper elevation={3} sx={{ p: 2, mt: 2}}>
+                  <Typography variant="h6" gutterBottom>
+                    2. Descarga tu gráfico
+                  </Typography>
+                  <Button variant="contained" color="primary" onClick={handleCapture}>Descargar</Button>
 
-          </Grid>
+                </Paper>
+              )}
 
-          {/* Right column */}
-          <Grid item xs={10} md={10} id="canvas_container">
-            {gltfData != null && (
-              <Paper elevation={3} sx={{ p: 2 }} id="paper_container">
-                <Box id='canvas' sx={{display: "flex"}}>
-                  <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'>
-                  </Paper>
-                  <Typography id= "texto" variant="h6" gutterBottom></Typography>
-                  < ThreeScene ref={componentRef} data={gltfData} />
-                  </Box>
-              </Paper>
-            )}
-          </Grid>
+            </Grid>
 
-          {/* Footer */}
-          <Grid item xs={12}>
-            <Typography variant="body1" align="center">
-              © 2023 Liho. Todos los derechos reservados.
-            </Typography>
+            {/* Right column */}
+            <Grid item xs={10} md={10} id="canvas_container">
+              {gltfData != null && (
+                <Paper elevation={3} sx={{ p: 2 }} id="paper_container">
+                  <Box id='canvas' sx={{display: "flex"}}>
+                    <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'>
+                    </Paper>
+                    <Typography id= "texto" variant="h6" gutterBottom></Typography>
+                    < ThreeScene ref={componentRef} data={gltfData} />
+                    </Box>
+                </Paper>
+              )}
+            </Grid>
+
+            {/* Footer */}
+            <Grid item xs={12}>
+              <Typography variant="body1" align="center">
+                © 2023 Liho. Todos los derechos reservados.
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
-    </ThemeProvider>
+        </Container>
+      </ThemeProvider>
+    </LihoClient>
 
   );
 };

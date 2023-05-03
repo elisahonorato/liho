@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Input, InputLabel, Typography } from '@mui/material';
 import { MuiButton } from '../theme/MuiButton/MuiButton';
 import { MuiBox } from '../theme/MuiBox/MuiBox';
+import { LihoClient } from '../../client';
 
 
 function UploadFile({ onUpload }) {
@@ -18,13 +19,15 @@ function UploadFile({ onUpload }) {
     let formData = new FormData();
     formData.append('file', file, file.name);
     setLoading(true);
+
+    const client = LihoClient(formData)
+
     axios
-      .post('http://localhost:8000/probando/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      .post(client.props.url, formData)
+
+
       .then((res) => {
+        console.log(res)
         onUpload(res.data);
         setResponse("Archivo subido con Exito");
         setLoading(false);

@@ -2,7 +2,7 @@ import React from "react";
 import { ApiProvider } from "react-rest-api";
 
 const LihoClient = ({children}) => {
-    const baseUrl = "http://localhost:8000";
+    const baseUrl = "http://localhost:8000/probando/";
     const config = {
         headers: {
             // All api calls will take this Content-Type Header

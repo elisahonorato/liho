@@ -22,3 +22,6 @@ class PruebaView(APIView):
 
         else:
             return HttpResponse({"Error desconocido"},status=400)
+
+    def get(self, request):
+        return HttpResponse({"Metodo no permitido"},status=405)
