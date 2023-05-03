@@ -14,9 +14,9 @@ function App() {
   const componentRef = useRef(null);
 
   const handleCapture = () => {
-    console.log(componentRef)
-    html2canvas(componentRef).then(canvas => {
+    html2canvas(document.getElementById("paper_container")).then(canvas => {
       const screenshot = canvas.toDataURL();
+
       // Do something with the screenshot
       const link = document.createElement('a');
       console.log(screenshot);

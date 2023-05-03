@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom';
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
 import theme from '../components/theme';
 import { Typography } from '@mui/material';
+import html2canvas from 'html2canvas';
 
 
 
@@ -30,7 +31,7 @@ const ThreeScene = ({ data }) => {
     camera.setFocalLength( 18 );
 
     // renderer
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
     const canvas = document.getElementById('canvas');
     const canvas_container = document.getElementById('canvas_container');
     const width = canvas.clientWidth;
@@ -43,6 +44,7 @@ const ThreeScene = ({ data }) => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
     container.appendChild( renderer.domElement );
+
 
 
     camera.position.z = data.vol_relativo * 2/3;
@@ -350,8 +352,11 @@ const ThreeScene = ({ data }) => {
 
     animate();
 
+
   };
   return  <div ref={refChangeHandler}></div>;
+
+
 };
 
 
