@@ -31,6 +31,9 @@ function App() {
     setGltfData(data);
   };
 
+
+
+
   return (
     <LihoClient>
       <ThemeProvider theme={theme}>
@@ -69,10 +72,17 @@ function App() {
                     <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'>
                     </Paper>
                     <Typography id= "texto" variant="h6" gutterBottom></Typography>
-                    < ThreeScene ref={componentRef} data={gltfData} />
+                    <ThreeScene ref={componentRef} data={gltfData} />
+                    <Box id='leyenda' sx={{display: "flex"}}>
+                    </Box>
                     </Box>
                 </Paper>
               )}
+              {ThreeScene.all === true && (
+                  <UploadFile onUpload={handleUpload}/>
+              )}
+
+
             </Grid>
 
             {/* Footer */}

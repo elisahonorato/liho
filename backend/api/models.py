@@ -25,6 +25,7 @@ class GLTFFile(models.Model):
     path = None
     dict = None
     exists = False
+    number = 15
 
     def save(self, *args, **kwargs):
         self.dict = None
@@ -32,7 +33,7 @@ class GLTFFile(models.Model):
         self.path = self.file.url.path.replace(".csv", ".glb")
         self.generate_gltf()
 
-    def generate_gltf(self):
+    def generate_gltf(self, *args, **kwargs):
 
         try:
             import bpy
@@ -53,7 +54,7 @@ class GLTFFile(models.Model):
                 header = None
 
             df = pd.read_csv(self.file.url.path, sep=';', decimal=',',header=header, na_values=['', ' ', '"', ""])
-            sample_number = 15
+            sample_number = self.number
 
             for i, row in df.iloc[0:sample_number].iterrows():
                 columns = df.columns
@@ -102,7 +103,7 @@ class GLTFFile(models.Model):
             dict['vol_total'] = volume*sample_number
             self.dict = dict
             self.exists = True
-            print(self.dict)
+
 
         except Exception as e:
             response = str(e) + "Error al generar el archivo GLTF"

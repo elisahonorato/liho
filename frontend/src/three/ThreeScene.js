@@ -13,11 +13,13 @@ import { Typography } from '@mui/material';
 
 
 const ThreeScene = ({ data }) => {
+  const [all , setAll] = React.useState(false);
 
   const refChangeHandler = (sceneRef) => {
     if (!sceneRef) return;
     const container = sceneRef
     const list = [];
+
 
 
     // scene
@@ -115,6 +117,12 @@ const ThreeScene = ({ data }) => {
       leyendaColores.visible = visibility;
       leyendaColores.style.display = visibility ? 'block' : 'none';
     }
+    function showAll(visibility) {
+      if (visibility) {
+        setAll(true);
+      }
+    }
+
 
 
     function defaultColors (color_dict, new_color) {
@@ -240,7 +248,9 @@ const ThreeScene = ({ data }) => {
         "Elegir Variable": data.variables[0],
         "Colores por Default": "Default",
         "Distribuir": false,
+        "Cargar todas las muestras" : false,
         "Mostrar Leyenda": true,
+
 
       }
 
@@ -262,6 +272,8 @@ const ThreeScene = ({ data }) => {
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
       folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
       folder1.add(settings, 'Distribuir').onChange( distribuir );
+      folder1.add(settings, 'Cargar todas las muestras').onChange( showAll);
+
 
 
 

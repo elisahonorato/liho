@@ -17,14 +17,12 @@ function UploadFile({ onUpload }) {
 
   const handleUpload = useCallback(() => {
     let formData = new FormData();
-    formData.append('file', file, file.name);
+    formData.append('file', file);
     setLoading(true);
-
-    const client = LihoClient(formData)
+    const client = LihoClient(formData);
 
     axios
-      .post(client.props.url, formData)
-
+      .post(client.props.url, formData, client.props.config)
 
       .then((res) => {
         console.log(res)
