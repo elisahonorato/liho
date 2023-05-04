@@ -37,7 +37,7 @@ function App() {
   return (
     <LihoClient>
       <ThemeProvider theme={theme}>
-        <Container maxWidth="xl">
+        <Container class maxWidth="xl">
           <Grid container spacing={1}>
             {/* Header */}
             <Grid item xs={12}>

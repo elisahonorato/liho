@@ -9,7 +9,6 @@ import ReactDOM from 'react-dom';
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
 import theme from '../components/theme';
 import { Typography } from '@mui/material';
-import html2canvas from 'html2canvas';
 
 
 
@@ -17,7 +16,6 @@ const ThreeScene = ({ data }) => {
   const [all , setAll] = React.useState(false);
 
   const refChangeHandler = (sceneRef) => {
-    if (!sceneRef) return;
     const container = sceneRef
     const list = [];
 
@@ -160,8 +158,6 @@ const ThreeScene = ({ data }) => {
               cube = document.getElementById(data.variables[j]);
               cube.style.backgroundColor = color_dict[j];
 
-
-
               list_colores.push(data.variables[j]);
 
             }
@@ -193,7 +189,6 @@ const ThreeScene = ({ data }) => {
     function distribuir(visibility){
       const size = 5
       const slicedArr = [];
-      console.log(data.vol_total);
 
       const grid_width = [-500, -250, 0, 250, 500];
       for (let i = 0; i < data.samples.length; i += size) {
@@ -206,6 +201,8 @@ const ThreeScene = ({ data }) => {
           if (parent) {
             if (visibility) {
               parent.position.set(grid_width[i], grid_width[j], 0);
+              controls.reset();
+              camera.position.set(0, 0, 1000);
 
             }
             else {
@@ -274,9 +271,7 @@ const ThreeScene = ({ data }) => {
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
       folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
       folder1.add(settings, 'Distribuir').onChange( distribuir );
-      folder1.add(settings, 'Cargar todas las muestras').onChange( showAll);
-
-
+      folder1.add(settings, 'Cargar todas las muestras').onChange( showAll );
 
 
       const folder2 = gui.addFolder( 'Materiales' );
@@ -312,9 +307,6 @@ const ThreeScene = ({ data }) => {
         }
       });
 
-
-
-
       guiStyle(gui)
       guiStyle(folder1);
       guiStyle(folder2);
@@ -330,8 +322,6 @@ const ThreeScene = ({ data }) => {
     );
 
     }
-
-
 
     // animate
     function animate() {

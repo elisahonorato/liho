@@ -109,6 +109,7 @@ class GLTFFile(models.Model):
             response = str(e) + "Error al generar el archivo GLTF"
             self.dict = None
             return response
+
     def has_headers(self):
     # read the first row of the dataset
         with open(self.file.url.path) as f:
