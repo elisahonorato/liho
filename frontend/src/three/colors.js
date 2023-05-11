@@ -1,23 +1,30 @@
 export const colorDefault = [
-  "#ff0000",   // red
-  "#98da1f",   // light green
-  "#147df5",   // blue
-  "#ffff00",   // yellow
-  "#ff8700",   // orange
-  "#be0aff",   // light purple
-  "#0aefff",   // light blue
-  "#136a7a2",  // turquoise
-  "#580aff",   // purple
-  "#d283ff",   // light pink
-  "#ff6176",   // light magenta
-  "#c0d7503",  // dark green
-  "#0b525b",   // petroleum
-  "#e56b6f",   // salmon
-  "#fa69ff",   // ultra pink
-  "#9cf945",   // lime
-  "#6e69ff"    // purple
+  "#ff0001",   // red
+  "#9900ff",   // purple
+  "#00ff01",   // bright green
+  "#fd6c01",   // orange
+  "#00ccff",   // sky blue
+  "#ffcc00",   // yellow
+  "#ccff00",   // lime green
+  "#0071ff",   // royal blue
+  "#ff00dd",   // fuchsia
+  "#ff91a4",   // light pink
+  "#a4ff91",   // light green
+  "#9194ff",   // lavender
+  "#d891ff",   // lilac
+  "#f9a7b0",   // light coral
+  "#ffa6d0",   // rose
+  "#7f0055",   // deep purple
+  "#001f7f",   // navy blue
+  "#7f3f00",   // brown
+  "#3f007f",   // dark purple
+  "#7f007f",   // magenta
+  "#5c5c5c",   // gray
+  "#4a4a4a",   // dark gray
+  "#8c8c8c",   // light gray
+  "#ffffff",   // white
+  "#000000",   // black
 ];
-
 
 
 export const colorDaltonic = [

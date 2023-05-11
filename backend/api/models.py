@@ -55,32 +55,32 @@ class GLTFFile(models.Model):
 
             df = pd.read_csv(self.file.url.path, sep=';', decimal=',',header=header, na_values=['', ' ', '"', ""])
             sample_number = self.number
+            columns = df.columns
+            if len(columns) > 30:
+                        columns = columns[0:40]
+
 
             for i, row in df.iloc[0:sample_number].iterrows():
-                columns = df.columns
+
                 sample_name = str(row[0])
                 if sample_name != None:
                     dict['samples'].append(sample_name)
                     bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = volume/10000)
                     parent = bpy.context.active_object
                     parent.name = sample_name
-
-
                     # Create a UV sphere
-                    if len(columns) > 30:
-                        columns = columns[0:40]
-
                     for column in columns[1:]:
 
                         r = round_number(row[column])//10
                         if r > 0:
-                            x = random.randint(-(volume-r), volume-r)
-                            bpy.ops.mesh.primitive_uv_sphere_add(location=(x, 0, 0), radius = r)
+                            bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = r)
                             sphere = bpy.context.active_object
                             sphere.name = sample_name + "_" + column
                             sphere.parent = parent
                             if column not in dict['variables']:
                                 dict['variables'].append(column)
+
+                            sphere['ratio'] = r
 
 
 
@@ -128,7 +128,4 @@ class GLTFFile(models.Model):
 
 def round_number(number):
     return int(round(number, 5) * 1000)
-
-
-
 
