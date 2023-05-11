@@ -16,6 +16,7 @@ const ThreeScene = ({ data }) => {
   const [all , setAll] = React.useState(false);
 
   const refChangeHandler = (sceneRef) => {
+    const volumen_relativo = data.vol_relativo;
     const container = sceneRef
     const list = [];
 
@@ -69,7 +70,6 @@ const ThreeScene = ({ data }) => {
     const texto = document.getElementById("texto");
 
     let model;
-    let volumen_relativo;
     let volumen_total;
     const leyendaColores = document.getElementById("leyendaColores");
     let new_color;
@@ -104,10 +104,7 @@ const ThreeScene = ({ data }) => {
               modelo.visible = visibility;
               modelo.material = volume_material;
 
-            }
-          }
-        }}
-    }
+            }}}}}
 
 
     function showVolumen_total( visibility ) {
@@ -165,7 +162,6 @@ const ThreeScene = ({ data }) => {
 
             for(let k = 0; k < parent.children.length; k++) {
               if (parent.children[k].name.includes(data.variables[j])) {
-                console.log(parent.children[k].name);
                 parent.children[k].visible = true;
                 if (color_dict.hasOwnProperty(j)) {
                   var color = new THREE.Color( color_dict[j]);
@@ -186,6 +182,27 @@ const ThreeScene = ({ data }) => {
 
 
     }
+    function ordenarPosiciones( value ) {
+      if (model) {
+        for (var i = 0; i < model.children.length; i++) {
+          for (var j = 0; j < model.children[i].children.length; j++) {
+            const numPoints = model.children[i].children.length;
+            const step = Math.floor(200 / (numPoints - 1));
+            const numbers = Array.from({length: numPoints}, (_, j) => j * step - (volumen_relativo));
+            if (!model.children[i].children[j].name.includes("model_volumen_relativo")) {
+              modelo = model.children[i].children[j];
+              if (value === "Centro") {
+                modelo.position.set(0, 0, 0);
+              } else if (value === "Secuencia") {
+                modelo.position.set(numbers[j], 0, 0);
+
+
+
+
+              }
+            }}}}}
+
+
     function distribuir(visibility){
       const size = 5
       const slicedArr = [];
@@ -245,6 +262,7 @@ const ThreeScene = ({ data }) => {
         "Mostrar Volumen Total": true,
         "Mostrar Datos": true,
         "Elegir Variable": data.variables[0],
+        "Ordenar Posiciones": "Centro",
         "Colores por Default": "Default",
         "Distribuir": false,
         "Cargar todas las muestras" : false,
@@ -271,6 +289,7 @@ const ThreeScene = ({ data }) => {
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
       folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
       folder1.add(settings, 'Distribuir').onChange( distribuir );
+      folder1.add(settings, 'Ordenar Posiciones', ["Centro", "Secuencia"]).onChange( ordenarPosiciones );
       folder1.add(settings, 'Cargar todas las muestras').onChange( showAll );
 
 
