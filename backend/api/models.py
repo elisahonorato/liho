@@ -60,7 +60,13 @@ class GLTFFile(models.Model):
                         columns = columns[0:40]
 
 
+
+            intervalo = [-volume, volume]
+
+
             for i, row in df.iloc[0:sample_number].iterrows():
+                numero_x = intervalo[0]
+
 
                 sample_name = str(row[0])
                 if sample_name != None:
@@ -73,14 +79,24 @@ class GLTFFile(models.Model):
 
                         r = round_number(row[column])//10
                         if r > 0:
-                            bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius = r)
+                            # borde inferior
+                            if -(r + abs(numero_x)) < intervalo[0]:
+                                posicion_x = numero_x + r
+                            else:
+                                posicion_x = numero_x
+                            numero_x += r
+
+
+                            print("posicion_x: ",posicion_x, " radio: ", r, " numero x", numero_x)
+
+
+
+                            bpy.ops.mesh.primitive_uv_sphere_add(location=(posicion_x, 0, 0), radius = r)
                             sphere = bpy.context.active_object
                             sphere.name = sample_name + "_" + column
                             sphere.parent = parent
                             if column not in dict['variables']:
                                 dict['variables'].append(column)
-
-                            sphere['ratio'] = r
 
 
 
