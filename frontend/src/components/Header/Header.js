@@ -1,24 +1,28 @@
 import React from 'react'
-import { AppBar, Toolbar, Typography, Link, Divider } from '@mui/material'
+import { AppBar, Toolbar, Typography, Link, Divider, Box } from '@mui/material'
+import theme from '../theme/theme'
+import headerItems from './HeaderItems'
 
 
-export default function Header({ menuItems }) {
+export default function Header() {
   return (
     <>
       <AppBar position="sticky" color="primary" elevation={0}>
-      <Toolbar>
-          <Link href="/">
-            <img src={process.env.PUBLIC_URL + '/logo_liho.png'} alt="Logo" height="60" />
-          </Link>
-          <div>
-            {menuItems.map((d, i) => {
+        <Toolbar>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <Link href="/">
+              <img src={process.env.PUBLIC_URL + '/logo_liho.png'} alt="Logo" height="60" />
+            </Link>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexShrink: 1 }}>
+            {headerItems.map((d, i) => {
               return (
-                <Typography key={'item' + i} variant="subtitle1" sx={{ display: 'inline-block', ml: 2 }}>
-                  <Link href={d.href}>{d.label}</Link>
+                <Typography key={'item' + i} sx={{ ml: 4 }}>
+                  <Link href={d.href} sx={{ color: theme.palette.primary.dark }}>{d.label}</Link>
                 </Typography>
               )
             })}
-          </div>
+          </Box>
         </Toolbar>
       </AppBar>
       <Divider variant="middle" />

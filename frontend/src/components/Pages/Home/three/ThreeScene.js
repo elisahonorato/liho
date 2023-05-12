@@ -4,11 +4,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import modelo from './modelo.glb';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { MuiGui } from '../components/theme/MuiGui/MuiGui';
 import ReactDOM from 'react-dom';
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
-import theme from '../components/theme';
-import { Typography } from '@mui/material';
+import theme from '../../../theme/theme';
+import { Box, Typography } from '@mui/material';
 
 
 
@@ -16,6 +15,7 @@ const ThreeScene = ({ data }) => {
   const [all , setAll] = React.useState(false);
 
   const refChangeHandler = (sceneRef) => {
+    if (!sceneRef) return;
     const container = sceneRef
     const list = [];
 
@@ -316,11 +316,13 @@ const ThreeScene = ({ data }) => {
 
 
     return (
-      <MuiGui variant="contained">
-      {folder1}
-      {/* add additional folders and components here */}
-    </MuiGui>
+
+      <Box sx={{display: "flex"}}>
+        <Box id='leyenda' sx={{display: "flex"}}>
+        </Box>
+      </Box>
     );
+
 
     }
 

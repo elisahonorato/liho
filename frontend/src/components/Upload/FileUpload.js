@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import axios from 'axios';
-import { Input, InputLabel, Typography } from '@mui/material';
-import { MuiButton } from '../theme/MuiButton/MuiButton';
+import { Input, InputLabel, Typography, Button } from '@mui/material';
 import { MuiBox } from '../theme/MuiBox/MuiBox';
 import { LihoClient } from '../../client';
 
@@ -38,9 +37,9 @@ function UploadFile({ onUpload }) {
 
   return (
     <MuiBox>
-      <MuiButton variant='contained' color='secondary' ><InputLabel htmlFor="input-tag"><Typography variant="body2" color="primary">Seleccionar Archivo</Typography></InputLabel></MuiButton>
+      <Button variant='contained' color='secondary' ><InputLabel htmlFor="input-tag"><Typography variant="body2" color="primary">Seleccionar Archivo</Typography></InputLabel></Button>
       <Input type="file" id="input-tag" inputProps={{ style: { display: 'none' } }} onChange={handleSelectedFile} />
-      <MuiButton variant='contained' color='secondary' onClick={handleUpload}><Typography variant="body2" color="primary">Upload</Typography></MuiButton>
+      <Button variant='contained' color='secondary' onClick={handleUpload}><Typography variant="body2" color="primary">Upload</Typography></Button>
       <Typography>{loading ? `Cargando Modelo...` : response}</Typography>
     </MuiBox>
   );
