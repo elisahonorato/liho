@@ -132,10 +132,13 @@ const ThreeScene = ({ data }) => {
             if (!list_colores.includes(data.variables[j])) {
               if (new_color) {
                 var div = leyendaColores.appendChild(document.createElement("div"));
-                div.style.lineHeight = "0";
                 div.style.display = "flex";
                 div.style.flexDirection = "row";
                 div.style.alignItems = "center";
+                div.style.padding = "0px";
+                div.style.fontSize = theme.typography.p.fontSize;
+                div.style.fontFamily = theme.typography.fontFamily;
+
 
 
                 var cube = div.appendChild(document.createElement("div"));
@@ -232,8 +235,7 @@ const ThreeScene = ({ data }) => {
 
       gui.domElement.id = 'gui';
       gui.domElement.style.setProperty('position', 'absolute');
-
-
+      gui.domElement.style.setProperty('top', '0');
 
 
 

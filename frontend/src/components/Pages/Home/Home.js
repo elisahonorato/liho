@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import ThreeScene from './three/ThreeScene';
-import UploadFile from '../../Upload/FileUpload';
+import UploadFile from './Upload/FileUpload';
 import { ThemeProvider } from '@mui/material/styles';
 import { Grid, Typography, Paper, Container, Box, Button} from '@mui/material';
 import theme from '../../theme/theme';
@@ -61,14 +61,14 @@ function Home() {
                     <Typography variant="h6" gutterBottom>
                       2. Descarga tu gráfico
                     </Typography>
-                    <Button variant="contained" color="primary" onClick={handleCapture}>Descargar</Button>
+                    <Button variant='contained' color='secondary' onClick={handleCapture}>Descargar</Button>
                   </Paper>
                 )}
 
               </Grid>
 
               {/* Right column */}
-              <Grid item xs={10} md={10}>
+              <Grid item xs={12} md={10}>
                 {gltfData != null && (
                   <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex' }} id="canvas">
                       <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'></Paper>

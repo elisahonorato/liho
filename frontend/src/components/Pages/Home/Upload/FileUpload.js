@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import axios from 'axios';
-import { Input, InputLabel, Typography, Button } from '@mui/material';
-import { MuiBox } from '../theme/MuiBox/MuiBox';
-import { LihoClient } from '../../client';
-
+import { Button, Input, InputLabel, Typography } from '@mui/material';
+import { MuiBox } from '../../../theme/MuiBox/MuiBox';
+import { LihoClient } from '../../../../client';
+import theme from '../../../theme/theme';
 
 function UploadFile({ onUpload }) {
   const [file, setFile] = useState();
@@ -37,9 +37,30 @@ function UploadFile({ onUpload }) {
 
   return (
     <MuiBox>
-      <Button variant='contained' color='secondary' ><InputLabel htmlFor="input-tag"><Typography variant="body2" color="primary">Seleccionar Archivo</Typography></InputLabel></Button>
-      <Input type="file" id="input-tag" inputProps={{ style: { display: 'none' } }} onChange={handleSelectedFile} />
-      <Button variant='contained' color='secondary' onClick={handleUpload}><Typography variant="body2" color="primary">Upload</Typography></Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        component="label"
+      >
+        <InputLabel htmlFor="input-tag">
+          <Typography variant="body2" color={'primary'}>Seleccionar Archivo</Typography>
+        </InputLabel>
+        <Input
+          type="file"
+          id="input-tag"
+          inputProps={{ style: { display: 'none' } }}
+          onChange={handleSelectedFile}
+        />
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleUpload}
+      >
+        <Typography variant="body2" color="primary">
+          Upload
+        </Typography>
+      </Button>
       <Typography>{loading ? `Cargando Modelo...` : response}</Typography>
     </MuiBox>
   );

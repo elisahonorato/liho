@@ -25,7 +25,6 @@ export default function Header() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Divider variant="middle" />
     </>
   )
 }
