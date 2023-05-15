@@ -31,7 +31,7 @@ const ThreeScene = ({ data }) => {
     // renderer
     const renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
     const canvas = document.getElementById('canvas');
-    const canvas_container = document.getElementById('canvas_container');
+
     const width = canvas.clientWidth;
     const height = width * (window.innerHeight / window.innerWidth);
     renderer.setSize(width, height);
@@ -66,10 +66,7 @@ const ThreeScene = ({ data }) => {
 
     const volume_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} )
 
-    const texto = document.getElementById("texto");
-
     let model;
-    let volumen_relativo;
     let volumen_total;
     const leyendaColores = document.getElementById("leyendaColores");
     let new_color;
@@ -112,7 +109,7 @@ const ThreeScene = ({ data }) => {
     }
     function showLeyendaColores(visibility) {
       leyendaColores.visible = visibility;
-      leyendaColores.style.display = visibility ? 'block' : 'none';
+
     }
     function showAll(visibility) {
       if (visibility) {
@@ -180,12 +177,7 @@ const ThreeScene = ({ data }) => {
         </Typography>
       );
       ReactDOM.render(typography, componente);
-
-
     }
-
-
-
 
     function distribuir(visibility){
       const size = 5
@@ -229,23 +221,27 @@ const ThreeScene = ({ data }) => {
       element.domElement.querySelector('.title').style.setProperty('color', theme.palette.text.primary);
       element.domElement.querySelector('.title').style.setProperty('border-radius', theme.shape.borderRadius);
       element.domElement.querySelector('.display').style.setProperty('background-color', theme.palette.secondary.main);
-      element.domElement.style.setProperty('padding', '0 14px');
     }
 
 
     function createGui( list ) {
 
       const gui = new GUI();
-      canvas_container.appendChild(gui.domElement);
-      gui.domElement.style.zIndex = "100000";
-      gui.domElement.style.position = "absolute";
+      var div = canvas.appendChild(document.createElement('div'));
+      div.appendChild(gui.domElement);
+
+      gui.domElement.id = 'gui';
+      gui.domElement.style.setProperty('position', 'absolute');
+
+
+
+
 
       const settings = {
         'Elegir Muestra': "Todos",
         "Mostrar Volumen": true,
         "Mostrar Volumen Total": true,
         "Mostrar Datos": true,
-        "Elegir Variable": data.variables[0],
         "Colores por Default": "Default",
         "Distribuir": false,
         "Cargar todas las muestras" : false,
@@ -312,6 +308,7 @@ const ThreeScene = ({ data }) => {
       guiStyle(folder1);
       guiStyle(folder2);
       guiStyle(folder3);
+
 
 
 

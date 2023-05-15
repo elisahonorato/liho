@@ -11,7 +11,12 @@ function Home() {
     const componentRef = useRef(null);
 
     const handleCapture = () => {
-      html2canvas(document.getElementById("paper_container")).then(canvas => {
+      const guiElement = document.getElementById('gui');
+
+      // Hide the element with ID 'gui'
+      guiElement.style.display = 'none';
+
+      html2canvas(document.getElementById("canvas")).then(canvas => {
         const screenshot = canvas.toDataURL();
 
         // Do something with the screenshot
@@ -21,14 +26,15 @@ function Home() {
         link.href = screenshot;
         link.click();
 
+        // Show the element with ID 'gui' again
+        guiElement.style.display = 'block';
       });
     };
+
 
     const handleUpload = (data) => {
       setGltfData(data);
     };
-
-
 
 
     return (
@@ -56,31 +62,20 @@ function Home() {
                       2. Descarga tu gráfico
                     </Typography>
                     <Button variant="contained" color="primary" onClick={handleCapture}>Descargar</Button>
-
                   </Paper>
                 )}
 
               </Grid>
 
               {/* Right column */}
-              <Grid item xs={10} md={10} id="canvas_container">
+              <Grid item xs={10} md={10}>
                 {gltfData != null && (
-                  <Paper elevation={3} sx={{ p: 2 }} id="paper_container">
-                    <Box id='canvas' sx={{display: "flex"}}>
-                      <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'>
-                      </Paper>
+                  <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex' }} id="canvas">
+                      <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'></Paper>
                       <Typography id= "texto" variant="h6" gutterBottom></Typography>
-                      <ThreeScene ref={componentRef} data={gltfData} />
-                      <Box id='leyenda' sx={{display: "flex"}}>
-                      </Box>
-                      </Box>
+                      <Box sx={{ flexGrow: 1 }}><ThreeScene ref={componentRef} data={gltfData} /></Box>
                   </Paper>
                 )}
-                {ThreeScene.all === true && (
-                    <UploadFile onUpload={handleUpload}/>
-                )}
-
-
               </Grid>
 
               {/* Footer */}
