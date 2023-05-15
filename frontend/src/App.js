@@ -14,8 +14,8 @@ function App() {
     <LihoClient>
       <ThemeProvider theme={theme}>
         <Router>
+        <Header />
           <Container maxWidth="xl" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-          <Header />
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route path="/tutorial" element={<Tutorial />} />
@@ -26,6 +26,7 @@ function App() {
               </Typography>
           </footer>
           </Container>
+
         </Router>
       </ThemeProvider>
     </LihoClient>
