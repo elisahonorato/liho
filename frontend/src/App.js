@@ -14,20 +14,18 @@ function App() {
     <LihoClient>
       <ThemeProvider theme={theme}>
         <Router>
-          <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Header />
-            <Container maxWidth="xl" style={{ flexGrow: 1 }}>
-              <Routes>
-                <Route exact path="/" element={<Home />} />
-                <Route path="/tutorial" element={<Tutorial />} />
-              </Routes>
-            </Container>
-            <footer style={{padding: "20px", marginTop: "auto" }}>
-              <Typography variant="body1" align="center">
+          <Container maxWidth="xl" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+          <Header />
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route path="/tutorial" element={<Tutorial />} />
+          </Routes>
+          <footer style={{padding: "20px", marginTop: "auto" }}>
+            <Typography variant="body1" align="center">
                 © 2023 Liho. Todos los derechos reservados.
               </Typography>
-            </footer>
-          </div>
+          </footer>
+          </Container>
         </Router>
       </ThemeProvider>
     </LihoClient>
