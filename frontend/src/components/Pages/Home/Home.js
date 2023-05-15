@@ -77,13 +77,6 @@ function Home() {
                   </Paper>
                 )}
               </Grid>
-
-              {/* Footer */}
-              <Grid item xs={12}>
-                <Typography variant="body1" align="center">
-                  © 2023 Liho. Todos los derechos reservados.
-                </Typography>
-              </Grid>
             </Grid>
           </Container>
         </ThemeProvider>
