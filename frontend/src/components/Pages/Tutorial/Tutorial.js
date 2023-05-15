@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Typography, Container, Box, Button } from '@mui/material';
-import MuiTable from './MuiTable';
+import MuiTable from './MuiTable'
 
 export default function Tutorial() {
   return (

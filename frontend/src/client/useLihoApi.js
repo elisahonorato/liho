@@ -4,7 +4,7 @@ import { useApi } from 'react-rest-api'
 const useLihoApi = () => {
     const [data, setData] = useState();
     const [loading, setLoading] = useState(false);
-    const [error,_] = useState();
+    const [error] = useState();
     const api = useApi();
     const postForm = useCallback((url, config, queryParams) => {
         setLoading(true);
