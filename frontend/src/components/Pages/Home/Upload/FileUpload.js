@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Button, Input, InputLabel, Typography } from '@mui/material';
 import { MuiBox } from '../../../theme/MuiBox/MuiBox';
 import { LihoClient } from '../../../../client';
-import theme from '../../../theme/theme';
 
 function UploadFile({ onUpload }) {
   const [file, setFile] = useState();
@@ -14,31 +13,31 @@ function UploadFile({ onUpload }) {
     setFile(event.target.files[0]);
   };
 
-  const handleUpload = useCallback(() => {
-    let formData = new FormData();
-    formData.append('file', file);
-    let n_samples = 15;
-    let n_columns = 15;
-    formData.append('n_samples', n_samples);
-    formData.append('n_columns', n_columns);
-
-    setLoading(true);
+  const sendRequest = useCallback(async (nSamples, nColumns, reqFile) => {
+    const formData = new FormData();
+    formData.append('file', reqFile);
+    formData.append('n_samples', nSamples);
+    formData.append('n_columns', nColumns);
     const client = LihoClient(formData);
+    const res = await axios.post(client.props.url, formData, client.props.config);
+    console.log(res)
+    onUpload(res.data);
+  }, [onUpload])
 
-    axios
-      .post(client.props.url, formData, client.props.config)
+  const handleUpload = useCallback(async() => {
+    setLoading(true);
+    try {
+      await sendRequest(15, 15, file);
+      setResponse("Archivo subido con Exito");
+      setLoading(false);
+      sendRequest(null, null, file)
+    } catch (err) {
+      setResponse(err.response.data);
+        setLoading(false);
+    }
 
-      .then((res) => {
-        console.log(res)
-        onUpload(res.data);
-        setResponse("Archivo subido con Exito");
-        setLoading(false);
-      })
-      .catch((err) => {
-        setResponse(err.response.data);
-        setLoading(false);
-      });
-  }, [file, onUpload]);
+    setLoading(false);
+  }, [file, sendRequest]);
 
   return (
     <MuiBox>

@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import React from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import modelo from './modelo.glb';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import ReactDOM from 'react-dom';
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
@@ -14,7 +13,7 @@ import { Box, Typography } from '@mui/material';
 const ThreeScene = ({ data }) => {
   const [all , setAll] = React.useState(false);
 
-  const refChangeHandler = (sceneRef) => {
+  const refChangeHandler = async (sceneRef) => {
     if (!sceneRef) return;
     const container = sceneRef
     const list = [];
@@ -41,7 +40,7 @@ const ThreeScene = ({ data }) => {
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
-    container.appendChild( renderer.domElement );
+    canvas.appendChild(renderer.domElement);
 
 
 
@@ -72,9 +71,29 @@ const ThreeScene = ({ data }) => {
     let new_color;
 
 
+    async function loadModel() {
+      try {
+        const response = await fetch(data.path);
+        const path = await response.arrayBuffer();
 
+        const loader = new GLTFLoader();
+        const modelo = await new Promise((resolve, reject) => {
+          loader.parse(path, '', resolve, reject);
+        });
+        // Process the loaded model (gltf object)
+        console.log('Model loaded:', modelo);
+        return modelo;
+
+      } catch (error) {
+        // Handle any errors that occur during the fetch or parsing
+        console.error('Error loading file:', error);
+      }
+    }
+
+    let modelo = await loadModel();
     const loader = new GLTFLoader();
-    loader.load(modelo, function (gltf) {
+    loader.load(data.path, function (gltf) {
+        console.log(modelo)
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
         new_color = true;
@@ -82,15 +101,17 @@ const ThreeScene = ({ data }) => {
         volumen_total = model.getObjectByName("Volumen_Total")
         volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
         showVolumen_relativo(false);
+        canvas.append(container)
 
         list.push("Todos");
         createGui(list);
 
         scene.add(model);
 
-      }, undefined, function (error) {
-        console.error(error);
-      });
+        }, undefined, function (error) {
+          console.error(error);
+        });
+
 
     function showVolumen_relativo( visibility ) {
       if (model) {
@@ -369,10 +390,13 @@ const ThreeScene = ({ data }) => {
 
 
   };
+
   return  <div ref={refChangeHandler}></div>;
 
 
+
 };
+
 
 
 export default ThreeScene;
