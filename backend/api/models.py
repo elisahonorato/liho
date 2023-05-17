@@ -25,15 +25,14 @@ class GLTFFile(models.Model):
     path = None
     dict = None
     exists = False
-    number = 15
 
     def save(self, *args, **kwargs):
         self.dict = None
         super().save(*args, **kwargs)
         self.path = self.file.url.path.replace(".csv", ".glb")
-        self.generate_gltf()
 
-    def generate_gltf(self, *args, **kwargs):
+    def generate_gltf(self, n_columns, n_samples, *args, **kwargs):
+        print(n_columns, n_samples)
 
         try:
             import bpy
@@ -54,17 +53,12 @@ class GLTFFile(models.Model):
                 header = None
 
             df = pd.read_csv(self.file.url.path, sep=';', decimal=',',header=header, na_values=['', ' ', '"', ""])
-            sample_number = self.number
-            columns = df.columns
-            if len(columns) > 30:
-                        columns = columns[0:40]
-
-
-
+            columna = df.columns
+            columns = columna[0:int(n_columns)]
             intervalo = [-volume, volume]
 
 
-            for i, row in df.iloc[0:sample_number].iterrows():
+            for i, row in df.iloc[0:int(n_samples)].iterrows():
                 numero_x = intervalo[0]
 
 
@@ -116,7 +110,7 @@ class GLTFFile(models.Model):
             bpy.ops.export_scene.gltf(filepath=self.path, check_existing=True, convert_lighting_mode='SPEC', export_format='GLB', ui_tab='GENERAL', export_copyright='', export_image_format='AUTO', export_keep_originals=False, export_texcoords=True, export_normals=False, use_mesh_edges=False, use_mesh_vertices=True, export_cameras=False, use_selection=False, use_visible=True, use_renderable=False, use_active_collection_with_nested=True, use_active_collection=False, use_active_scene=True, export_extras=True, export_yup=True, export_apply=False, export_animations=True, export_frame_range=True, export_frame_step=1, export_force_sampling=True, export_nla_strips=True, export_nla_strips_merged_animation_name='Animation', export_def_bones=False, export_optimize_animation_size=False, export_anim_single_armature=False, export_reset_pose_bones=False, export_current_frame=False, export_skins=False, export_all_influences=False, export_morph=False, export_morph_normal=False, export_morph_tangent=False, export_lights=False, will_save_settings=False, filter_glob='*.glb;*.gltf')
             dict['path'] = self.path
             dict['vol_relativo'] = volume
-            dict['vol_total'] = volume*sample_number
+            dict['vol_total'] = volume*n_samples
             self.dict = dict
             self.exists = True
 

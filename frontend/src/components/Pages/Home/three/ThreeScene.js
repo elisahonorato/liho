@@ -137,7 +137,6 @@ const ThreeScene = ({ data }) => {
                 div.style.alignItems = "center";
                 div.style.padding = "0px";
                 div.style.fontSize = theme.typography.p.fontSize;
-                div.style.fontFamily = theme.typography.fontFamily;
 
 
 
@@ -324,6 +323,30 @@ const ThreeScene = ({ data }) => {
 
 
     }
+    window.addEventListener('mousemove', onMouseMove);
+    const raycaster = new THREE.Raycaster();
+
+
+    function onMouseMove(event) {
+      if (!model) return;
+      const pointer = new THREE.Vector2();
+      pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+      pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObjects(scene.children, true);
+      // loop through all the intersected objects
+      for (let i = 0; i < intersects.length; i++) {
+        const object = intersects[i].object;
+        for (let j = 0; j < data.variables.length; j++) {
+          if (object.name.includes(data.variables[j])) {
+            console.log(object.name);
+          }
+
+        }
+      }
+    }
+
+
 
     // animate
     function animate() {

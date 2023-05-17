@@ -13,6 +13,9 @@ class PruebaView(APIView):
         if uploaded_file.content_type == 'text/csv':
             file = File.objects.create(url = uploaded_file)
             gltf = GLTFFile.objects.create(file = file)
+            n_samples = request.POST.get('n_samples')
+            n_columns = request.POST.get('n_columns')
+            gltf.generate_gltf(n_samples, n_columns)
             if gltf.exists:
                 return JsonResponse(gltf.dict, status=200)
             return HttpResponse({"Error al generar el archivo"},status=400)

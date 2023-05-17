@@ -17,6 +17,11 @@ function UploadFile({ onUpload }) {
   const handleUpload = useCallback(() => {
     let formData = new FormData();
     formData.append('file', file);
+    let n_samples = 15;
+    let n_columns = 15;
+    formData.append('n_samples', n_samples);
+    formData.append('n_columns', n_columns);
+
     setLoading(true);
     const client = LihoClient(formData);
 
