@@ -35,3 +35,4 @@ backend/media
 *.glb
 static
 .env
+.vscode

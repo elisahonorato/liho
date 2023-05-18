@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip } from '@mui/material';
 
 const columns = [
@@ -23,7 +23,7 @@ export default function MuiTable() {
     variable6: Math.random(),
   }));
 
-  const [tooltipOpen, setTooltipOpen] = useState(null);
+  const [, setTooltipOpen] = useState(null);
 
   const handleTooltipOpen = (event) => {
     setTooltipOpen(event.currentTarget);

@@ -20,7 +20,6 @@ function UploadFile({ onUpload }) {
     formData.append('n_columns', nColumns);
     const client = LihoClient(formData);
     const res = await axios.post(client.props.url, formData, client.props.config);
-    console.log(res)
     onUpload(res.data);
   }, [onUpload])
 
@@ -33,7 +32,7 @@ function UploadFile({ onUpload }) {
       sendRequest(null, null, file)
     } catch (err) {
       setResponse(err.response.data);
-        setLoading(false);
+      setLoading(false);
     }
 
     setLoading(false);

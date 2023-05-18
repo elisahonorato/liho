@@ -1,25 +1,25 @@
 import * as THREE from 'three';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import ReactDOM from 'react-dom';
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
 import theme from '../../../theme/theme';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 
 
 
-const ThreeScene = ({ data }) => {
-  const [all , setAll] = React.useState(false);
 
-  const refChangeHandler = async (sceneRef) => {
+const ThreeScene = ({ apiData }) => {
+  const [divRef, setDivRef] = React.useState();
+  const refChangeHandler = (sceneRef) => {
     if (!sceneRef) return;
-    const container = sceneRef
+    setDivRef(sceneRef);
+  }
+  const createScene = useCallback(async (sceneRef, data) => {
+    console.log(data);
     const list = [];
-
-
-
     // scene
     const scene = new THREE.Scene();
 
@@ -40,10 +40,8 @@ const ThreeScene = ({ data }) => {
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
+    renderer.domElement.id = 'scene';
     canvas.appendChild(renderer.domElement);
-
-
-
     camera.position.z = data.vol_relativo * 2/3;
 
     // lights
@@ -81,7 +79,6 @@ const ThreeScene = ({ data }) => {
           loader.parse(path, '', resolve, reject);
         });
         // Process the loaded model (gltf object)
-        console.log('Model loaded:', modelo);
         return modelo;
 
       } catch (error) {
@@ -93,7 +90,6 @@ const ThreeScene = ({ data }) => {
     let modelo = await loadModel();
     const loader = new GLTFLoader();
     loader.load(data.path, function (gltf) {
-        console.log(modelo)
         model = gltf.scene;
         model.scale.set(0.5, 0.5, 0.5);
         new_color = true;
@@ -101,7 +97,6 @@ const ThreeScene = ({ data }) => {
         volumen_total = model.getObjectByName("Volumen_Total")
         volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
         showVolumen_relativo(false);
-        canvas.append(container)
 
         list.push("Todos");
         createGui(list);
@@ -132,14 +127,6 @@ const ThreeScene = ({ data }) => {
       leyendaColores.visible = visibility;
 
     }
-    function showAll(visibility) {
-      if (visibility) {
-        setAll(true);
-      }
-    }
-
-
-
     function defaultColors (color_dict, new_color) {
       const list_colores = [];
       for (let i = 0; i < data.samples.length; i++) {
@@ -182,8 +169,8 @@ const ThreeScene = ({ data }) => {
 
             for(let k = 0; k < parent.children.length; k++) {
               if (parent.children[k].name.includes(data.variables[j])) {
-                console.log(parent.children[k].name);
                 parent.children[k].visible = true;
+                // eslint-disable-next-line no-prototype-builtins
                 if (color_dict.hasOwnProperty(j)) {
                   var color = new THREE.Color( color_dict[j]);
                 } else {
@@ -203,7 +190,7 @@ const ThreeScene = ({ data }) => {
     }
 
     function distribuir(visibility){
-      const size = 5
+      const size = 10
       const slicedArr = [];
 
       const grid_width = [-500, -250, 0, 250, 500];
@@ -290,7 +277,7 @@ const ThreeScene = ({ data }) => {
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
       folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
       folder1.add(settings, 'Distribuir').onChange( distribuir );
-      folder1.add(settings, 'Cargar todas las muestras').onChange( showAll );
+      // folder1.add(settings, 'Cargar todas las muestras').onChange( showAll );
 
 
       const folder2 = gui.addFolder( 'Materiales' );
@@ -354,21 +341,18 @@ const ThreeScene = ({ data }) => {
       pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
       pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(pointer, camera);
+      // eslint-disable-next-line no-unused-vars
       const intersects = raycaster.intersectObjects(scene.children, true);
       // loop through all the intersected objects
-      for (let i = 0; i < intersects.length; i++) {
-        const object = intersects[i].object;
-        for (let j = 0; j < data.variables.length; j++) {
-          if (object.name.includes(data.variables[j])) {
-            console.log(object.name);
-          }
+      // for (let i = 0; i < intersects.length; i++) {
+      //   const object = intersects[i].object;
+      //   for (let j = 0; j < data.variables.length; j++) {
+      //     if (object.name.includes(data.variables[j])) {
+      //     }
 
-        }
-      }
+      //   }
+      // }
     }
-
-
-
     // animate
     function animate() {
       requestAnimationFrame( animate );
@@ -385,16 +369,21 @@ const ThreeScene = ({ data }) => {
       renderer.render( scene, camera );
       }
     }
-
     animate();
+  }, []);
+  useEffect(() => {
+    console.log('data', apiData, !divRef);
+    if (!divRef) return;
+    const exScene = document.getElementById('scene')
+    if (exScene) {
+      exScene.remove();
+    }
+    createScene(divRef, apiData);
+  }, [apiData, divRef, createScene])
+  return  <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex' }} ref={refChangeHandler}>
 
 
-  };
-
-  return  <div ref={refChangeHandler}></div>;
-
-
-
+  </Paper>;
 };
 
 

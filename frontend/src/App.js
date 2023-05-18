@@ -1,12 +1,14 @@
+import React from 'react';
 import LihoClient from './client/LihoClient';
 import { ThemeProvider } from '@mui/material/styles';
+
 
 import theme from './components/theme/theme'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './components/Pages/Home'
 import Header from './components/Header/Header';
 import Tutorial from './components/Pages/Tutorial';
-import { Container, Grid, Typography} from '@mui/material';
+import { Container, Typography} from '@mui/material';
 
 
 function App() {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppBar, Toolbar, Typography, Link, Divider, Box } from '@mui/material'
+import { AppBar, Toolbar, Typography, Link, Box } from '@mui/material'
 import theme from '../theme/theme'
 import headerItems from './HeaderItems'
 

@@ -10,7 +10,6 @@ const useLihoApi = () => {
         setLoading(true);
         api.post(url, config, queryParams).then((response) => {
             response.json().then((responseJson) => {
-                console.log(responseJson)
                 setData(responseJson);
                 setLoading(false);
             })
