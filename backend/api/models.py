@@ -30,8 +30,6 @@ class GLTFFile(models.Model):
         super().save(*args, **kwargs)
 
     def generate_gltf(self, n_columns=None, n_samples=None):
-        print("vars", n_columns, n_samples)
-
         try:
             import bpy
 
@@ -87,15 +85,6 @@ class GLTFFile(models.Model):
                             else:
                                 posicion_x = numero_x
                             numero_x += r
-
-                            print(
-                                "posicion_x: ",
-                                posicion_x,
-                                " radio: ",
-                                r,
-                                " numero x",
-                                numero_x,
-                            )
 
                             bpy.ops.mesh.primitive_uv_sphere_add(
                                 location=(posicion_x, 0, 0), radius=r
