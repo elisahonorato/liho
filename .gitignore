@@ -31,8 +31,8 @@ yarn-error.log*
 mediafiles/csv
 *.sqlite3
 *.csv
-backend/media
-*.glb
+backend/media/csv
+
 static
 .env
 .vscode

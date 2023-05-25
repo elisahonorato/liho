@@ -8,13 +8,12 @@ from django.db import models
 
 # lets us explicitly set upload path and filename
 def upload_to(instance, filename):
-    return "%s/%s" % (instance.type, filename)
+    return "%s/%s" % (instance.type, instance.title)
 
 
 class File(models.Model):
     type = "csv"
     title = models.CharField(max_length=80, blank=False, null=False)
-    print(title)
     url = models.FileField(upload_to=upload_to, blank=True)
 
 
@@ -29,7 +28,7 @@ class GLTFFile(models.Model):
         self.dict = None
         super().save(*args, **kwargs)
 
-    def generate_gltf(self, n_columns=None, n_samples=None):
+    def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
         try:
             import bpy
 
@@ -106,7 +105,7 @@ class GLTFFile(models.Model):
             bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius=volume * 10)
             spher = bpy.context.active_object
             spher.name = "Volumen_Total"
-            path = "media/glb/" + self.file.title + ".glb"
+            path = "media/glb/" + user_filename + ".glb"
             bpy.ops.export_scene.gltf(
                 filepath=path,
                 check_existing=True,

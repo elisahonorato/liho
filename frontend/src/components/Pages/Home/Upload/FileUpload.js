@@ -13,15 +13,19 @@ function UploadFile({ onUpload }) {
     setFile(event.target.files[0]);
   };
 
-  const sendRequest = useCallback(async (nSamples, nColumns, reqFile) => {
+  const sendRequest = useCallback(async (nSamples, nColumns, reqFile, userFilename) => {
     const formData = new FormData();
     formData.append('file', reqFile);
     formData.append('n_samples', nSamples);
     formData.append('n_columns', nColumns);
+
+    // Add user-specific filename to the form data
+    formData.append('userFilename', userFilename);
+
     const client = LihoClient(formData);
     const res = await axios.post(client.props.url, formData, client.props.config);
     onUpload(res.data);
-  }, [onUpload])
+  }, [onUpload]);
 
   const handleUpload = useCallback(async() => {
     setLoading(true);
