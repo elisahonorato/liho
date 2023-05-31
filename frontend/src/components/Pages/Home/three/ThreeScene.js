@@ -70,15 +70,33 @@ const ThreeScene = ({ apiData }) => {
 
     async function loadModel() {
       try {
-        const response = await fetch(data.path);
-        const path = await response.arrayBuffer();
+        // Load the GLTF file
+
+        // Extract the GLTF file content from the response data
+        const gltfContent = data.file_content;
+
+        // Convert the base64-encoded GLTF content back to binary
+        const gltfData = atob(gltfContent);
+        const arrayBuffer = new ArrayBuffer(gltfData.length);
+        const uintArray = new Uint8Array(arrayBuffer);
+
+        // Copy the binary data into the Uint8Array
+        for (let i = 0; i < gltfData.length; i++) {
+          uintArray[i] = gltfData.charCodeAt(i);
+        }
 
         const loader = new GLTFLoader();
-        const modelo = await new Promise((resolve, reject) => {
-          loader.parse(path, '', resolve, reject);
+        const gltf = await new Promise((resolve, reject) => {
+          loader.parse(
+            arrayBuffer,
+            '',  // Path for additional resources
+            resolve,
+            reject
+          );
         });
-        // Process the loaded model (gltf object)
-        return modelo;
+
+        // Process the loaded modelo (gltf object)
+        model = gltf.scene;
 
       } catch (error) {
         // Handle any errors that occur during the fetch or parsing
@@ -86,25 +104,24 @@ const ThreeScene = ({ apiData }) => {
       }
     }
 
+
     let modelo = await loadModel();
-    const loader = new GLTFLoader();
-    loader.load(data.path, function (gltf) {
-        model = gltf.scene;
-        model.scale.set(0.5, 0.5, 0.5);
-        new_color = true;
-        defaultColors(colorDefault, new_color);
-        volumen_total = model.getObjectByName("Volumen_Total")
-        volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
-        showVolumen_relativo(false);
+    if (model) {
 
-        list.push("Todos");
-        createGui(list);
+      model.scale.set(0.5, 0.5, 0.5);
+      new_color = true;
+      defaultColors(colorDefault, new_color);
+      volumen_total = model.getObjectByName("Volumen_Total")
+      volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
+      showVolumen_relativo(false);
 
-        scene.add(model);
 
-        }, undefined, function (error) {
-          console.error(error);
-        });
+      list.push("Todos");
+      createGui(list);
+
+      scene.add(model);
+    }
+
 
 
     function showVolumen_relativo( visibility ) {

@@ -31,10 +31,6 @@ class GLTFFile(models.Model):
         try:
             import bpy
             import logging
-            root = logging.getLogger('parso')
-            root.setLevel(logging.INFO)
-            logging.basicConfig(level=logging.INFO)
-
 
             if bpy.context.active_object is not None:
                 # Access the active object here
@@ -46,7 +42,7 @@ class GLTFFile(models.Model):
             else:
                 bpy.ops.object.select_all(action="SELECT")
                 bpy.ops.object.delete(use_global=False)
-                bpy.context = bpy.context.copy()
+
 
 
             volume = 100
@@ -152,6 +148,8 @@ class GLTFFile(models.Model):
                 dict["userFilename"] = user_filename
                 dict["vol_relativo"] = volume
                 dict["vol_total"] = volume * n_samples
+
+                self.path = path
 
                 self.dict = dict
                 return self.dict
