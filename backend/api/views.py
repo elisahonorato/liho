@@ -8,35 +8,40 @@ from .serializers import *
 
 class PruebaView(APIView):
     parser_classes = [MultiPartParser]
+    queue = [f"model{i}" for i in range(1, 11)]
 
     def post(self, request):
-        uploaded_file = request.FILES.get("file")
-        if not uploaded_file:
-            return HttpResponse("Error: No file uploaded", status=400)
+        try:
+            uploaded_file = request.FILES.get("file")
+            if not uploaded_file:
+                return HttpResponse("Error: No file uploaded", status=400)
 
-        if uploaded_file.content_type == "text/csv":
+            if uploaded_file.content_type != "text/csv":
+                return HttpResponse("Archivo con formato incorrecto", status=400)
+
             user_filename = request.data.get("userFilename")
-            if user_filename == "undefined":
-                user_filename = "file"
+
+            # Move the first element of the queue to the last position
+
             file = File.objects.create(url=uploaded_file, title=user_filename)
             gltf = GLTFFile.objects.create(file=file)
             n_samples = request.data.get("n_samples")
             n_columns = request.data.get("n_columns")
 
-            if n_samples == "null":
+            if n_samples is None or n_samples == "null":
                 n_samples = None
-            if n_columns == "null":
+            if n_columns is None or n_columns == "null":
                 n_columns = None
 
-            gltf.generate_gltf(n_samples, n_columns, user_filename)
+            response = gltf.generate_gltf(n_samples, n_columns, user_filename)
 
-            if gltf.exists:
-                return JsonResponse(gltf.dict, status=200)
+            if gltf.dict is not None:
+                return JsonResponse(response, status=200)
             else:
-                return HttpResponse("Error al generar el archivo", status=400)
+                return HttpResponse(response, status=400)
 
-        else:
-            return HttpResponse("Archivo con formato incorrecto", status=400)
+        except Exception as e:
+            return HttpResponse(str(e), status=500)
 
     def get(self, request):
         return HttpResponse("Método no permitido", status=405)

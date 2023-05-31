@@ -6,15 +6,16 @@ import pandas as pd
 from django.db import models
 
 
-# lets us explicitly set upload path and filename
 def upload_to(instance, filename):
-    return "%s/%s" % (instance.type, instance.title)
+    # Modify this function to specify the desired upload path and filename
+    return f"{instance.type}/{instance.title}.{instance.type}"
 
 
 class File(models.Model):
     type = "csv"
-    title = models.CharField(max_length=80, blank=False, null=False)
-    url = models.FileField(upload_to=upload_to, blank=True)
+    title = models.CharField(max_length=80, blank=False)
+    print(title)
+    url = models.FileField(upload_to=upload_to, blank=False, editable=False)
 
 
 class GLTFFile(models.Model):
@@ -22,7 +23,6 @@ class GLTFFile(models.Model):
     file = models.OneToOneField(File, on_delete=models.CASCADE, primary_key=True)
     path = None
     dict = None
-    exists = False
 
     def save(self, *args, **kwargs):
         self.dict = None
@@ -30,7 +30,16 @@ class GLTFFile(models.Model):
 
     def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
         try:
+            import logging
+
             import bpy
+
+            logging.basicConfig(level=logging.WARNING)
+
+            # Disable bpy's debug log messages
+            logging.getLogger("bpy").setLevel(logging.WARNING)
+            logging.getLogger("bpy.app.handlers").setLevel(logging.WARNING)
+            bpy.app.debug = False
 
             if bpy.context.scene.objects:
                 bpy.ops.object.select_all(action="SELECT")
@@ -105,59 +114,48 @@ class GLTFFile(models.Model):
             bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius=volume * 10)
             spher = bpy.context.active_object
             spher.name = "Volumen_Total"
-            path = "media/glb/" + user_filename + ".glb"
+            # Se guarda primero en un path local
+            path = "media/glb/" + self.file.title + ".glb"
+
             bpy.ops.export_scene.gltf(
                 filepath=path,
                 check_existing=True,
-                convert_lighting_mode="SPEC",
                 export_format="GLB",
-                ui_tab="GENERAL",
-                export_copyright="",
-                export_image_format="AUTO",
-                export_keep_originals=False,
+                export_materials="EXPORT",
                 export_texcoords=True,
-                export_normals=False,
-                use_mesh_edges=False,
-                use_mesh_vertices=True,
-                export_cameras=False,
-                use_selection=False,
-                use_visible=True,
-                use_renderable=False,
-                use_active_collection_with_nested=True,
-                use_active_collection=False,
-                use_active_scene=True,
-                export_extras=True,
-                export_yup=True,
-                export_apply=False,
+                export_normals=True,
+                export_tangents=False,
                 export_animations=True,
+                export_skins=True,
                 export_frame_range=True,
-                export_frame_step=1,
                 export_force_sampling=True,
                 export_nla_strips=True,
-                export_nla_strips_merged_animation_name="Animation",
                 export_def_bones=False,
-                export_optimize_animation_size=False,
-                export_anim_single_armature=False,
-                export_reset_pose_bones=False,
-                export_current_frame=False,
-                export_skins=False,
-                export_all_influences=False,
-                export_morph=False,
-                export_morph_normal=False,
+                export_anim_single_armature=True,
+                export_reset_pose_bones=True,
+                export_morph=True,
+                export_morph_normal=True,
                 export_morph_tangent=False,
                 export_lights=False,
                 will_save_settings=False,
-                filter_glob="*.glb;*.gltf",
+                filter_glob="*.glb",
             )
-            dict["path"] = "http://localhost:8000/" + path
-            dict["vol_relativo"] = volume
-            dict["vol_total"] = volume * n_samples
-            self.dict = dict
-            self.exists = True
+
+            file_size = os.path.getsize(path)
+            if file_size > 100000000:
+                return "El archivo es demasiado grande"
+            else:
+                # Se guarda en el objeto
+                dict["path"] = "http://localhost:8000/" + path
+                dict["userFilename"] = user_filename
+                dict["vol_relativo"] = volume
+                dict["vol_total"] = volume * n_samples
+
+                self.dict = dict
+                return self.dict
 
         except Exception as e:
             response = str(e) + "Error al generar el archivo GLTF"
-            self.dict = None
             return response
 
     def has_headers(self):

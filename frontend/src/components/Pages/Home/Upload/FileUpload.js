@@ -4,53 +4,50 @@ import { Button, Input, InputLabel, Typography } from '@mui/material';
 import { MuiBox } from '../../../theme/MuiBox/MuiBox';
 import { LihoClient } from '../../../../client';
 
+
 function UploadFile({ onUpload }) {
   const [file, setFile] = useState();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');
+  const [userFilename, setUserFilename] = useState('null');
 
   const handleSelectedFile = (event) => {
     setFile(event.target.files[0]);
   };
 
-  const sendRequest = useCallback(async (nSamples, nColumns, reqFile, userFilename) => {
+  const sendRequest = useCallback(async (nSamples, nColumns, reqFile) => {
     const formData = new FormData();
     formData.append('file', reqFile);
     formData.append('n_samples', nSamples);
     formData.append('n_columns', nColumns);
-
-    // Add user-specific filename to the form data
     formData.append('userFilename', userFilename);
 
     const client = LihoClient(formData);
     const res = await axios.post(client.props.url, formData, client.props.config);
+    setUserFilename(res.data.userFilename);
     onUpload(res.data);
-  }, [onUpload]);
 
-  const handleUpload = useCallback(async() => {
+  }, [onUpload, userFilename]);
+
+  const handleUpload = useCallback(async () => {
     setLoading(true);
     try {
       await sendRequest(15, 15, file);
-      setResponse("Archivo subido con Exito");
-      setLoading(false);
-      sendRequest(null, null, file)
+      setResponse("Archivo subido con éxito");
+      sendRequest(null, null, file);
     } catch (err) {
       setResponse(err.response.data);
-      setLoading(false);
     }
-
     setLoading(false);
   }, [file, sendRequest]);
 
   return (
     <MuiBox>
-      <Button
-        variant="contained"
-        color="secondary"
-        component="label"
-      >
+      <Button variant="contained" color="secondary" component="label">
         <InputLabel htmlFor="input-tag">
-          <Typography variant="body2" color={'primary'}>Seleccionar Archivo</Typography>
+          <Typography variant="body2" color="primary">
+            Seleccionar Archivo
+          </Typography>
         </InputLabel>
         <Input
           type="file"
@@ -59,11 +56,7 @@ function UploadFile({ onUpload }) {
           onChange={handleSelectedFile}
         />
       </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handleUpload}
-      >
+      <Button variant="contained" color="secondary" onClick={handleUpload}>
         <Typography variant="body2" color="primary">
           Upload
         </Typography>
@@ -74,3 +67,4 @@ function UploadFile({ onUpload }) {
 }
 
 export default UploadFile;
+
