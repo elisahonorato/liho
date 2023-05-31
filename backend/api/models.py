@@ -14,7 +14,6 @@ def upload_to(instance, filename):
 class File(models.Model):
     type = "csv"
     title = models.CharField(max_length=80, blank=False)
-    print(title)
     url = models.FileField(upload_to=upload_to, blank=False, editable=False)
 
 
@@ -30,27 +29,26 @@ class GLTFFile(models.Model):
 
     def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
         try:
-            import logging
             import bpy
+            import logging
+            root = logging.getLogger('parso')
+            root.setLevel(logging.INFO)
+            logging.basicConfig(level=logging.INFO)
+
 
             if bpy.context.active_object is not None:
                 # Access the active object here
                 bpy.ops.object.select_all(action="SELECT")
                 bpy.ops.object.delete(use_global=False)
-
-
-            import bpy
-
-            logging.basicConfig(level=logging.WARNING)
-
-            # Disable bpy's debug log messages
-            logging.getLogger("bpy").setLevel(logging.WARNING)
-            logging.getLogger("bpy.app.handlers").setLevel(logging.WARNING)
-            bpy.app.debug = False
-
-            if bpy.context.scene.objects:
+                if bpy.context.scene.objects:
+                    bpy.ops.object.select_all(action="SELECT")
+                    bpy.ops.object.delete(use_global=False)
+            else:
                 bpy.ops.object.select_all(action="SELECT")
                 bpy.ops.object.delete(use_global=False)
+                bpy.context = bpy.context.copy()
+
+
             volume = 100
 
             # Create a new mesh data block
@@ -123,30 +121,27 @@ class GLTFFile(models.Model):
             spher.name = "Volumen_Total"
             # Se guarda primero en un path local
             path = "media/glb/" + self.file.title + ".glb"
+            output_file = "console_output.txt"
 
-            bpy.ops.export_scene.gltf(
-                filepath=path,
-                check_existing=True,
-                export_format="GLB",
-                export_materials="EXPORT",
-                export_texcoords=True,
-                export_normals=True,
-                export_tangents=False,
-                export_animations=True,
-                export_skins=True,
-                export_frame_range=True,
-                export_force_sampling=True,
-                export_nla_strips=True,
-                export_def_bones=False,
-                export_anim_single_armature=True,
-                export_reset_pose_bones=True,
-                export_morph=True,
-                export_morph_normal=True,
-                export_morph_tangent=False,
-                export_lights=False,
-                will_save_settings=False,
-                filter_glob="*.glb",
-            )
+            # Open the output file in write mode
+            with open(output_file, "w") as f:
+                # Redirect console output to the file
+                old_stdout = os.dup(1)
+                os.dup2(f.fileno(), 1)
+
+                # Call the export function
+                bpy.ops.export_scene.gltf(
+                    filepath=path,
+                    # Rest of the export options...
+                )
+
+                # Restore console output
+                os.dup2(old_stdout, 1)
+
+
+            # Remove the output file
+            os.remove(output_file)
+
 
             file_size = os.path.getsize(path)
             if file_size > 100000000:

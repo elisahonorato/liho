@@ -10,9 +10,13 @@ from .serializers import *
 class PruebaView(APIView):
     parser_classes = [MultiPartParser]
     queue = [f"model{i}" for i in range(1, 11)]
+    client_count = 0  # Variable to count the number of clients
 
     def post(self, request):
         try:
+            ip_address = request.META.get("REMOTE_ADDR")
+            print("IP Address:", ip_address, "Client count:", PruebaView.client_count)
+
             uploaded_file = request.FILES.get("file")
             if not uploaded_file:
                 return HttpResponse("Error: No file uploaded", status=400)
@@ -37,6 +41,7 @@ class PruebaView(APIView):
             response = gltf.generate_gltf(n_samples, n_columns, user_filename)
 
             if gltf.dict is not None:
+                PruebaView.client_count += 1
                 return JsonResponse(response, status=200)
             else:
                 return HttpResponse(response, status=400)
