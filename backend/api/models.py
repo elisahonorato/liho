@@ -31,6 +31,13 @@ class GLTFFile(models.Model):
     def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
         try:
             import logging
+            import bpy
+
+            if bpy.context.active_object is not None:
+                # Access the active object here
+                bpy.ops.object.select_all(action="SELECT")
+                bpy.ops.object.delete(use_global=False)
+
 
             import bpy
 

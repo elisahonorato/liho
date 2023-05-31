@@ -36,6 +36,10 @@ function UploadFile({ onUpload }) {
       setResponse("Archivo subido con éxito");
       sendRequest(null, null, file);
     } catch (err) {
+      setTimeout(() => {
+        setResponse("Error: El servidor no está respondiendo");
+        setLoading(false);
+      }, 10000); // Delay of 5 seconds
       setResponse(err.response.data);
     }
     setLoading(false);
