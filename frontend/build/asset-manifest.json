@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/liho/static/css/main.31d6cfe0.css",
-    "main.js": "/liho/static/js/main.01cd924e.js",
+    "main.js": "/liho/static/js/main.798edd0d.js",
     "static/js/496.2e7f66eb.chunk.js": "/liho/static/js/496.2e7f66eb.chunk.js",
     "index.html": "/liho/index.html",
-    "main.01cd924e.js.map": "/liho/static/js/main.01cd924e.js.map",
+    "main.798edd0d.js.map": "/liho/static/js/main.798edd0d.js.map",
     "496.2e7f66eb.chunk.js.map": "/liho/static/js/496.2e7f66eb.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.01cd924e.js"
+    "static/js/main.798edd0d.js"
   ]
 }

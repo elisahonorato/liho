@@ -24,9 +24,9 @@ yarn-error.log*
 # exploring
 /src/component/Points.js
 
-mediafiles/csv
 *.sqlite3
 *.csv
+media/csv
 backend/media/csv
 
 static
