@@ -3,7 +3,11 @@ import ThreeScene from './three/ThreeScene';
 import UploadFile from './Upload/FileUpload';
 import { ThemeProvider } from '@mui/material/styles';
 import { Grid, Typography, Paper, Container, Box, Button} from '@mui/material';
-import theme from '../../theme/theme';
+import theme from '../../Theme/Theme';
+
+
+
+
 import html2canvas from 'html2canvas';
 
 function Home() {

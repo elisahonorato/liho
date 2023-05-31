@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import axios from 'axios';
 import { Button, Input, InputLabel, Typography } from '@mui/material';
-import { MuiBox } from '../../../theme/MuiBox/MuiBox';
 import { LihoClient } from '../../../../client';
+import { MuiBox } from '../../../Theme/MuiBox/MuiBox';
 
 
 function UploadFile({ onUpload }) {

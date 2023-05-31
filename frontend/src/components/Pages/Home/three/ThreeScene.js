@@ -5,9 +5,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import ReactDOM from 'react-dom';
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
-import theme from '../../../theme/theme';
 import { Box, Typography, Paper } from '@mui/material';
-
+import theme from '../../../Theme/Theme';
 
 
 
@@ -317,7 +316,6 @@ const ThreeScene = ({ apiData }) => {
       guiStyle(folder1);
       guiStyle(folder2);
       guiStyle(folder3);
-
 
 
 

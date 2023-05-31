@@ -1,7 +1,7 @@
 import React from 'react'
 import { AppBar, Toolbar, Typography, Link, Box } from '@mui/material'
-import theme from '../theme/theme'
 import headerItems from './HeaderItems'
+import theme from '../Theme/Theme'
 
 
 export default function Header() {
