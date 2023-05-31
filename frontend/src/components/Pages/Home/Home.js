@@ -75,6 +75,7 @@ function Home() {
               <Grid item xs={12} md={10}>
                 {gltfData != null && (
                   <Box sx={{ flexGrow: 1 }}><ThreeScene ref={componentRef} apiData={gltfData} /></Box>
+
                 )}
                   <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex' }} id='canvas'>
                       <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'></Paper>

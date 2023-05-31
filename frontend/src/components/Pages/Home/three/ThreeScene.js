@@ -12,6 +12,7 @@ import theme from '../../../Theme/Theme';
 
 const ThreeScene = ({ apiData }) => {
   const [divRef, setDivRef] = React.useState();
+  //const [leyenda, setLeyenda] = React.useState();
   const refChangeHandler = (sceneRef) => {
     if (!sceneRef) return;
     setDivRef(sceneRef);
