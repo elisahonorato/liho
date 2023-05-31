@@ -1,3 +1,4 @@
+import requests
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
@@ -20,8 +21,8 @@ class PruebaView(APIView):
                 return HttpResponse("Archivo con formato incorrecto", status=400)
 
             user_filename = request.data.get("userFilename")
-
-            # Move the first element of the queue to the last position
+            if user_filename is None or user_filename == "null" or user_filename == "":
+                user_filename = "modelo"
 
             file = File.objects.create(url=uploaded_file, title=user_filename)
             gltf = GLTFFile.objects.create(file=file)
