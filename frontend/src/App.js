@@ -20,7 +20,9 @@ function App() {
         <Header />
           <Container maxWidth="xl" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/liho" element={<Home />} />
+
             <Route path="/tutorial" element={<Tutorial />} />
           </Routes>
           <footer style={{padding: "20px", marginTop: "auto" }}>
