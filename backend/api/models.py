@@ -31,6 +31,8 @@ class GLTFFile(models.Model):
         try:
             import bpy
             import logging
+            context = bpy.context
+            active_object = context.active_object
 
             if bpy.context.active_object is not None:
                 # Access the active object here

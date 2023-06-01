@@ -35,7 +35,6 @@ function UploadFile({ onUpload }) {
       await sendRequest(15, 15, file);
       setResponse("Archivo subido con éxito");
 
-
       sendRequest(null, null, file);
     } catch (err) {
       setTimeout(() => {

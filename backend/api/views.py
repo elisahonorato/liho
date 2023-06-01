@@ -1,37 +1,44 @@
 import base64
 import os
+import concurrent.futures
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 
 from .models import *
 from .serializers import *
+import threading
 
 
 class PruebaView(APIView):
     parser_classes = [MultiPartParser]
-    queue = [f"model{i}" for i in range(1, 3)]
-    client_count = 0  # Variable to count the number of clients
+    max_clients = 2
+    client_count = 0
+    queue_lock = threading.Lock()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.filename = None
 
     def post(self, request):
         try:
-            ip_address = request.META.get("REMOTE_ADDR")
-            print("IP Address:", ip_address, "Client count:", PruebaView.client_count)
-
             uploaded_file = request.FILES.get("file")
             if not uploaded_file:
-                if request.data.get('success') == 'true':
+                if request.data.get('message') == "success":
                     print("Success")
-                    return HttpResponse(request.MESSAGES, status=400)
+                    return HttpResponse("Procesando el archivo completo", status=200)
                 return HttpResponse("Error: No file uploaded", status=400)
 
             if uploaded_file.content_type != "text/csv":
                 return HttpResponse("Archivo con formato incorrecto", status=400)
 
             user_filename = request.data.get("userFilename")
-            if user_filename is None or user_filename == "null" or user_filename == "":
-                user_filename = self.queue.pop(0)
-                self.queue.append(user_filename)
+            if user_filename is None or user_filename == "null" or user_filename == "" or user_filename == "undefined":
+                with self.queue_lock:
+                    self.client_count += 1
+                    if self.client_count > self.max_clients:
+                        return HttpResponse("Error: Maximum number of clients reached", status=400)
+                    user_filename = f"model{self.client_count}"
 
             file = File.objects.create(url=uploaded_file, title=user_filename)
             gltf = GLTFFile.objects.create(file=file)
@@ -43,25 +50,33 @@ class PruebaView(APIView):
             if n_columns is None or n_columns == "null":
                 n_columns = None
 
-            response = gltf.generate_gltf(n_samples, n_columns, user_filename)
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(
+                    self.process_request,
+                    request,
+                    gltf,
+                    n_samples,
+                    n_columns,
+                )
+                response = future.result()
 
-            if gltf.dict is not None:
-                PruebaView.client_count += 1
-
-                # Base64 encode the GLTF file content
-                with open(gltf.path, 'rb') as file:
-                    gltf_content = file.read()
-                gltf_base64 = base64.b64encode(gltf_content).decode('utf-8')
-
-                # Include the GLTF file content in the JSON response
-                response['file_content'] = gltf_base64
-                # Create a JSON response with the file content and other data
-                return JsonResponse(response, status=200)
-            else:
-                return HttpResponse(response, status=400)
+            if response is not None:
+                return JsonResponse(response, status=200, safe=False)  # Set safe parameter to False
 
         except Exception as e:
             return HttpResponse(str(e), status=500)
+
+    def process_request(self, request, gltf, n_samples, n_columns):
+        response = gltf.generate_gltf(n_samples, n_columns, self.filename)
+
+        if gltf.dict is not None:
+            with open(gltf.path, "rb") as file:
+                gltf_content = file.read()
+            gltf_base64 = base64.b64encode(gltf_content).decode("utf-8")
+
+            response["file_content"] = gltf_base64
+
+        return response
 
     def get(self, request):
         return HttpResponse("Método no permitido", status=405)
