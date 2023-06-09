@@ -37,6 +37,7 @@ mediafiles/csv
 *.csv
 *.pem
 *.key
+*.txt
 backend/credentials
 backend/media/csv
 
