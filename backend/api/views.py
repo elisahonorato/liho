@@ -57,6 +57,7 @@ class PruebaView(APIView):
                     gltf,
                     n_samples,
                     n_columns,
+                    user_filename,
                 )
                 response = future.result()
 
@@ -66,8 +67,8 @@ class PruebaView(APIView):
         except Exception as e:
             return HttpResponse(str(e), status=500)
 
-    def process_request(self, request, gltf, n_samples, n_columns):
-        response = gltf.generate_gltf(n_samples, n_columns, self.filename)
+    def process_request(self, request, gltf, n_samples, n_columns, filename):
+        response = gltf.generate_gltf(n_samples, n_columns, filename)
 
         if gltf.dict is not None:
             with open(gltf.path, "rb") as file:

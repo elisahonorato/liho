@@ -1,25 +1,29 @@
 import * as THREE from 'three';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect} from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import ReactDOM from 'react-dom';
+
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import theme from '../../../Theme/Theme';
 
 
 
 const ThreeScene = ({ apiData }) => {
+
   const [divRef, setDivRef] = React.useState();
-  //const [leyenda, setLeyenda] = React.useState();
+  const [colorLegendData, setColorLegendData] = React.useState([]);
+
+
   const refChangeHandler = (sceneRef) => {
     if (!sceneRef) return;
     setDivRef(sceneRef);
   }
+
   const createScene = useCallback(async (sceneRef, data) => {
     console.log(data);
-    const list = [];
+
     // scene
     const scene = new THREE.Scene();
 
@@ -29,9 +33,10 @@ const ThreeScene = ({ apiData }) => {
 
     // renderer
     const renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
-    const canvas = document.getElementById('canvas');
+    sceneRef.appendChild(renderer.domElement);
 
-    const width = canvas.clientWidth;
+    const width = sceneRef.clientWidth;
+
     const height = width * (window.innerHeight / window.innerWidth);
     renderer.setSize(width, height);
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -41,7 +46,12 @@ const ThreeScene = ({ apiData }) => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
     renderer.domElement.id = 'scene';
-    canvas.appendChild(renderer.domElement);
+
+
+    camera.position.z = data.vol_relativo * 2/3;
+
+
+
     camera.position.z = data.vol_relativo * 2/3;
 
     // lights
@@ -65,7 +75,6 @@ const ThreeScene = ({ apiData }) => {
 
     let model;
     let volumen_total;
-    const leyendaColores = document.getElementById("leyendaColores");
     let new_color;
 
 
@@ -96,8 +105,10 @@ const ThreeScene = ({ apiData }) => {
           );
         });
 
-        // Process the loaded modelo (gltf object)
-        model = gltf.scene;
+        // Process the loaded model (gltf object)
+        return gltf.scene;
+
+
 
       } catch (error) {
         // Handle any errors that occur during the fetch or parsing
@@ -105,21 +116,14 @@ const ThreeScene = ({ apiData }) => {
       }
     }
 
-
-    let modelo = await loadModel();
+    model = await loadModel();
     if (model) {
-
       model.scale.set(0.5, 0.5, 0.5);
-      new_color = true;
-      defaultColors(colorDefault, new_color);
+      defaultColors(colorDefault, true);
       volumen_total = model.getObjectByName("Volumen_Total")
       volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
       showVolumen_relativo(false);
-
-
-      list.push("Todos");
-      createGui(list);
-
+      createGui();
       scene.add(model);
     }
 
@@ -130,9 +134,8 @@ const ThreeScene = ({ apiData }) => {
         for (var i = 0; i < model.children.length; i++) {
           for (var j = 0; j < model.children[i].children.length; j++) {
             if (model.children[i].children[j].name.includes("model_volumen_relativo")) {
-              modelo = model.children[i].children[j];
-              modelo.visible = visibility;
-              modelo.material = volume_material;
+              model.children[i].children[j].visible = visibility;
+              model.children[i].children[j].material = volume_material;
 
             }}}}}
 
@@ -140,72 +143,50 @@ const ThreeScene = ({ apiData }) => {
     function showVolumen_total( visibility ) {
       volumen_total.visible = visibility;
     }
-    function showLeyendaColores(visibility) {
-      leyendaColores.visible = visibility;
 
-    }
-    function defaultColors (color_dict, new_color) {
-      const list_colores = [];
-      for (let i = 0; i < data.samples.length; i++) {
-        list.push(data.samples[i]);
-        // Obtener Muestra
-        const parent = model.getObjectByName(data.samples[i]);
-        if (parent) {
-          parent.material = volume_material;
-          // Obtener Variables
-          for (let j = 0; j < data.variables.length; j++) {
-            if (!list_colores.includes(data.variables[j])) {
-              if (new_color) {
-                var div = leyendaColores.appendChild(document.createElement("div"));
-                div.style.display = "flex";
-                div.style.flexDirection = "row";
-                div.style.alignItems = "center";
-                div.style.padding = "0px";
-                div.style.fontSize = theme.typography.p.fontSize;
+    function defaultColors(colorDict, newColor) {
+      setColorLegendData(prevData => {
+        const updatedData = [...prevData];
 
+        for (let i = 0; i < data.variables.length; i++) {
+          const variable = data.variables[i];
 
+          if (!updatedData.some(item => item.id === variable)) {
+            updatedData.push({
+              id: variable,
+              color: colorDict[i],
+              text: variable
+            });
+          }
 
-                var cube = div.appendChild(document.createElement("div"));
-                cube.style.backgroundColor = color_dict[j];
-                cube.id = data.variables[j];
-                cube.style.width = "10px";
-                cube.style.height = "10px";
-                cube.style.marginRight = "5px";
-                cube.style.borderRadius = "50%";
+          for (let j = 0; j < data.samples.length; j++) {
+            const parent = model.getObjectByName(data.samples[j]);
 
-                var p = div.appendChild(document.createElement("p"));
-                renderTypography(data.variables[j], p);
-              }
-              cube = document.getElementById(data.variables[j]);
-              cube.style.backgroundColor = color_dict[j];
+            if (parent) {
+              parent.material = volume_material;
 
-              list_colores.push(data.variables[j]);
+              for (let k = 0; k < parent.children.length; k++) {
+                console.log(variable)
 
-            }
+                if (parent.children[k].name.includes(variable)) {
+                  parent.children[k].visible = true;
 
-
-            for(let k = 0; k < parent.children.length; k++) {
-              if (parent.children[k].name.includes(data.variables[j])) {
-                parent.children[k].visible = true;
-                // eslint-disable-next-line no-prototype-builtins
-                if (color_dict.hasOwnProperty(j)) {
-                  var color = new THREE.Color( color_dict[j]);
-                } else {
-                  color = new THREE.Color( Math.random() * 0xffffff );
+                  const color = newColor ? colorDict[i] : new THREE.Color(Math.random() * 0xffffff);
+                  parent.children[k].material = new THREE.MeshBasicMaterial({
+                    color,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.8
+                  });
                 }
-                parent.children[k].material = new THREE.MeshBasicMaterial( { color: color, wireframe: true, transparent: true, opacity: 0.8});
               }
-            }}}}}
+            }
+          }
+        }
 
-    function renderTypography( texto, componente ) {
-      const typography = (
-        <Typography variant="p" fontFamily={theme.typography.fontFamily} lineHeight={theme.typography.p.lineHeight} fontSize={theme.typography.p.fontSize}>
-          {texto}
-        </Typography>
-      );
-      ReactDOM.render(typography, componente);
+        return updatedData;
+      });
     }
-
     function distribuir(visibility){
       const size = 10
       const slicedArr = [];
@@ -238,23 +219,12 @@ const ThreeScene = ({ apiData }) => {
     }
     function guiStyle(element) {
       element.domElement.style.setProperty('font-family', theme.typography.fontFamily);
-      element.domElement.style.setProperty('font-size', `${theme.typography.fontSize}px`);
-      element.domElement.style.setProperty('font-weight', theme.typography.fontWeightRegular);
-      element.domElement.style.setProperty('line-height', 'normal');
-      element.domElement.style.setProperty('background-color', theme.palette.background.paper);
-      element.domElement.style.setProperty('color', theme.palette.text.primary);
-      element.domElement.style.setProperty('border-radius', theme.shape.borderRadius);
-      element.domElement.querySelector('.title').style.setProperty('background-color', theme.palette.background.paper);
-      element.domElement.querySelector('.title').style.setProperty('color', theme.palette.text.primary);
-      element.domElement.querySelector('.title').style.setProperty('border-radius', theme.shape.borderRadius);
-      element.domElement.querySelector('.display').style.setProperty('background-color', theme.palette.secondary.main);
     }
 
-
-    function createGui( list ) {
+    function createGui() {
 
       const gui = new GUI();
-      var div = canvas.appendChild(document.createElement('div'));
+      var div = sceneRef.appendChild(document.createElement('div'));
       div.appendChild(gui.domElement);
 
       gui.domElement.id = 'gui';
@@ -277,7 +247,7 @@ const ThreeScene = ({ apiData }) => {
       }
 
       const folder1 = gui.addFolder( 'Muestras' );
-      folder1.add(settings, 'Elegir Muestra', list).onChange(function(value) {
+      folder1.add(settings, 'Elegir Muestra', data.samples).onChange(function(value) {
         for (let i = 0; i < data.samples.length; i++) {
           if (value === "Todos") {
             const parent = model.getObjectByName(data.samples[i]);
@@ -315,7 +285,7 @@ const ThreeScene = ({ apiData }) => {
 
       });
       const folder3 = gui.addFolder( 'Descripción' );
-      folder3.add(settings, 'Mostrar Datos').onChange( showLeyendaColores );
+
 
       folder3.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
         if (value === "Volumen") {
@@ -340,7 +310,7 @@ const ThreeScene = ({ apiData }) => {
     return (
 
       <Box sx={{display: "flex"}}>
-        <Box id='leyenda' sx={{display: "flex"}}>
+        <Box id='colorLegendDiv' sx={{display: "flex"}}>
         </Box>
       </Box>
     );
@@ -383,25 +353,37 @@ const ThreeScene = ({ apiData }) => {
       light.position.copy(camera.position);
       controls.update();
       renderer.render( scene, camera );
+
       }
     }
     animate();
   }, []);
   useEffect(() => {
-    console.log('data', apiData, !divRef);
-    if (!divRef) return;
-    const exScene = document.getElementById('scene')
-    if (exScene) {
-      exScene.remove();
-    }
+    if (!apiData || !divRef) return;
+
+
     createScene(divRef, apiData);
-  }, [apiData, divRef, createScene])
-  return  <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex' }} ref={refChangeHandler}>
+  }, [apiData, divRef, createScene]);
 
-
-  </Paper>;
+  return (
+    <>
+      <div id='canvas' ref={refChangeHandler}>
+        <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <Paper id='leyenda' sx={{ marginBottom: '10px' }}>
+            {colorLegendData.map((item) => (
+              <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '5px'}}>
+                <div style={{ backgroundColor: item.color, width: '10px', height: '10px', borderRadius: '50%' }} id={item.id}></div>
+                <Typography variant="body2" sx={{ fontSize: '12px' }}>
+                  {item.text}
+                </Typography>
+              </div>
+            ))}
+          </Paper>
+        </Paper>
+      </div>
+      {/* Rest of the JSX */}
+    </>
+  );
 };
-
-
 
 export default ThreeScene;

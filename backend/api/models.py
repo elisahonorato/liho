@@ -177,4 +177,17 @@ class GLTFFile(models.Model):
 
 
 def round_number(number):
-    return int(round(number, 5) * 1000)
+    if isinstance(number, str):
+        number = number.replace(',', '.')  # Replace comma with period if the input is a string
+
+    # Convert the number to a float if it's not already
+    number = float(number)
+    if number == float(number):
+        number = float(number)
+    else:
+        number = 0
+
+    # Round the number and truncate it to an integer
+    rounded_number = int(round(number, 5) * 1000)
+
+    return rounded_number

@@ -78,8 +78,6 @@ function Home() {
 
                 )}
                   <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex' }} id='canvas'>
-                      <Paper elevation={0} sx={{ display: 'content' , padding: '20'}} id='leyendaColores'></Paper>
-                      <Typography id= "texto" variant="h6" gutterBottom></Typography>
 
                   </Paper>
 

@@ -12,7 +12,7 @@ services:
     restart: always
 
   web:
-    image: 504665151496.dkr.ecr.us-east-1.amazonaws.com/liho:latest
+    build: .
     container_name: web
     command: gunicorn liho.wsgi:application --bind 0.0.0.0:8000 -w 2
     volumes:

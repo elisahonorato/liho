@@ -9,7 +9,8 @@ function UploadFile({ onUpload }) {
   const [file, setFile] = useState();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');
-  const [userFilename, setUserFilename] = useState('null');
+  const [userFilename, setUserFilename] = useState(null);
+
 
   const handleSelectedFile = (event) => {
     setFile(event.target.files[0]);
@@ -72,4 +73,3 @@ function UploadFile({ onUpload }) {
 }
 
 export default UploadFile;
-

@@ -22,7 +22,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/liho" element={<Home />} />
-
             <Route path="/tutorial" element={<Tutorial />} />
           </Routes>
           <footer style={{padding: "20px", marginTop: "auto" }}>
