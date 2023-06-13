@@ -12,6 +12,7 @@ node_modules/
 # production
 /build
 /node_modules
+*.log
 
 
 # misc
