@@ -16,15 +16,15 @@ const ThreeScene = ({ apiData }) => {
   const [colorLegendData, setColorLegendData] = React.useState([]);
 
 
-
-
   const refChangeHandler = (sceneRef) => {
     if (!sceneRef) return;
     setDivRef(sceneRef);
+
   }
 
   const createScene = useCallback(async (sceneRef, data) => {
-    console.log(data);
+    if (!sceneRef) return;
+
 
     // scene
     const scene = new THREE.Scene();
@@ -35,7 +35,22 @@ const ThreeScene = ({ apiData }) => {
 
     // renderer
     const renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
+    refChangeHandler(sceneRef)
+    if (sceneRef) {
+      const canvasElements = sceneRef.getElementsByTagName('canvas');
+      if (canvasElements.length > 0) {
+        const canvasToRemove = canvasElements[0];
+        sceneRef.removeChild(canvasToRemove);
+      }
+    }
+
+
     sceneRef.appendChild(renderer.domElement);
+
+
+
+
+
 
     const width = sceneRef.clientWidth;
 
@@ -108,7 +123,6 @@ const ThreeScene = ({ apiData }) => {
         });
 
         // Process the loaded model (gltf object)
-        scene.add(gltf.scene);
         return gltf.scene;
 
 
@@ -127,10 +141,8 @@ const ThreeScene = ({ apiData }) => {
       volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
       showVolumen_relativo(false);
       createGui();
-
-
+      scene.add(model);
     }
-
 
 
 
@@ -224,25 +236,13 @@ const ThreeScene = ({ apiData }) => {
     }
     function guiStyle(element) {
       element.domElement.style.setProperty('font-family', theme.typography.fontFamily);
-      element.domElement.style.setProperty('font-size', '12px');
-      element.domElement.style.setProperty('color', theme.palette.text.primary);
-      element.domElement.style.setProperty('background-color', theme.palette.background.default);
-      element.domElement.style.setProperty('border-radius', '5px');
-      element.domElement.style.setProperty('border', '1px solid #ccc');
-      element.domElement.style.setProperty('padding', '10px');
-      element.domElement.style.setProperty('overflow', 'auto');
-      element.domElement.style.setProperty('max-height', '100vh');
-      element.domElement.style.setProperty('max-width', '300px');
-      element.domElement.style.setProperty('z-index', '1000');
-
-
-
     }
 
     function createGui() {
 
       const gui = new GUI();
-      sceneRef.appendChild(gui.domElement);
+      var div = sceneRef.appendChild(document.createElement('div'));
+      div.appendChild(gui.domElement);
 
       gui.domElement.id = 'gui';
       gui.domElement.style.setProperty('position', 'absolute');
@@ -374,12 +374,12 @@ const ThreeScene = ({ apiData }) => {
 
 
     createScene(divRef, apiData);
-
   }, [apiData, divRef, createScene]);
 
   return (
     <>
       <Paper id='canvas' ref={refChangeHandler} elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'row' }}>
+          <Paper id='gui' elevation={0} sx={{ position: 'absolute', top: '0', fontFamily: theme.typography.fontFamily }}></Paper>
           <Paper id='leyenda' elevation={0} sx={{ marginBottom: '10px' }}>
             {colorLegendData.map((item) => (
               <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '5px'}}>
