@@ -108,6 +108,7 @@ const ThreeScene = ({ apiData }) => {
         });
 
         // Process the loaded model (gltf object)
+        scene.add(gltf.scene);
         return gltf.scene;
 
 
@@ -125,8 +126,6 @@ const ThreeScene = ({ apiData }) => {
       volumen_total = model.getObjectByName("Volumen_Total")
       volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
       showVolumen_relativo(false);
-
-      scene.add(model);
       createGui();
 
 
