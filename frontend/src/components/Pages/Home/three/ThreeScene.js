@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent} from './colors';
-import { Box, Paper, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import theme from '../../../Theme/Theme';
 
 
@@ -14,6 +14,8 @@ const ThreeScene = ({ apiData }) => {
 
   const [divRef, setDivRef] = React.useState();
   const [colorLegendData, setColorLegendData] = React.useState([]);
+
+
 
 
   const refChangeHandler = (sceneRef) => {
@@ -123,9 +125,13 @@ const ThreeScene = ({ apiData }) => {
       volumen_total = model.getObjectByName("Volumen_Total")
       volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
       showVolumen_relativo(false);
-      createGui();
+
       scene.add(model);
+      createGui();
+
+
     }
+
 
 
 
@@ -219,13 +225,25 @@ const ThreeScene = ({ apiData }) => {
     }
     function guiStyle(element) {
       element.domElement.style.setProperty('font-family', theme.typography.fontFamily);
+      element.domElement.style.setProperty('font-size', '12px');
+      element.domElement.style.setProperty('color', theme.palette.text.primary);
+      element.domElement.style.setProperty('background-color', theme.palette.background.default);
+      element.domElement.style.setProperty('border-radius', '5px');
+      element.domElement.style.setProperty('border', '1px solid #ccc');
+      element.domElement.style.setProperty('padding', '10px');
+      element.domElement.style.setProperty('overflow', 'auto');
+      element.domElement.style.setProperty('max-height', '100vh');
+      element.domElement.style.setProperty('max-width', '300px');
+      element.domElement.style.setProperty('z-index', '1000');
+
+
+
     }
 
     function createGui() {
 
       const gui = new GUI();
-      var div = sceneRef.appendChild(document.createElement('div'));
-      div.appendChild(gui.domElement);
+      sceneRef.appendChild(gui.domElement);
 
       gui.domElement.id = 'gui';
       gui.domElement.style.setProperty('position', 'absolute');
@@ -307,13 +325,7 @@ const ThreeScene = ({ apiData }) => {
 
 
 
-    return (
 
-      <Box sx={{display: "flex"}}>
-        <Box id='colorLegendDiv' sx={{display: "flex"}}>
-        </Box>
-      </Box>
-    );
 
 
     }
@@ -363,13 +375,13 @@ const ThreeScene = ({ apiData }) => {
 
 
     createScene(divRef, apiData);
+
   }, [apiData, divRef, createScene]);
 
   return (
     <>
-      <div id='canvas' ref={refChangeHandler}>
-        <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          <Paper id='leyenda' sx={{ marginBottom: '10px' }}>
+      <Paper id='canvas' ref={refChangeHandler} elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'row' }}>
+          <Paper id='leyenda' elevation={0} sx={{ marginBottom: '10px' }}>
             {colorLegendData.map((item) => (
               <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '5px'}}>
                 <div style={{ backgroundColor: item.color, width: '10px', height: '10px', borderRadius: '50%' }} id={item.id}></div>
@@ -379,8 +391,7 @@ const ThreeScene = ({ apiData }) => {
               </div>
             ))}
           </Paper>
-        </Paper>
-      </div>
+      </Paper>
       {/* Rest of the JSX */}
     </>
   );

@@ -77,9 +77,6 @@ function Home() {
                   <Box sx={{ flexGrow: 1 }}><ThreeScene ref={componentRef} apiData={gltfData} /></Box>
 
                 )}
-                  <Paper elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex' }} id='canvas'>
-
-                  </Paper>
 
               </Grid>
             </Grid>
