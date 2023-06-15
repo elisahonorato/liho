@@ -236,6 +236,12 @@ const ThreeScene = ({ apiData }) => {
     }
     function guiStyle(element) {
       element.domElement.style.setProperty('font-family', theme.typography.fontFamily);
+      element.domElement.style.setProperty('font-size', theme.typography.fontSize);
+      element.domElement.style.setProperty('background-color', theme.palette.background.default);
+      element.domElement.style.setProperty('color', theme.palette.text.primary);
+      element.domElement.style.setProperty('border-radius', theme.shape.borderRadius);
+      element.domElement.style.setProperty('border', theme.palette.text.primary);
+      element.domElement.style.setProperty('padding', theme.spacing(1));
     }
 
     function createGui() {
@@ -308,26 +314,15 @@ const ThreeScene = ({ apiData }) => {
 
 
       });
-      const folder3 = gui.addFolder( 'Descripción' );
 
 
-      folder3.add(settings, 'Elegir Variable', data.variables).onChange( function(value) {
-        if (value === "Volumen") {
-          showVolumen_relativo(true);
-          showVolumen_total(false);
-        } else if (value === "Volumen Total") {
-          showVolumen_relativo(false);
-          showVolumen_total(true);
-        } else {
-          showVolumen_relativo(false);
-          showVolumen_total(false);
-        }
-      });
+
+
 
       guiStyle(gui)
       guiStyle(folder1);
       guiStyle(folder2);
-      guiStyle(folder3);
+
 
 
 
