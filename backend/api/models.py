@@ -82,7 +82,7 @@ class GLTFFile(models.Model):
                 if sample_name != None:
                     dict["samples"].append(sample_name)
                     bpy.ops.mesh.primitive_uv_sphere_add(
-                        location=(0, 0, 0), radius=volume / 10000
+                        location=(0, 0, 0), radius=volume / 1000000
                     )
                     parent = bpy.context.active_object
                     parent.name = sample_name

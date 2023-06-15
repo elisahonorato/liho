@@ -264,19 +264,26 @@ const ThreeScene = ({ apiData }) => {
       }
 
       const folder1 = gui.addFolder( 'Muestras' );
+      console.log("modelo",model)
       folder1.add(settings, 'Elegir Muestra', data.samples).onChange(function(value) {
+      if (model) {
         for (let i = 0; i < data.samples.length; i++) {
           if (value === "Todos") {
-            const parent = model.getObjectByName(data.samples[i]);
-            parent.visible = true;
+            const parent = model.parent;
+            if (parent !== undefined) {
+              parent.visible = true;
+            }
           }
           else {
-            const parent = model.getObjectByName(data.samples[i]);
-            parent.visible = false;
-            if (value === data.samples[i]) {
+            const parent = model.getObjectByName(apiData.samples[i]);
+            if (parent !== undefined) {
+              parent.visible = false;
+            }
+            if (value === apiData.samples[i]) {
               parent.visible = true;
             }
           }}
+      }
       });
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
       folder1.add(settings, 'Mostrar Volumen Total').onChange( showVolumen_total );
