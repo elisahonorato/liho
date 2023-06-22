@@ -61,8 +61,11 @@ class PruebaView(APIView):
                 )
                 response = future.result()
 
-            if response is not None:
+            if type(response) is dict:
+                print("Success")
                 return JsonResponse(response, status=200, safe=False)  # Set safe parameter to False
+            else:
+                return HttpResponse(response, status=500)
 
         except Exception as e:
             return HttpResponse(str(e), status=500)

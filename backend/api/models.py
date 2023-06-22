@@ -79,7 +79,7 @@ class GLTFFile(models.Model):
                 numero_x = intervalo[0]
 
                 sample_name = str(row[0])
-                if sample_name != None:
+                if sample_name != None and sample_name != "" and sample_name != " " and sample_name != "nan" and sample_name != "NaN":
                     dict["samples"].append(sample_name)
                     bpy.ops.mesh.primitive_uv_sphere_add(
                         location=(0, 0, 0), radius=volume / 1000000

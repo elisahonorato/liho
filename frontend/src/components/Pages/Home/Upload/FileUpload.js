@@ -30,23 +30,25 @@ function UploadFile({ onUpload }) {
 
   }, [onUpload, userFilename]);
 
-  const handleUpload = useCallback(async () => {
-    setLoading(true);
-    try {
-      await sendRequest(15, 15, file);
-      setResponse("Archivo subido con éxito");
-
-      sendRequest(null, null, file);
-    } catch (err) {
-      setTimeout(() => {
-        setResponse("Error: El servidor no está respondiendo");
-        setLoading(false);
-      }, 10000); // Delay of 5 seconds
+const handleUpload = useCallback(async () => {
+  setLoading(true);
+  try {
+    await sendRequest(15, 15, file);
+    setResponse("Archivo subido con éxito");
+    sendRequest(null, null, file);
+  } catch (err) {
+    setTimeout(() => {
+      setResponse("Error: El servidor no está respondiendo");
+      setLoading(false);
+    }, 10000); // Delay of 5 seconds
+    if (err.response) {
       setResponse(err.response.data);
+    } else {
+      setResponse("Error: " + err.message);
     }
     setLoading(false);
-  }, [file, sendRequest]);
-
+  }
+}, [file, sendRequest]);
   return (
     <MuiBox>
       <Button variant="contained" color="secondary" component="label">

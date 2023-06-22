@@ -39,8 +39,10 @@ const ThreeScene = ({ apiData }) => {
     if (sceneRef) {
       const canvasElements = sceneRef.getElementsByTagName('canvas');
       if (canvasElements.length > 0) {
-        const canvasToRemove = canvasElements[0];
-        sceneRef.removeChild(canvasToRemove);
+        for (let i = 0; i < canvasElements.length; i++) {
+          const canvasToRemove = canvasElements[i];
+          sceneRef.removeChild(canvasToRemove);
+        }
       }
     }
 
@@ -183,8 +185,7 @@ const ThreeScene = ({ apiData }) => {
               parent.material = volume_material;
 
               for (let k = 0; k < parent.children.length; k++) {
-                console.log(variable)
-
+      
                 if (parent.children[k].name.includes(variable)) {
                   parent.children[k].visible = true;
 
@@ -262,6 +263,7 @@ const ThreeScene = ({ apiData }) => {
         "Mostrar Volumen Total": true,
         "Mostrar Datos": true,
         "Colores por Default": "Default",
+        
         "Distribuir": false,
         "Cargar todas las muestras" : false,
         "Mostrar Leyenda": true,
