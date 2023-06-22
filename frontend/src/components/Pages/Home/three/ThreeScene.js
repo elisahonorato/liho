@@ -48,6 +48,7 @@ const ThreeScene = ({ apiData }) => {
 
 
     sceneRef.appendChild(renderer.domElement);
+    
 
 
 
@@ -137,19 +138,27 @@ const ThreeScene = ({ apiData }) => {
 
     model = await loadModel();
     if (model) {
+      
       model.scale.set(0.5, 0.5, 0.5);
+      setColorLegendData([])
+     
       defaultColors(colorDefault, true);
       volumen_total = model.getObjectByName("Volumen_Total")
       volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
       showVolumen_relativo(false);
+      showVolumen_total(false);
       createGui();
+
+    
       scene.add(model);
     }
+    
+    
 
 
 
     function showVolumen_relativo( visibility ) {
-      if (model) {
+      if (model !== undefined) {
         for (var i = 0; i < model.children.length; i++) {
           for (var j = 0; j < model.children[i].children.length; j++) {
             if (model.children[i].children[j].name.includes("model_volumen_relativo")) {
@@ -235,27 +244,47 @@ const ThreeScene = ({ apiData }) => {
       showVolumen_total(false);
 
     }
-    function guiStyle(element) {
-      element.domElement.style.setProperty('font-family', theme.typography.fontFamily);
-      element.domElement.style.setProperty('font-size', theme.typography.fontSize);
-      element.domElement.style.setProperty('background-color', theme.palette.background.default);
-      element.domElement.style.setProperty('color', theme.palette.text.primary);
-      element.domElement.style.setProperty('border-radius', theme.shape.borderRadius);
-      element.domElement.style.setProperty('border', theme.palette.text.primary);
-      element.domElement.style.setProperty('padding', theme.spacing(1));
-    }
+function setMuiStyles(element) {
+  const styles = {
+    fontFamily: theme.typography.fontFamily,
+    fontSize: theme.typography.fontSize,
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.text.primary,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    zIndex: 10000,
+  };
+
+  Object.keys(styles).forEach((property) => {
+    element.style[property] = styles[property];
+  });
+
+  const folders = element.querySelectorAll('.tgp-folder');
+  if (folders) {
+    folders.forEach((folder) => {
+      folder.style.color = '#FFFFFF'; // Set folder text color to white
+    });
+  }
+
+  const canvasRect = document.getElementById('canvas').getBoundingClientRect();
+  const topOffset = canvasRect.top;
+  element.style.top = `${topOffset}px`;
+}
 
     function createGui() {
-
+      if (document.getElementById('gui') !== null){
+        document.getElementById('gui').remove();
+      }
+    
+      
       const gui = new GUI();
-      var div = sceneRef.appendChild(document.createElement('div'));
-      div.appendChild(gui.domElement);
-
       gui.domElement.id = 'gui';
       gui.domElement.style.setProperty('position', 'absolute');
       gui.domElement.style.setProperty('top', '0');
+      gui.domElement.style.setProperty('z-index', '10000');
+      gui.domElement.style.setProperty('width', 'auto');
 
-
+  
 
       const settings = {
         'Elegir Muestra': "Todos",
@@ -263,6 +292,7 @@ const ThreeScene = ({ apiData }) => {
         "Mostrar Volumen Total": true,
         "Mostrar Datos": true,
         "Colores por Default": "Default",
+    
         
         "Distribuir": false,
         "Cargar todas las muestras" : false,
@@ -272,9 +302,10 @@ const ThreeScene = ({ apiData }) => {
       }
 
       const folder1 = gui.addFolder( 'Muestras' );
-      console.log("modelo",model)
+      console.log("modelo", model)
+     
       folder1.add(settings, 'Elegir Muestra', data.samples).onChange(function(value) {
-      if (model) {
+      if (model !== undefined) {
         for (let i = 0; i < data.samples.length; i++) {
           if (value === "Todos") {
             const parent = model.parent;
@@ -282,15 +313,17 @@ const ThreeScene = ({ apiData }) => {
               parent.visible = true;
             }
           }
-          else {
-            const parent = model.getObjectByName(apiData.samples[i]);
-            if (parent !== undefined) {
-              parent.visible = false;
-            }
-            if (value === apiData.samples[i]) {
-              parent.visible = true;
-            }
-          }}
+          else if (value === data.samples[i]) {
+            const child = model.getObjectByName(data.samples[i]); 
+            if (child !== undefined) {
+              console.log("child", child)
+              child.parent.visible = false;
+              child.visible = true;
+   
+
+            }   
+          }
+      }
       }
       });
       folder1.add(settings, 'Mostrar Volumen').onChange( showVolumen_relativo );
@@ -316,15 +349,11 @@ const ThreeScene = ({ apiData }) => {
 
 
       });
-
-
-
-
-
-      guiStyle(gui)
-      guiStyle(folder1);
-      guiStyle(folder2);
-
+      setMuiStyles(gui.domElement);
+      setMuiStyles(folder1.domElement);
+      setMuiStyles(folder2.domElement);
+ 
+      
 
 
 
@@ -332,6 +361,7 @@ const ThreeScene = ({ apiData }) => {
 
 
     }
+    
     window.addEventListener('mousemove', onMouseMove);
     const raycaster = new THREE.Raycaster();
 
@@ -383,7 +413,6 @@ const ThreeScene = ({ apiData }) => {
   return (
     <>
       <Paper id='canvas' ref={refChangeHandler} elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'row' }}>
-          <Paper id='gui' elevation={0} sx={{ position: 'absolute', top: '0', fontFamily: theme.typography.fontFamily }}></Paper>
           <Paper id='leyenda' elevation={0} sx={{ marginBottom: '10px' }}>
             {colorLegendData.map((item) => (
               <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '5px'}}>
