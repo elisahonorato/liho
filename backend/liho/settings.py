@@ -90,8 +90,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 DATABASES = {
     'default': dj_database_url.config(
-        # Feel free to alter this value to suit your needs.
-        default='postgresql://postgres:postgres@localhost:8000',
+        default='postgres://liho_postgresql_user:AhHOYDKIg3WbplWnDS579h9civNoKQTC@dpg-cibnhud9aq03rjgjtn40-a.oregon-postgres.render.com/liho_postgresql',
         conn_max_age=600
     )
 }
