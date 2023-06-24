@@ -95,8 +95,7 @@ const ThreeScene = ({ apiData }) => {
 
     let model;
     let volumen_total;
-    let new_color;
-
+    
 
     async function loadModel() {
       try {
@@ -142,7 +141,7 @@ const ThreeScene = ({ apiData }) => {
       model.scale.set(0.5, 0.5, 0.5);
       setColorLegendData([])
      
-      defaultColors(colorDefault, true);
+      defaultColors(colorDefault);
       volumen_total = model.getObjectByName("Volumen_Total")
       volumen_total.material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true, opacity: 0.1} );
       showVolumen_relativo(false);
@@ -172,13 +171,14 @@ const ThreeScene = ({ apiData }) => {
       volumen_total.visible = visibility;
     }
 
-    function defaultColors(colorDict, newColor) {
+    function defaultColors(colorDict) {
+    
       setColorLegendData(prevData => {
-        const updatedData = [...prevData];
-
+        const updatedData = [prevData];
+    
         for (let i = 0; i < data.variables.length; i++) {
           const variable = data.variables[i];
-
+    
           if (!updatedData.some(item => item.id === variable)) {
             updatedData.push({
               id: variable,
@@ -186,19 +186,18 @@ const ThreeScene = ({ apiData }) => {
               text: variable
             });
           }
-
+    
           for (let j = 0; j < data.samples.length; j++) {
             const parent = model.getObjectByName(data.samples[j]);
-
+    
             if (parent) {
               parent.material = volume_material;
-
+    
               for (let k = 0; k < parent.children.length; k++) {
-      
                 if (parent.children[k].name.includes(variable)) {
                   parent.children[k].visible = true;
-
-                  const color = newColor ? colorDict[i] : new THREE.Color(Math.random() * 0xffffff);
+    
+                  const color = colorDict[i];
                   parent.children[k].material = new THREE.MeshBasicMaterial({
                     color,
                     wireframe: true,
@@ -210,10 +209,11 @@ const ThreeScene = ({ apiData }) => {
             }
           }
         }
-
+    
         return updatedData;
       });
     }
+    
     function distribuir(visibility){
       const size = 10
       const slicedArr = [];
@@ -334,17 +334,27 @@ function setMuiStyles(element) {
 
       const folder2 = gui.addFolder( 'Materiales' );
       folder2.add(settings, 'Colores por Default', ["Default", "Daltonismo", "Secuencia", "Divergente"]).onChange( function(value) {
-        new_color = false;
+       
         if (value === "Default") {
-          defaultColors(colorDefault, new_color);
+          setColorLegendData(colorDefault)
+          defaultColors(colorDefault);
+          
         } else if (value === "Daltonismo") {
-          defaultColors(colorDaltonic, new_color);
+          setColorLegendData(colorDaltonic)
+          defaultColors(colorDaltonic);
+
         } else if (value === "Secuencia") {
-          defaultColors(colorSequential, new_color);
+          setColorLegendData(colorSequential)
+          defaultColors(colorSequential);
+
         } else if (value === "Divergente") {
-          defaultColors(colorDivergent, new_color);
+          setColorLegendData(colorDivergent)
+          defaultColors(colorDivergent);
+
         } else {
-          defaultColors(colorDefault, new_color);
+          setColorLegendData(colorDefault)
+          defaultColors(colorDefault);
+          
         }
 
 

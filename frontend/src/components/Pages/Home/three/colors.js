@@ -1,83 +1,42 @@
 export const colorDefault = [
-  "#ff0001",   // red
-  "#9900ff",   // purple
-  "#00ff01",   // bright green
-  "#fd6c01",   // orange
-  "#00ccff",   // sky blue
-  "#ffcc00",   // yellow
-  "#ccff00",   // lime green
-  "#0071ff",   // royal blue
-  "#ff00dd",   // fuchsia
-  "#ff91a4",   // light pink
-  "#a4ff91",   // light green
-  "#9194ff",   // lavender
-  "#d891ff",   // lilac
-  "#f9a7b0",   // light coral
-  "#ffa6d0",   // rose
-  "#7f0055",   // deep purple
-  "#001f7f",   // navy blue
-  "#7f3f00",   // brown
-  "#3f007f",   // dark purple
-  "#7f007f",   // magenta
-  "#5c5c5c",   // gray
-  "#4a4a4a",   // dark gray
-  "#8c8c8c",   // light gray
-  "#ffffff",   // white
-  "#000000",   // black
+  "#FF0000", "#8B00FF", "#00FF00", "#FF6600", "#00C7FF",
+  "#FFCC00", "#C4FF00", "#0066FF", "#FF00FF", "#FF96A4",
+  "#A4FF91", "#9A91FF", "#D891FF", "#FFA5B0", "#FF8AD0",
+  "#7F0055", "#001E7F", "#7F4400", "#3F007F", "#7F007F",
+  "#626262", "#444444", "#8C8C8C", "#FFFFFF", "#000000",
+  "#FFAA00", "#00FFAA", "#AA00FF", "#FFAAFF", "#AAFF00",
+  "#FF55AA", "#AAFFAA", "#FF00AA", "#AAFFFF", "#FFFFAA",
+  "#AA00FF", "#FFAAAA", "#FFAA55", "#AAAAFF", "#FF5555"
 ];
-
 
 export const colorDaltonic = [
-  "#ffffb3",
-  "#8dd3c7",
-  "#bebada",
-  "#fb8072",
-  "#80b1d3",
-  "#fdb462",
-  "#b3de69",
-  "#fccde5",
-  "#d9d9d9",
-  "#bc80bd",
-  "#ccebc5",
-  "#ffed6f",
-  "#a65628",
-  "#e6f5d0",
-  "#1f78b4"
+  "#0000FF", "#FFFF00", "#FFA500", "#FFC0CB", "#800080",
+  "#40E0D0", "#ADD8E6", "#964B00", "#808080", "#00FFFF",
+  "#FF00FF", "#006400", "#000080", "#FFFFE0", "#E6E6FA",
+  "#FF7F50", "#808000", "#FFB6C1", "#FFD700", "#C0C0C0",
+  "#F5F5DC", "#98FF98", "#DDA0DD", "#AFEEEE", "#87CEEB",
+  "#FFDAB9", "#9400D3"
 ];
 
-export const colorSequential = [
-  "#eff8e9",
-  "#c7e9c0",
-  "#a1d99b",
-  "#74c476",
-  "#41ab5d",
-  "#238b45",
-  "#006d2c",
-  "#005a20",
-  "#00441b",
-  "#003816",
-  "#002c10",
-  "#00220b",
-  "#001a08",
-  "#001206",
-  "#000a03"
-];
 
-export const colorDivergent= [
-  "#4d4d4d",
-  "#5da5da",
-  "#faa43a",
-  "#60bd68",
-  "#f17cb0",
-  "#b2912f",
-  "#b276b2",
-  "#decf3f",
-  "#f15854",
-  "#4c72b0",
-  "#76b7b2",
-  "#ffa8a8",
-  "#a6daff",
-  "#ffd1a8",
-  "#b1c1c0"
+  export const colorSequential = [
+    "#EAF8E8", "#B4E5BB", "#8AD495", "#62C96F", "#44B95B",
+    "#2E9F44", "#12842C", "#0E7622", "#0A641C", "#084F16",
+    "#063D10", "#04320B", "#032708", "#021B05", "#011101",
+    "#FFEEDD", "#CCEEBB", "#AACCAA", "#88AA88", "#668866",
+    "#446644", "#224422", "#002200", "#001100", "#000000",
+    "#110011", "#220022", "#330033", "#440044", "#550055"
+  ];
+  
+  
+  export const colorDivergent = [
+  "#5DA9DA", "#F6B542", "#74C980", "#EE82B5", "#B9A538",
+  "#B28EB0", "#D8D046", "#F86A68", "#5E79B3", "#7BBAB2",
+  "#FFB5B5", "#A9DFFF", "#FFD3A8", "#B2C7C5", "#537780",
+  "#FF7F00", "#7F7F7F", "#FFD700", "#FF4500", "#6699FF",
+  "#FF69B4", "#9370DB", "#7CFC00", "#FF1493", "#00FFFF",
+  "#8A2BE2", "#A52A2A", "#FF00FF", "#DC143C", "#00BFFF",
+  "#32CD32", "#FF8C00", "#8B0000", "#FF6347", "#ADFF2F",
+  "#B22222", "#FFFF00", "#8FBC8F", "#DB7093", "#00FA9A",
+  "#DAA520", "#FF00FF", "#FFA07A", "#66CDAA"
 ];
-
