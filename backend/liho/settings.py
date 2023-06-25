@@ -89,20 +89,14 @@ WSGI_APPLICATION = "liho.wsgi.application"
 
 import os
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
-if 'RENDER_DATABASE_URL' in os.environ:
-    print(os.environ.get('RENDER_DATABASE_URL'))
-    DATABASES['default'] = dj_database_url.config(
-        default=os.environ.get('RENDER_DATABASE_URL'),
+DATABASES = {
+    'default': dj_database_url.config(
+        # Feel free to alter this value to suit your needs.
+        default='postgres://liho_postgresql_user:AhHOYDKIg3WbplWnDS579h9civNoKQTC@dpg-cibnhud9aq03rjgjtn40-a.oregon-postgres.render.com/liho_postgresql',
         conn_max_age=600
     )
-
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
