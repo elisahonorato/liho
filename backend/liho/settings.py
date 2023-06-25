@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "api",
     "rest_framework",
     "corsheaders",
+    'render.apps.RenderConfig',
 ]
 
 MIDDLEWARE = [
