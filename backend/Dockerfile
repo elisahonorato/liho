@@ -16,7 +16,6 @@ RUN pip install --upgrade pip && pip install poetry && poetry config virtualenvs
 # Copy the rest of the project files
 COPY . .
 
-RUN pip install -r requirements.txt
 # Run Django management commands
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate

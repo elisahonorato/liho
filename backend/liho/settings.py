@@ -89,7 +89,7 @@ WSGI_APPLICATION = "liho.wsgi.application"
 
 import os
 
-
+# Render Config
 DATABASES = {
     'default': dj_database_url.config(
         # Feel free to alter this value to suit your needs.
