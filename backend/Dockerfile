@@ -1,32 +1,33 @@
-# Utiliza una imagen base más reciente de Python
 FROM python:3.10.8-slim
 
-# Instala las dependencias del sistema y elimina la caché
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+# Install system dependencies
+RUN apt-get update -y \
+    && apt-get install -y python3-pip python3-dev build-essential libx11-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Crea el directorio de trabajo
+# Set up the working directory
+RUN mkdir /app
 WORKDIR /app
 
-# Copia los archivos de proyecto e instala las dependencias del proyecto
+# Copy the project files
 COPY pyproject.toml poetry.lock ./
-RUN pip install --upgrade pip && pip install poetry && poetry config virtualenvs.create false
-RUN poetry install --no-dev
 
-# Copia los archivos restantes del proyecto
+# Install project dependencies
+RUN pip install --upgrade pip && pip install poetry && poetry config virtualenvs.create false && poetry install --no-dev
+
+# Copy the rest of the project files
 COPY . .
 
-# Ejecuta los comandos de gestión de Django (collectstatic, migrate, createsuperuser)
+# Run Django management commands
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
 RUN python manage.py createsuperuser
 
-# Instala Gunicorn
+# Install Gunicorn
 RUN pip install gunicorn
 
-# Expone el puerto necesario (ajusta según la configuración de Django)
+# Expose the necessary port (adjust as per your Django settings)
 EXPOSE 8000
 
-# Inicia el servidor utilizando Gunicorn
+# Start the server using Gunicorn
 CMD ["gunicorn", "liho.wsgi:application", "--bind", "0.0.0.0:8000"]
