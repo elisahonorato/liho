@@ -84,4 +84,3 @@ class PruebaView(APIView):
 
     def get(self, request):
         self.post(request)
-        return HttpResponse("Método no permitido", status=405)
