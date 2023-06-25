@@ -1,7 +1,11 @@
-# render.yaml
-
 services:
-  - name: liho
-    env: python
-    buildCommand: docker build -t liho:latest .
-    startCommand: docker run -p 8000:8000 liho:latest
+  - name: nginx
+    type: web
+    env:
+      DOCKER_IMAGE: nginx:latest
+    ports:
+      - 80
+
+    ports:
+      - 8000
+    startCommand: gunicorn liho.wsgi:application --bind 0.0.0.0:8000 -w 2
