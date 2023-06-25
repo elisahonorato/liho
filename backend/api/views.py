@@ -22,6 +22,7 @@ class PruebaView(APIView):
 
     def post(self, request):
         try:
+            print("POST request")
             uploaded_file = request.FILES.get("file")
             if not uploaded_file:
                 if request.data.get('message') == "success":
@@ -83,5 +84,4 @@ class PruebaView(APIView):
         return response
 
     def get(self, request):
-        print("GET request")
         return HttpResponse("GET request")
