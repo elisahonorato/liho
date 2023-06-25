@@ -6,6 +6,30 @@ services:
     ports:
       - 80
 
-    ports:
-      - 8000
+  - name: web
+    env: python
+    buildCommand: poetry install --no-dev && python manage.py collectstatic --noinput
     startCommand: gunicorn liho.wsgi:application --bind 0.0.0.0:8000 -w 2
+    envVars:
+      - key: SECRET_KEY
+        value: "{{ env.SECRET_KEY | default('django-insecure-nr7u^8r&)e%v_%7sclnb$-kfhv17ra*l59_wt7lk4%bp#9f9qf') }}"
+      - key: DATABASE_URL
+        value: "{{ env.DATABASE_URL | default('postgres://liho_postgresql_user:AhHOYDKIg3WbplWnDS579h9civNoKQTC@dpg-cibnhud9aq03rjgjtn40-a.oregon-postgres.render.com/liho_postgresql') }}"
+    ports:
+      
+      - 8000
+    healthCheckPath: /health-check
+    healthCheckPort: 8000
+    healthCheckTimeoutSeconds: 5
+    healthCheckIntervalSeconds: 10
+    healthCheckMaxRetries: 3
+    healthCheckStartPeriodSeconds: 10
+    healthCheckGracePeriodSeconds: 10
+    healthCheckFailureThreshold: 3
+    healthCheckSuccessThreshold: 1
+    healthCheckType: http
+    healthCheckHttpMethod: GET
+    healthCheckHttpPath: /health-check
+    healthCheckHttpProtocol: HTTP
+    healthCheckHttpPort: 8000
+    healthCheckHttpStatusCode: 200
