@@ -1,0 +1,7 @@
+# render.yaml
+
+services:
+  - name: liho
+    env: python
+    buildCommand: docker build -t liho:latest .
+    startCommand: docker run -p 8000:8000 liho:latest
