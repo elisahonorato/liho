@@ -97,6 +97,7 @@ DATABASES = {
 }
 
 if 'RENDER_DATABASE_URL' in os.environ:
+    print(os.environ.get('RENDER_DATABASE_URL'))
     DATABASES['default'] = dj_database_url.config(
         default=os.environ.get('RENDER_DATABASE_URL'),
         conn_max_age=600
