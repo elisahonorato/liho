@@ -146,7 +146,7 @@ class GLTFFile(models.Model):
                 return "El archivo es demasiado grande"
             else:
                 # Se guarda en el objeto
-                dict["path"] = "http://localhost:8000/" + path
+                dict["path"] = "https://liho.onrender.com/probando/" + path
                 dict["userFilename"] = user_filename
                 dict["vol_relativo"] = volume
                 dict["vol_total"] = volume * n_samples
