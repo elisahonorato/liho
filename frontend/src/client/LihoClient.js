@@ -2,7 +2,7 @@ import React from "react";
 import { ApiProvider } from "react-rest-api";
 
 const LihoClient = ({ children }) => {
-    const baseUrl = "https://your-render-url/probando/";
+    const baseUrl = "https://liho.onrender.com/probando";
     const config = {
       headers: {
         // All API calls will take this Content-Type Header
