@@ -4,6 +4,15 @@ import random
 
 import pandas as pd
 from django.db import models
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+  cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
+  cloudinary_api_key = os.environ.get('CLOUDINARY_API_KEY'),
+  cloudinary_api_secret = os.environ.get('CLOUDINARY_API_SECRET')
+)
+
 
 
 def upload_to(instance, filename):
@@ -131,6 +140,11 @@ class GLTFFile(models.Model):
                     filepath=path,
                     # Rest of the export options...
                 )
+                response = cloudinary.uploader.upload(path)
+                cloudinary_url = response["secure_url"]
+                os.remove(path)
+                dict["path"] = cloudinary_url
+
 
                 # Restore console output
                 os.dup2(old_stdout, 1)

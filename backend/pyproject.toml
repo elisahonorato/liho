@@ -17,6 +17,7 @@ dj-database-url = "^2.0.0"
 psycopg2-binary = "^2.9.6"
 whitenoise = {extras = ["brotli"], version = "^6.5.0"}
 boto3 = "^1.26.160"
+cloudinary = "^1.33.0"
 
 [build-system]
 requires = ["poetry-core"]

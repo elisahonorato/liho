@@ -337,6 +337,21 @@ files = [
 ]
 
 [[package]]
+name = "cloudinary"
+version = "1.33.0"
+description = "Python and Django SDK for Cloudinary"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cloudinary-1.33.0.tar.gz", hash = "sha256:19d1b90dc01078ecd768d9094a9084899ad94a792d52426133edca946487f9ca"},
+]
+
+[package.dependencies]
+certifi = "*"
+six = "*"
+urllib3 = ">=1.26.5,<2"
+
+[[package]]
 name = "cython"
 version = "0.29.35"
 description = "The Cython compiler for writing C extensions for the Python language."
@@ -906,4 +921,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.11.0"
-content-hash = "c10bfe1879f85a6e9862db649a13afe5b8936817b576c077bc4dc4f9af23f461"
+content-hash = "05101b325fbf30a7948fa10db561894748c1fc0add063d4b20dda9506d23d388"
