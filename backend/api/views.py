@@ -79,9 +79,10 @@ class PruebaView(APIView):
                 gltf_content = file.read()
             gltf_base64 = base64.b64encode(gltf_content).decode("utf-8")
 
-            response["file_content"] = gltf_base64
+            response["file_content"] = gltf.dict['path']
 
         return response
 
     def get(self, request):
+        print("GET request")
         return HttpResponse("GET request")

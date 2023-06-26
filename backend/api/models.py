@@ -30,7 +30,6 @@ class GLTFFile(models.Model):
     def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
         try:
             import bpy
-            import logging
             context = bpy.context
             active_object = context.active_object
 
@@ -146,7 +145,7 @@ class GLTFFile(models.Model):
                 return "El archivo es demasiado grande"
             else:
                 # Se guarda en el objeto
-                dict["path"] = "https://liho.onrender.com/probando/" + path
+                dict["path"] = "http://localhost:8000/" + path
                 dict["userFilename"] = user_filename
                 dict["vol_relativo"] = volume
                 dict["vol_total"] = volume * n_samples
