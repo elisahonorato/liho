@@ -93,7 +93,7 @@ import os
 DATABASES = {
     'default': dj_database_url.config(
         # Feel free to alter this value to suit your needs.
-        default='postgres://liho_postgresql_user:AhHOYDKIg3WbplWnDS579h9civNoKQTC@dpg-cibnhud9aq03rjgjtn40-a.oregon-postgres.render.com/liho_postgresql',
+        default="postgres://liho_postgresql_exj0_user:E45WCqjiIuTl1mJKtCDCW8DWAqx7IyZk@dpg-cid1u1lph6esg7fj1gpg-a.oregon-postgres.render.com/liho_postgresql_exj0",
         conn_max_age=600
     )
 }

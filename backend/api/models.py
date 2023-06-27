@@ -7,17 +7,44 @@ from django.db import models
 import cloudinary
 import cloudinary.uploader
 
-cloudinary.config(
-  cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
-  cloudinary_api_key = os.environ.get('CLOUDINARY_API_KEY'),
-  cloudinary_api_secret = os.environ.get('CLOUDINARY_API_SECRET')
-)
 
 
 
 def upload_to(instance, filename):
     # Modify this function to specify the desired upload path and filename
-    return f"{instance.type}/{instance.title}.{instance.type}"
+    from urllib.parse import urlparse
+    from dotenv import load_dotenv
+
+    file_data = instance.url.read()
+    load_dotenv()
+
+    print("UPLOAD TO")
+
+    cloudinary_url = os.environ.get('CLOUDINARY_URL')
+    api_key = os.environ.get('CLOUDINARY_API_KEY')
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET')
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
+
+    
+
+    # Configure Cloudinary with the extracted credentials
+    cloudinary.config(
+        cloud_name=cloud_name,
+        api_key=api_key,
+        api_secret=api_secret
+    )
+        
+    # Set the Cloudinary configuration using the CLOUDINARY_URL parameter
+    print(instance.type)
+
+    response = cloudinary.uploader.upload(file_data, resource_type="raw")
+    # Upload the file to Cloudinary
+    
+    # Retrieve the secure URL of the uploaded file
+    cloudinary_url = response["secure_url"]
+    
+    return cloudinary_url
+
 
 
 class File(models.Model):
@@ -32,6 +59,8 @@ class GLTFFile(models.Model):
     path = None
     dict = None
 
+    url = models.FileField(upload_to=upload_to, blank=True, editable=True)
+
     def save(self, *args, **kwargs):
         self.dict = None
         super().save(*args, **kwargs)
@@ -39,8 +68,11 @@ class GLTFFile(models.Model):
     def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
         try:
             import bpy
+            import tempfile
+            import requests
             context = bpy.context
             active_object = context.active_object
+            
 
             if bpy.context.active_object is not None:
                 # Access the active object here
@@ -67,6 +99,7 @@ class GLTFFile(models.Model):
                 header = 1
             else:
                 header = None
+            print(self.file.url.path)
 
             df = pd.read_csv(
                 self.file.url.path,
@@ -126,25 +159,35 @@ class GLTFFile(models.Model):
             spher = bpy.context.active_object
             spher.name = "Volumen_Total"
             # Se guarda primero en un path local
-            path = "media/glb/" + self.file.title + ".glb"
             output_file = "console_output.txt"
+            print("output_file")
 
             # Open the output file in write mode
             with open(output_file, "w") as f:
+                
                 # Redirect console output to the file
                 old_stdout = os.dup(1)
                 os.dup2(f.fileno(), 1)
+                with tempfile.NamedTemporaryFile(suffix=".glb", delete=False) as temp_file:
+                    gltf_filepath = temp_file.name
 
-                # Call the export function
-                bpy.ops.export_scene.gltf(
-                    filepath=path,
-                    # Rest of the export options...
-                )
-                response = cloudinary.uploader.upload(path)
-                cloudinary_url = response["secure_url"]
-                os.remove(path)
-                dict["path"] = cloudinary_url
+                    # Call the export function
+                    bpy.ops.export_scene.gltf(
+                        filepath=gltf_filepath,
+                        # Rest of the export options...
+                    )
+                upload_response = cloudinary.uploader.upload(gltf_filepath, resource_type="raw")
+                url = upload_response["secure_url"]
+                os.remove(gltf_filepath)
+     
+            
+          
 
+             
+              
+          
+             
+                dict["path"] = url
 
                 # Restore console output
                 os.dup2(old_stdout, 1)
@@ -154,7 +197,7 @@ class GLTFFile(models.Model):
             os.remove(output_file)
 
 
-            file_size = os.path.getsize(path)
+            file_size = os.path.getsize(url)
             if file_size > 100000000:
                 return "El archivo es demasiado grande"
             else:

@@ -14,7 +14,7 @@ services:
       - key: SECRET_KEY
         value: "{{ env.SECRET_KEY | default('django-insecure-nr7u^8r&)e%v_%7sclnb$-kfhv17ra*l59_wt7lk4%bp#9f9qf') }}"
       - key: DATABASE_URL
-        value: "{{ env.DATABASE_URL | default('postgres://liho_postgresql_user:AhHOYDKIg3WbplWnDS579h9civNoKQTC@dpg-cibnhud9aq03rjgjtn40-a.oregon-postgres.render.com/liho_postgresql') }}"
+        value: "{{ env.DATABASE_URL | default('postgres://liho_postgresql_exj0_user:E45WCqjiIuTl1mJKtCDCW8DWAqx7IyZk@dpg-cid1u1lph6esg7fj1gpg-a.oregon-postgres.render.com/liho_postgresql_exj0') }}"
     ports:
       
       - 8000
