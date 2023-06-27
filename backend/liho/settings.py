@@ -48,7 +48,22 @@ INSTALLED_APPS = [
     "api",
     "rest_framework",
     "corsheaders",
+    'cloudinary_storage',
+    'cloudinary',
 ]
+
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET')
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -93,7 +108,7 @@ import os
 DATABASES = {
     'default': dj_database_url.config(
         # Feel free to alter this value to suit your needs.
-        default="postgres://liho_postgresql_exj0_user:E45WCqjiIuTl1mJKtCDCW8DWAqx7IyZk@dpg-cid1u1lph6esg7fj1gpg-a.oregon-postgres.render.com/liho_postgresql_exj0",
+        default="postgres://liho_postgresql_ng0l_user:faTnujMwOHIVwvaUTMFbmPm4wU2q0sd9@dpg-cidhb3p5rnuplq59pi7g-a.oregon-postgres.render.com/liho_postgresql_ng0l",
         conn_max_age=600
     )
 }
@@ -152,5 +167,5 @@ REST_FRAMEWORK = {
 }
 CORS_ORIGIN_ALLOW_ALL = True
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'  # or any prefix you choose
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.RawMediaCloudinaryStorage'

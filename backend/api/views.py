@@ -42,7 +42,8 @@ class PruebaView(APIView):
                     user_filename = f"model{self.client_count}"
 
             file = File.objects.create(url=uploaded_file, title=user_filename)
-            gltf = GLTFFile.objects.create(file=file)
+            gltf = file.gltf
+           
             n_samples = request.data.get("n_samples")
             n_columns = request.data.get("n_columns")
 
@@ -55,7 +56,7 @@ class PruebaView(APIView):
                 future = executor.submit(
                     self.process_request,
                     request,
-                    gltf,
+                    file,
                     n_samples,
                     n_columns,
                     user_filename,
@@ -71,15 +72,15 @@ class PruebaView(APIView):
         except Exception as e:
             return HttpResponse(str(e), status=500)
 
-    def process_request(self, request, gltf, n_samples, n_columns, filename):
-        response = gltf.generate_gltf(n_samples, n_columns, filename)
+    def process_request(self, request, file, n_samples, n_columns, filename):
+        response = file.generate_gltf(n_samples, n_columns, filename)
 
-        if gltf.dict is not None:
-            with open(gltf.path, "rb") as file:
-                gltf_content = file.read()
+        if file.dict is not None:
+            with open(file.path, "rb") as file_content:
+                gltf_content = file_content.read()
             gltf_base64 = base64.b64encode(gltf_content).decode("utf-8")
 
-            response["file_content"] = gltf.dict['path']
+            response["file_content"] = file.dict['path']
 
         return response
 
