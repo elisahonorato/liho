@@ -35,7 +35,7 @@ const handleUpload = useCallback(async () => {
   try {
     await sendRequest(15, 15, file);
     setResponse("Archivo subido con éxito");
-    sendRequest(null, null, file);
+    await sendRequest("all", "all", file);
   } catch (err) {
     setTimeout(() => {
       setResponse("Error: El servidor no está respondiendo");

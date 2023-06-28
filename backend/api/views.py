@@ -1,70 +1,48 @@
 import base64
 import os
-import concurrent.futures
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 
 from .models import *
 from .serializers import *
-import threading
 
 
 class PruebaView(APIView):
     parser_classes = [MultiPartParser]
-    max_clients = 2
-    client_count = 0
-    queue_lock = threading.Lock()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.filename = None
 
     def post(self, request):
         try:
-            print("POST request")
             uploaded_file = request.FILES.get("file")
-            if not uploaded_file:
-                if request.data.get('message') == "success":
-                    print("Success")
-                    return HttpResponse("Procesando el archivo completo", status=200)
-                return HttpResponse("Error: No file uploaded", status=400)
 
-            if uploaded_file.content_type != "text/csv":
-                return HttpResponse("Archivo con formato incorrecto", status=400)
-
+            
             user_filename = request.data.get("userFilename")
-            if user_filename is None or user_filename == "null" or user_filename == "" or user_filename == "undefined":
-                with self.queue_lock:
-                    self.client_count += 1
-                    if self.client_count > self.max_clients:
-                        return HttpResponse("Error: Maximum number of clients reached", status=400)
-                    user_filename = f"model{self.client_count}"
-
-            file = File.objects.create(url=uploaded_file, title=user_filename)
-            gltf = file.gltf
-           
+            if uploaded_file is None:
+                return HttpResponse("Error: No file uploaded", status=400)
+            elif uploaded_file.content_type != "text/csv":
+                return HttpResponse("Archivo con formato incorrecto", status=400)
+            file_queryset = File.objects.filter(url=uploaded_file, title=user_filename)
+            if file_queryset.exists():
+                file = file_queryset.first()
+            else:
+                file = File.objects.create(url=uploaded_file, title=user_filename)
+            
+  
             n_samples = request.data.get("n_samples")
             n_columns = request.data.get("n_columns")
 
-            if n_samples is None or n_samples == "null":
-                n_samples = None
-            if n_columns is None or n_columns == "null":
-                n_columns = None
+            # Check if the value is not None before converting to an integer
+            if n_samples != 'all':
+                n_samples = int(n_samples)
 
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(
-                    self.process_request,
-                    request,
-                    file,
-                    n_samples,
-                    n_columns,
-                    user_filename,
-                )
-                response = future.result()
+            if n_columns != 'all':
+                n_columns = int(n_columns)
 
-            if type(response) is dict:
-                print("Success")
+
+            response = self.process_request(request, file, n_samples, n_columns, user_filename)
+        
+
+            if file.gltf is not None:
                 return JsonResponse(response, status=200, safe=False)  # Set safe parameter to False
             else:
                 return HttpResponse(response, status=500)
@@ -74,16 +52,10 @@ class PruebaView(APIView):
 
     def process_request(self, request, file, n_samples, n_columns, filename):
         response = file.generate_gltf(n_samples, n_columns, filename)
-
-        if file.dict is not None:
-            with open(file.path, "rb") as file_content:
-                gltf_content = file_content.read()
-            gltf_base64 = base64.b64encode(gltf_content).decode("utf-8")
-
-            response["file_content"] = file.dict['path']
-
         return response
+        
+
+      
 
     def get(self, request):
-        print("GET request")
-        return HttpResponse("GET request")
+        return HttpResponse("GET request", status=200)

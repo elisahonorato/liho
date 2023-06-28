@@ -102,7 +102,7 @@ const ThreeScene = ({ apiData }) => {
         // Load the GLTF file
 
         // Extract the GLTF file content from the response data
-        const gltfContent = data.file_content;
+        const gltfContent = data.content;
 
         // Convert the base64-encoded GLTF content back to binary
         const gltfData = atob(gltfContent);
@@ -134,7 +134,6 @@ const ThreeScene = ({ apiData }) => {
         console.error('Error loading file:', error);
       }
     }
-
     model = await loadModel();
     if (model) {
       
@@ -147,6 +146,8 @@ const ThreeScene = ({ apiData }) => {
       showVolumen_relativo(false);
       showVolumen_total(false);
       createGui();
+      model.position.set(0, 0, 0);
+      model.visibility = true;
 
     
       scene.add(model);
@@ -418,7 +419,7 @@ function setMuiStyles(element) {
 
 
     createScene(divRef, apiData);
-  }, [apiData, divRef, createScene]);
+  }, [apiData, createScene]);
 
   return (
     <>
