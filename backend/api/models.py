@@ -1,75 +1,119 @@
 import os
+from typing import Any
 import pandas as pd
 from django.db import models
-import bpy
+import requests
+import csv
+from cloudinary.uploader import upload, destroy
+from django.db.models.signals import pre_delete
+import tempfile
+from django.dispatch import receiver
+from django.core.files.base import ContentFile
 
+from django.core.files.base import ContentFile
+import random
+from django.core.validators import FileExtensionValidator
+import base64
 
-def upload_to(instance, filename):
-    # Specify the relative upload path using the original filename
-    upload_path = "modelo"
-    return upload_path
-
-
-class File(models.Model):
-    type = "csv"
-    title = models.CharField(max_length=80, blank=False)
-    url = models.FileField(upload_to=upload_to, blank=True, editable=True)
-    gltf = None
-
-    def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
-        gltf = bpy.ops.export_scene.gltf(
-                filepath=self.url,
-                export_format="GLTF_SEPARATE",
-                # Rest of the export options...
-            )
-        self.gltf = gltf
-    
-
+def round_number(number):
+    if isinstance(number, str):
+        number = number.replace(",", ".")
+    number = float(number) if number == float(number) else 0
+    rounded_number = int(round(number, 5) * 1000)
+    return rounded_number
 
 class GLTFFile(models.Model):
     type = "gltf"
     dict = None
-    url = models.CharField(max_length=80, blank=True)
+    url =  models.CharField(blank=False)
+
+    @receiver(pre_delete)
+    def delete_related_files(sender, instance, **kwargs):
+        # Delete the related file from Cloudinary
+        if instance.url:
+            cloudinary_result = destroy(instance.url.path)
+            # You can perform additional checks or logging based on the cloudinary_result
 
 
+def upload_to(instance, filename):
+    return f'csv/modelo1.csv'
 
+class File(models.Model):
+    type = "csv"
+    title = models.CharField(max_length=200, blank=False)
+    url = models.FileField(
+        blank=True,
+        editable=True,
+        upload_to=upload_to,
+        validators=[FileExtensionValidator(allowed_extensions=['csv'])]
+    )
+    gltf = None
+
+    def __init__(self, content=None, *args, **kwargs):
+        self.content = content
+        super().__init__(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        self.dict = None
+        if self.content:
+            self.url.save(self.title, ContentFile(self.content), save=False)
         super().save(*args, **kwargs)
 
-    def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
-        print("generando gltf")
-        try:
-            context = bpy.context
 
-            # Clear the scene
-            bpy.ops.object.select_all(action="DESELECT")
-            bpy.ops.object.select_by_type(type="MESH")
-            bpy.ops.object.delete()
+
+    def has_headers(self):
+        response = requests.get(self.url.url)
+        content = response.content.decode('utf-8')
+
+        csv_reader = csv.reader(content.splitlines(), delimiter=',')
+        first_row = next(csv_reader, [])
+        num_headers = len(first_row)
+
+        return num_headers if num_headers > 0 else 0
+
+    def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
+        try:
+            import bpy
+            context = bpy.context
+            active_object = context.active_object
+            if bpy.context.active_object is not None:
+                            # Access the active object here
+                bpy.ops.object.select_all(action="SELECT")
+                bpy.ops.object.delete(use_global=False)
+                if bpy.context.scene.objects:
+                    bpy.ops.object.select_all(action="SELECT")
+                    bpy.ops.object.delete(use_global=False)
+            else:
+                bpy.ops.object.select_all(action="SELECT")
+                bpy.ops.object.delete(use_global=False)
+
+
 
             volume = 100
+            
 
             # Create a new mesh data block
             dict = {"samples": [], "variables": []}
+            
 
             # Link the object to the scene
-            header = 1 if self.has_headers() else None
+          
+            df = pd.read_csv(self.url, sep=";", decimal=",", na_values=["", " ", '"', ""], header=self.has_headers())
+            # Filter columns to exclude 'Unnamed: 0' and 'dtype'
+            columna = df.columns
+            if n_samples != 'all':
+                n_samples = int(n_samples)
 
-            file_path = self.file.path
-
-            df = pd.read_csv(
-                file_path,
-                sep=";",
-                decimal=",",
-                header=header,
-                na_values=["", " ", '"', ""],
-            )
-
-            columns = df.columns[0: n_columns] if n_columns else df.columns
+            if n_columns != 'all':
+                n_columns = int(n_columns)
+            if n_samples or n_columns == 'all':
+                columns = columna[0 : int(len(columna))]
+                n_samples = int(len(df))
+            else: 
+                columns = columna[0 : int(n_columns)]
             intervalo = [-volume, volume]
 
-            for i, row in df.iloc[0: n_samples].iterrows():
+
+            for i, row in df.iloc[0: int(n_samples)].iterrows():
                 numero_x = intervalo[0]
 
                 sample_name = str(row[0])
@@ -110,51 +154,34 @@ class GLTFFile(models.Model):
 
             bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius=volume * 10)
             spher = bpy.context.active_object
-            spher.name = "Volumen_Total"
+            spher.name = "Volumen_Total" 
+            spher.select_set(True)
+            
+            
 
-            # Export the scene to GLTF
-            output_file = os.path.join("media", user_filename)
-            bpy.ops.export_scene.gltf(
-                filepath=output_file,
-                export_format="GLTF_SEPARATE",
-                # Rest of the export options...
-            )
+            with tempfile.NamedTemporaryFile(suffix='.glb', delete=False) as temp_file:
+                filepath = temp_file.name
+                bpy.ops.export_scene.gltf(filepath=filepath)
 
-            file_size = os.path.getsize(output_file)
-            if file_size > 100000000:
-                return "El archivo es demasiado grande"
-            else:
-                self.path = output_file
-                dict["path"] = self.path
-                dict["userFilename"] = user_filename
-                dict["vol_relativo"] = volume
-                dict["vol_total"] = volume * (n_samples or len(df.index))
-
-                self.dict = dict
-                return self.dict
+                with open(filepath, "rb") as f:
+                    content = f.read()
+                    self.gltf = GLTFFile.objects.create()
+                    self.gltf.dict = dict
+                    gltf_base64 = base64.b64encode(content).decode("utf-8")
+                    self.gltf.dict['content'] = gltf_base64
+                   
+                    self.save()
+                    return self.gltf.dict
+                
+               
+                
 
         except Exception as e:
             response = str(e) + "Error al generar el archivo GLTF"
             return response
 
-    def has_headers(self):
-        with open(self.file.path) as file_obj:
-            first_line = file_obj.readline().strip()
-
-        # Check if each value in the first line is a valid column name
-        for col in first_line.split(";"):
-            try:
-                pd.DataFrame(columns=[col])
-            except ValueError:
-                return False
-
-        # If all values are valid column names, assume that the file has headers
-        return True
 
 
-def round_number(number):
-    if isinstance(number, str):
-        number = number.replace(",", ".")
-    number = float(number) if number == float(number) else 0
-    rounded_number = int(round(number, 5) * 1000)
-    return rounded_number
+
+
+
