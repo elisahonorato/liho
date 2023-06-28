@@ -40,7 +40,7 @@ const handleUpload = useCallback(async () => {
     setTimeout(() => {
       setResponse("Error: El servidor no está respondiendo");
       setLoading(false);
-    }, 10000); // Delay of 5 seconds
+    }, 20000); // Delay of 5 seconds
     if (err.response) {
       setResponse(err.response.data);
     } else {
@@ -48,7 +48,7 @@ const handleUpload = useCallback(async () => {
     }
     setLoading(false);
   }
-}, [file, sendRequest]);
+}, [file]);
   return (
     <MuiBox>
       <Button variant="contained" color="secondary" component="label">

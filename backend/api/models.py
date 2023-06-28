@@ -21,22 +21,14 @@ def round_number(number):
     number = float(number) if number == float(number) else 0
     rounded_number = int(round(number, 5) * 1000)
     return rounded_number
-
+def upload_to(instance, filename):
+    return f'csv/modelo1.csv'
 class GLTFFile(models.Model):
     type = "gltf"
     dict = None
     url =  models.CharField(blank=False)
+    
 
-    @receiver(pre_delete)
-    def delete_related_files(sender, instance, **kwargs):
-        # Delete the related file from Cloudinary
-        if instance.url:
-            cloudinary_result = destroy(instance.url.path)
-            # You can perform additional checks or logging based on the cloudinary_result
-
-
-def upload_to(instance, filename):
-    return f'csv/modelo1.csv'
 
 class File(models.Model):
     type = "csv"
@@ -99,6 +91,7 @@ class File(models.Model):
           
             df = pd.read_csv(self.url, sep=";", decimal=",", na_values=["", " ", '"', ""], header=self.has_headers())
             # Filter columns to exclude 'Unnamed: 0' and 'dtype'
+            print("hola")
             columna = df.columns
             if n_samples != 'all':
                 n_samples = int(n_samples)
