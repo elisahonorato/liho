@@ -18,7 +18,6 @@ RUN poetry install --no-dev
 COPY . .
 
 # Ejecuta los comandos de gestión de Django (collectstatic, migrate, createsuperuser)
-RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
 RUN python manage.py createsuperuser
 

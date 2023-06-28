@@ -16,24 +16,30 @@ function Home() {
 
     const handleCapture = () => {
       const guiElement = document.getElementById('gui');
-
+    
       // Hide the element with ID 'gui'
       guiElement.style.display = 'none';
-
-      html2canvas(document.getElementById("canvas")).then(canvas => {
+    
+      const scale = 2; // Adjust the scale factor as needed for higher resolution
+    
+      html2canvas(document.getElementById("canvas"), {
+        scale: scale, // Set the scale factor
+        width: window.innerWidth * scale, // Set the desired width
+        height: window.innerHeight * scale // Set the desired height
+      }).then(canvas => {
         const screenshot = canvas.toDataURL();
-
+    
         // Do something with the screenshot
         const link = document.createElement('a');
-        console.log(screenshot);
         link.download = 'screenshot.png';
         link.href = screenshot;
         link.click();
-
+    
         // Show the element with ID 'gui' again
         guiElement.style.display = 'block';
       });
     };
+    
 
 
     const handleUpload = (data) => {
