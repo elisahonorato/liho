@@ -15,42 +15,26 @@ function Home() {
     const componentRef = useRef(null);
 
     const handleCapture = () => {
-      const sceneElement = document.getElementById('scene');
-    
-      const scale = 2; // Adjust the scale factor as needed for higher resolution
-    
-      // Store the current dimensions of the scene element
-      const originalWidth = sceneElement.width;
-      const originalHeight = sceneElement.height;
-    
-      // Set the new dimensions based on the scale factor
-      sceneElement.width = originalWidth * scale;
-      sceneElement.height = originalHeight * scale;
-    
-      html2canvas(sceneElement, {
-        scale: scale, // Set the scale factor
-        width: originalWidth * scale, // Set the desired width
-        height: originalHeight * scale // Set the desired height
-      }).then(sceneCanvas => {
-        // Render the leyenda text on the captured scene canvas
+      const guiElement = document.getElementById('gui');
 
-    
-        // Convert the captured scene canvas to a data URL
-        const combinedScreenshot = sceneCanvas.toDataURL();
-    
-        // Do something with the combined screenshot
+      // Hide the element with ID 'gui'
+      guiElement.style.display = 'none';
+
+      html2canvas(document.getElementById("canvas")).then(canvas => {
+        const screenshot = canvas.toDataURL();
+
+        // Do something with the screenshot
         const link = document.createElement('a');
-        link.download = 'combined-screenshot.png';
-        link.href = combinedScreenshot;
+        console.log(screenshot);
+        link.download = 'screenshot.png';
+        link.href = screenshot;
         link.click();
-    
-        // Restore the original dimensions of the scene element
-        sceneElement.width = originalWidth;
-        sceneElement.height = originalHeight;
+
+        // Show the element with ID 'gui' again
+        guiElement.style.display = 'block';
       });
     };
-    
-    
+
 
     const handleUpload = (data) => {
       setGltfData(data);
