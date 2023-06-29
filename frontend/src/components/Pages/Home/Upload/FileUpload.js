@@ -30,28 +30,33 @@ function UploadFile({ onUpload }) {
 
   }, [onUpload, userFilename]);
 
-const handleUpload = useCallback(async () => {
-  setLoading(true);
-  try {
-    await sendRequest(15, 15, file);
-    setResponse("Archivo subido con éxito");
-    sendRequest("all", "all", file);
-  } catch (err) {
-    setTimeout(() => {
-      setResponse("Error: El servidor no está respondiendo");
+  const handleUpload = useCallback(async () => {
+    setLoading(true);
+    try {
+      await sendRequest(15, 15, file);
+      setResponse("Archivo subido con éxito");
       setLoading(false);
-    }, 20000); // Delay of 5 seconds
-    if (err.response) {
-      setResponse(err.response.data);
-    } else {
-      setResponse("Error: " + err.message);
+      // Send the second request immediately after the first one
+      sendRequest("all", "all", file);
+    } catch (err) {
+      setTimeout(() => {
+        setResponse("Error: El servidor no está respondiendo");
+        setLoading(false);
+      }, 20000); // Delay of 20 seconds
+      if (err.response) {
+        setResponse(err.response.data);
+      } else {
+        setResponse("Error: " + err.message);
+      }
+      setLoading(false);
+      // Retry the first request if an error occurs
+      sendRequest(15, 15, file);
     }
-    setLoading(false);
-  }
-}, [file]);
+  }, [file, sendRequest]);
+  
   return (
     <MuiBox>
-      <Button variant="contained" color="secondary" component="label">
+      <Button>
         <InputLabel htmlFor="input-tag">
           <Typography variant="body2" color="primary">
             Seleccionar Archivo
@@ -64,7 +69,7 @@ const handleUpload = useCallback(async () => {
           onChange={handleSelectedFile}
         />
       </Button>
-      <Button variant="contained" color="secondary" onClick={handleUpload}>
+      <Button onClick={handleUpload}>
         <Typography variant="body2" color="primary">
           Upload
         </Typography>

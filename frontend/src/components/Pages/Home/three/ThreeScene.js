@@ -252,7 +252,8 @@ function setMuiStyles(element) {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.text.primary,
     borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
+    margin: theme.spacing(1),
     zIndex: 10000,
   };
 
@@ -281,9 +282,10 @@ function setMuiStyles(element) {
       const gui = new GUI();
       gui.domElement.id = 'gui';
       gui.domElement.style.setProperty('position', 'absolute');
-      gui.domElement.style.setProperty('top', '0');
+      gui.domElement.style.setProperty('top', '20');
       gui.domElement.style.setProperty('z-index', '10000');
       gui.domElement.style.setProperty('width', 'auto');
+      gui.domElement.style.setProperty('padding', '20');
 
   
 
@@ -423,8 +425,8 @@ function setMuiStyles(element) {
 
   return (
     <>
-      <Paper id='canvas' ref={refChangeHandler} elevation={3} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'row' }}>
-          <Paper id='leyenda' elevation={0} sx={{ marginBottom: '10px' }}>
+      <Paper id='canvas' ref={refChangeHandler} elevation={0} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'row' }} className='withBorder'>
+          <Paper id='leyenda' elevation={0} sx={{ p: 2, marginBottom: '10px' } } className='noBorder'>
             {colorLegendData.map((item) => (
               <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '5px'}}>
                 <div style={{ backgroundColor: item.color, width: '10px', height: '10px', borderRadius: '50%' }} id={item.id}></div>

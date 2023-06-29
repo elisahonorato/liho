@@ -54,18 +54,22 @@ function Home() {
 
               {/* Left column */}
               <Grid item xs={12} md={2}>
-                <Paper elevation={3} sx={{ p: 2 }}>
+                <Paper elevation={0} sx={{ p: 2, m: 1}} className="withBorder">
                   <Typography variant="h6" gutterBottom>
                     1. Sube tu archivo CSV
                   </Typography>
                   <UploadFile onUpload={handleUpload}/>
                 </Paper>
                 {gltfData != null && (
-                  <Paper elevation={3} sx={{ p: 2, mt: 2}}>
+                  <Paper elevation={0} sx={{ p: 2, mt: 2}} className='withBorder'>
                     <Typography variant="h6" gutterBottom>
                       2. Descarga tu gráfico
                     </Typography>
-                    <Button variant='contained' color='secondary' onClick={handleCapture}>Descargar</Button>
+                    <Button onClick={handleCapture}>
+                      <Typography variant="body2" color="primary">
+                        Descargar
+                      </Typography>
+                    </Button>
                   </Paper>
                 )}
 
