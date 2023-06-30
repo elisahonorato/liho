@@ -6,6 +6,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libx11-6 \
     libxrender1 \
+    libxxf86vm1 \
+    libxtst6 \
+    libxt6 \
+    libxi6 \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    libglib2.0-0 \
+    libsm6 \
+    libfontconfig1 \
+    libxext6 \
+    libxrender-dev \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Crea el directorio de trabajo
