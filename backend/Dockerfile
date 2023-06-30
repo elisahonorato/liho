@@ -4,6 +4,7 @@ FROM python:3.10.8-slim
 # Instala las dependencias del sistema y elimina la caché
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    libx11-6 \
     && rm -rf /var/lib/apt/lists/*
 
 # Crea el directorio de trabajo
