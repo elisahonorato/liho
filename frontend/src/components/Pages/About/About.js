@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import ThreeScene from './three/ThreeScene';
+import ThreeScene from '../../Three/ThreeScene';
 import UploadFile from '../../Upload/FileUpload';
 import { ThemeProvider } from '@mui/material/styles';
 import { Grid, Typography, Paper, Container, Box, Button} from '@mui/material';
@@ -61,6 +61,7 @@ function Use() {
                   <UploadFile onUpload={handleUpload}/>
                 </Paper>
                 {gltfData != null && (
+                  console.log(gltfData),
                   <Paper elevation={0} sx={{ p: 2, mt: 2}} className='withBorder'>
                     <Typography variant="h6" gutterBottom>
                       2. Descarga tu gráfico

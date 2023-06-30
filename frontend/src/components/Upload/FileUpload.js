@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import axios from 'axios';
 import { Button, Input, InputLabel, Typography } from '@mui/material';
-import { LihoClient } from '../../../../client';
-import { MuiBox } from '../../../Theme/MuiBox/MuiBox';
+import { LihoClient } from '../../client';
+import { MuiBox } from '../Theme/MuiBox/MuiBox';
 
 
 function UploadFile({ onUpload }) {
@@ -35,10 +35,10 @@ function UploadFile({ onUpload }) {
     setLoading(true);
     try {
       await sendRequest(15, 15, file);
-      setResponse("Archivo subido con éxito");
       setLoading(false);
       // Send the second request immediately after the first one
       sendRequest("all", "all", file);
+      setResponse("Archivo subido con éxito");
     } catch (err) {
       setTimeout(() => {
         setResponse("Error: El servidor no está respondiendo");
@@ -51,9 +51,8 @@ function UploadFile({ onUpload }) {
       }
       setLoading(false);
       // Retry the first request if an error occurs
-      sendRequest(15, 15, file);
     }
-  }, [file, sendRequest]);
+  }, [file]);
   
   return (
     <MuiBox>

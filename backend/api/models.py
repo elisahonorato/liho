@@ -4,13 +4,10 @@ import pandas as pd
 from django.db import models
 import requests
 import csv
-from cloudinary.uploader import upload, destroy
-from django.db.models.signals import pre_delete
+
 import tempfile
-from django.dispatch import receiver
 from django.core.files.base import ContentFile
 
-from django.core.files.base import ContentFile
 import random
 from django.core.validators import FileExtensionValidator
 import base64
@@ -21,8 +18,10 @@ def round_number(number):
     number = float(number) if number == float(number) else 0
     rounded_number = int(round(number, 5) * 1000)
     return rounded_number
+
 def upload_to(instance, filename):
     return f'csv/modelo1.csv'
+
 class GLTFFile(models.Model):
     type = "gltf"
     dict = None
@@ -65,32 +64,28 @@ class File(models.Model):
     def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
         try:
             import bpy
-            context = bpy.context
-            active_object = context.active_object
-            if bpy.context.active_object is not None:
-                            # Access the active object here
-                bpy.ops.object.select_all(action="SELECT")
-                bpy.ops.object.delete(use_global=False)
-                if bpy.context.scene.objects:
-                    bpy.ops.object.select_all(action="SELECT")
-                    bpy.ops.object.delete(use_global=False)
-            else:
-                bpy.ops.object.select_all(action="SELECT")
-                bpy.ops.object.delete(use_global=False)
-
-
+            self.clean_blocks(bpy)
+            if bpy.context.scene.objects:
+                bpy.ops.object.select_all(action='SELECT')
+                bpy.ops.object.delete(use_global=False, confirm=False)
+          
+                
 
             volume = 100
             
 
             # Create a new mesh data block
             dict = {"samples": [], "variables": []}
+
+        
             
 
             # Link the object to the scene
           
-            df = pd.read_csv(self.url, sep=";", decimal=",", na_values=["", " ", '"', ""], header=self.has_headers())
+            df = pd.read_csv(self.url.url, sep=";", decimal=",", na_values=["", " ", '"', ""], header=self.has_headers())
             # Filter columns to exclude 'Unnamed: 0' and 'dtype'
+            
+     
             columna = df.columns
             if n_samples != 'all':
                 n_samples = int(n_samples)
@@ -103,6 +98,7 @@ class File(models.Model):
             else: 
                 columns = columna[0 : int(n_columns)]
             intervalo = [-volume, volume]
+            print("paso 1")
 
 
             for i, row in df.iloc[0: int(n_samples)].iterrows():
@@ -150,12 +146,12 @@ class File(models.Model):
             spher.select_set(True)
             
             
+            
 
-            with tempfile.TemporaryFile(mode='w+b', buffering=- 1, encoding=None, newline=None, suffix=None, prefix=None, dir=None, delete=True, errors=None) as temp_file:
+            with tempfile.NamedTemporaryFile(suffix='.glb', delete=False) as temp_file:
                 filepath = temp_file.name
-                if filepath: 
-                    return filepath
                 bpy.ops.export_scene.gltf(filepath=filepath)
+
 
                 with open(filepath, "rb") as f:
                     content = f.read()
@@ -163,9 +159,13 @@ class File(models.Model):
                     self.gltf.dict = dict
                     gltf_base64 = base64.b64encode(content).decode("utf-8")
                     self.gltf.dict['content'] = gltf_base64
-                    
                    
                     self.save()
+                    self.gltf.delete()
+                    os.unlink(filepath)
+  
+
+
                     return self.gltf.dict
                 
                
@@ -173,9 +173,26 @@ class File(models.Model):
 
         except Exception as e:
             response = str(e) + "Error al generar el archivo GLTF"
+            print("errooor",response)
             return response
 
 
+    def clean_blocks(self, bpy):
+        for block in bpy.data.meshes:
+            if block.users == 0:
+                bpy.data.meshes.remove(block)
+
+        for block in bpy.data.materials:
+            if block.users == 0:
+                bpy.data.materials.remove(block)
+
+        for block in bpy.data.textures:
+            if block.users == 0:
+                bpy.data.textures.remove(block)
+
+        for block in bpy.data.images:
+            if block.users == 0:
+                bpy.data.images.remove(block)
 
 
 

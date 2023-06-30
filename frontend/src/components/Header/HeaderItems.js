@@ -9,6 +9,11 @@ const headerItems = [
     slug: 'tutorial',
     href: '/tutorial',
   },
+  {
+    label: 'Acerca de',
+    slug: 'about',
+    href: '/about',
+  },
 ];
 
 export default headerItems;

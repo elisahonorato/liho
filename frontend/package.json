@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://elisahonorato.github.io/liho",
+  "Usepage": "https://elisahonorato.github.io/liho",
   "dependencies": {
     "@mui/material": "^5.13.3",
     "axios": "^1.4.0",

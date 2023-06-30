@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './components/Pages/Home'
 import Header from './components/Header/Header';
 import Tutorial from './components/Pages/Tutorial';
+import About from './components/Pages/About/About';
 import { Container, Typography} from '@mui/material';
 
 
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/liho" element={<Home />} />
+            <Route path="/about" element={<About/>} />
             <Route path="/tutorial" element={<Tutorial />} />
           </Routes>
           <footer style={{padding: "20px", marginTop: "auto" }}>
