@@ -153,6 +153,8 @@ class File(models.Model):
 
             with tempfile.TemporaryFile(mode='w+b', buffering=- 1, encoding=None, newline=None, suffix=None, prefix=None, dir=None, delete=True, errors=None) as temp_file:
                 filepath = temp_file.name
+                if filepath: 
+                    return filepath
                 bpy.ops.export_scene.gltf(filepath=filepath)
 
                 with open(filepath, "rb") as f:
