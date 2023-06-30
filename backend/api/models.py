@@ -91,7 +91,6 @@ class File(models.Model):
           
             df = pd.read_csv(self.url, sep=";", decimal=",", na_values=["", " ", '"', ""], header=self.has_headers())
             # Filter columns to exclude 'Unnamed: 0' and 'dtype'
-            print("hola")
             columna = df.columns
             if n_samples != 'all':
                 n_samples = int(n_samples)
@@ -152,7 +151,7 @@ class File(models.Model):
             
             
 
-            with tempfile.NamedTemporaryFile(suffix='.glb', delete=False) as temp_file:
+            with tempfile.TemporaryFile(mode='w+b', buffering=- 1, encoding=None, newline=None, suffix=None, prefix=None, dir=None, delete=True, errors=None) as temp_file:
                 filepath = temp_file.name
                 bpy.ops.export_scene.gltf(filepath=filepath)
 
