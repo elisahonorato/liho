@@ -27,6 +27,7 @@ function UploadFile({ onUpload }) {
     const res = await axios.post(client.props.url, formData, client.props.config);
     setUserFilename(res.data.userFilename);
     onUpload(res.data);
+    console.log(res.data);
 
   }, [onUpload, userFilename]);
 

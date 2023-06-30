@@ -161,6 +161,7 @@ class File(models.Model):
                     self.gltf.dict = dict
                     gltf_base64 = base64.b64encode(content).decode("utf-8")
                     self.gltf.dict['content'] = gltf_base64
+                    
                    
                     self.save()
                     return self.gltf.dict
