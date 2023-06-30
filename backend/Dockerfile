@@ -13,7 +13,7 @@ WORKDIR /app
 # Copia los archivos de proyecto e instala las dependencias del proyecto
 COPY pyproject.toml poetry.lock ./
 RUN pip install --upgrade pip && pip install poetry && poetry config virtualenvs.create false
-RUN poetry install --no-dev
+RUN poetry install
 
 # Copia los archivos restantes del proyecto
 COPY . .
