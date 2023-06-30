@@ -50,7 +50,6 @@ class File(models.Model):
         super().save(*args, **kwargs)
 
 
-
     def has_headers(self):
         response = requests.get(self.url.url)
         content = response.content.decode('utf-8')
@@ -68,6 +67,7 @@ class File(models.Model):
             if bpy.context.scene.objects:
                 bpy.ops.object.select_all(action='SELECT')
                 bpy.ops.object.delete(use_global=False, confirm=False)
+            import bpy
           
                 
 
@@ -150,18 +150,20 @@ class File(models.Model):
 
             with tempfile.NamedTemporaryFile(suffix='.glb', delete=False) as temp_file:
                 filepath = temp_file.name
+                print(filepath)
                 bpy.ops.export_scene.gltf(filepath=filepath)
-
+                print("paso 2")
 
                 with open(filepath, "rb") as f:
                     content = f.read()
+                    print(content)
                     self.gltf = GLTFFile.objects.create()
                     self.gltf.dict = dict
                     gltf_base64 = base64.b64encode(content).decode("utf-8")
                     self.gltf.dict['content'] = gltf_base64
                    
                     self.save()
-                    self.gltf.delete()
+                    
                     os.unlink(filepath)
   
 
