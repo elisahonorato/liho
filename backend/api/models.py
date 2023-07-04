@@ -67,7 +67,6 @@ class File(models.Model):
             if bpy.context.scene.objects:
                 bpy.ops.object.select_all(action='SELECT')
                 bpy.ops.object.delete(use_global=False, confirm=False)
-            import bpy
           
                 
 
@@ -87,18 +86,19 @@ class File(models.Model):
             
      
             columna = df.columns
-            if n_samples != 'all':
+            if n_samples != 'all' and n_columns != 'all':
                 n_samples = int(n_samples)
-
-            if n_columns != 'all':
                 n_columns = int(n_columns)
+        
+
             if n_samples or n_columns == 'all':
                 columns = columna[0 : int(len(columna))]
                 n_samples = int(len(df))
             else: 
                 columns = columna[0 : int(n_columns)]
             intervalo = [-volume, volume]
-            print("paso 1")
+            print('gola')
+      
 
 
             for i, row in df.iloc[0: int(n_samples)].iterrows():
@@ -150,13 +150,12 @@ class File(models.Model):
 
             with tempfile.NamedTemporaryFile(suffix='.glb', delete=False) as temp_file:
                 filepath = temp_file.name
-                print(filepath)
-                bpy.ops.export_scene.gltf(filepath=filepath)
-                print("paso 2")
+                self.export_scene(filepath)
+           
 
                 with open(filepath, "rb") as f:
                     content = f.read()
-                    print(content)
+                 
                     self.gltf = GLTFFile.objects.create()
                     self.gltf.dict = dict
                     gltf_base64 = base64.b64encode(content).decode("utf-8")
@@ -175,8 +174,13 @@ class File(models.Model):
 
         except Exception as e:
             response = str(e) + "Error al generar el archivo GLTF"
-            print("errooor",response)
             return response
+
+    def export_scene(self, file_path):
+        import bpy
+        bpy.ops.wm.save_as_mainfile(filepath=file_path)
+        bpy.ops.export_scene.gltf(filepath=file_path, export_format='GLB')
+
 
 
     def clean_blocks(self, bpy):

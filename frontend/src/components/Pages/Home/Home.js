@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import ThreeScene from './three/ThreeScene';
+import ThreeScene from '../../Three/ThreeScene';
 import UploadFile from '../../Upload/FileUpload';
 import { ThemeProvider } from '@mui/material/styles';
 import { Grid, Typography, Paper, Container, Box, Button} from '@mui/material';

@@ -10,9 +10,9 @@ import theme from '../Theme/Theme';
 
 
 
-const ThreeScene = ({ apiData }) => {
+const ThreeScene = ({ apiData, sceneRef }) => {
 
-  const [divRef, setDivRef] = React.useState();
+  const [divRef, setDivRef] = React.useState(sceneRef);
   const [colorLegendData, setColorLegendData] = React.useState([]);
 
 
@@ -425,7 +425,7 @@ function setMuiStyles(element) {
 
   return (
     <>
-      <Paper id='canvas' ref={refChangeHandler} elevation={0} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'row' }} className='withBorder'>
+      <Paper id='canvas' ref={sceneRef} elevation={0} sx={{ p: 2, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'row' }} className='withBorder'>
           <Paper id='leyenda' elevation={0} sx={{ p: 2, marginBottom: '10px' } } className='noBorder'>
             {colorLegendData.map((item) => (
               <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '5px'}}>

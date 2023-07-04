@@ -35,15 +35,16 @@ function UploadFile({ onUpload }) {
     setLoading(true);
     try {
       await sendRequest(15, 15, file);
-      setLoading(false);
+      
       // Send the second request immediately after the first one
       sendRequest("all", "all", file);
+      setLoading(false);
       setResponse("Archivo subido con éxito");
     } catch (err) {
       setTimeout(() => {
         setResponse("Error: El servidor no está respondiendo");
         setLoading(false);
-      }, 20000); // Delay of 20 seconds
+      }, 200000); // Delay of 20 seconds
       if (err.response) {
         setResponse(err.response.data);
       } else {
