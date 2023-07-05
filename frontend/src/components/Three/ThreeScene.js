@@ -19,19 +19,21 @@ function ThreeScene({ apiData }) {
   const divRef = useRef(null);
   const controlsRef = useRef(null);
   const [colorLegendData, setColorLegendData] = React.useState([]);
-  const volume_material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.8 });
+  const volume_material = new THREE.MeshBasicMaterial({ color: 0x00000, wireframe: true, transparent: true, opacity: 0.1 });
 
   useEffect(() => {
     createGui();
     loadModel();
+    console.log("apiData", apiData);
   }, [apiData]);
 
   const paintModel = (colorDict) => {
     setColorLegendData((prevData) => {
       const updatedData = [prevData];
+      const variables = apiData.variables;
 
-      for (let i = 0; i < apiData.variables.length; i++) {
-        const variable = apiData.variables[i];
+      for (let i = 0; i < variables.length; i++) {
+        const variable = variables[i];
 
         if (!updatedData.some((item) => item.id === variable)) {
           updatedData.push({
@@ -42,7 +44,8 @@ function ThreeScene({ apiData }) {
         }
 
         for (let j = 0; j < apiData.samples.length; j++) {
-          const parent = modelRef.current.getObjectByName(apiData.samples[j]);
+          const sampleName = apiData.samples[j];
+          const parent = modelRef.current.getObjectByName(sampleName);
 
           if (parent) {
             parent.material = volume_material;
@@ -64,8 +67,11 @@ function ThreeScene({ apiData }) {
         }
       }
 
-      return updatedData;
-    });
+
+    return updatedData;
+});
+
+    
   };
 
   const createGui = () => {
@@ -79,18 +85,35 @@ function ThreeScene({ apiData }) {
     const settings = {
       'Choose Sample': 'All',
       'Colores por Default': 'Default',
+      'Distribuir': true,
+      'Volumen Relativo': false,
+      'Volumen Absoluto': false,
+
     };
   
     const handleChooseSample = (value) => {
       if (modelRef.current) {
         const parent = modelRef.current;
-        parent.visible = value === 'All';
-        const child = modelRef.current.getObjectByName(value);
-        child.parent.visible = !parent.visible;
-        child.visible = true;
+  
+        if (value === 'All') {
+          parent.visible = true;
+          parent.children.forEach((child) => {
+            child.visible = true;
+          });
+        } else {
+          parent.children.forEach((child) => {
+            if (child.name === value) {
+              child.visible = true;
+              child.parent.visible = true;
+            } else {
+              child.visible = false;
+              child.parent.visible = false;
+            }
+          });
+        }
       }
     };
-  
+
     const handleChooseColor = (value) => {
       const colorOptions = {
         Default: colorDefault,
@@ -102,23 +125,80 @@ function ThreeScene({ apiData }) {
       setColorLegendData(colorOptions[value] || colorDefault);
       paintModel(colorOptions[value] || colorDefault);
     };
+
+    const handleShowVolume = (visibility, volume, model) => {
+      if (model.name.includes(volume)) {
+        model.visible = visibility;
+        console.log("model", model, model.name);
+      }
+      else {
+        model.children.forEach((child) => {
+          handleShowVolume(visibility, volume, child);
+        });
+      }
+
+  
+
+    };
+  
+    const distribuir = (value) => {
+      if (value === true) {
+        const gridWidth = [-500, -250, 0, 250, 500];
+  
+        if (modelRef.current) {
+          const parent = modelRef.current;
+  
+          parent.children.forEach((child, index) => {
+            const i = Math.floor(index / gridWidth.length);
+            const j = index % gridWidth.length;
+            child.position.set(gridWidth[i], gridWidth[j], 0);
+          });
+  
+          controlsRef.current.reset();
+          cameraRef.current.position.set(0, 0, 1000);
+        }
+      } else {
+        if (modelRef.current) {
+          const parent = modelRef.current;
+  
+          parent.children.forEach((child) => {
+            child.position.set(0, 0, 0);
+          });
+        }
+      }
+    };
+  
+    const handleDistribuir = (value) => {
+      distribuir(value);
+    };
   
     const folder1 = guiRef.current.addFolder('Samples');
     const sampleOptions = ['All', ...apiData.samples];
     folder1.add(settings, 'Choose Sample', sampleOptions).onChange(handleChooseSample);
+
   
     const folder2 = guiRef.current.addFolder('Materiales');
     folder2
       .add(settings, 'Colores por Default', ['Default', 'Daltonismo', 'Secuencia', 'Divergente'])
       .onChange(handleChooseColor);
   
+    const folder3 = guiRef.current.addFolder('Posiciones');
+    folder3.add(settings, 'Distribuir').onChange(handleDistribuir);
+
+    const folder4 = guiRef.current.addFolder('Volumen');
+    folder4.add(settings, 'Volumen Relativo').onChange((value) => {
+      handleShowVolume(value, apiData.volumes[0], modelRef.current);
+    });
+    folder4.add(settings, 'Volumen Absoluto').onChange((value) => {
+      handleShowVolume(value, apiData.volumes[1], modelRef.current);
+    });
+
+
+  
     guiContainerRef.current?.appendChild(guiRef.current.domElement);
     SetGuiStyles(guiRef.current.domElement);
   };
   
-  
-
-
   const loadModel = () => {
     try {
       // Extract the GLTF file content from the response data
@@ -139,8 +219,21 @@ function ThreeScene({ apiData }) {
         arrayBuffer,
         '', // Path for additional resources
         (gltf) => {
+          if (modelRef.current) {
+            sceneRef.current.remove(modelRef.current);
+          }
+          
           modelRef.current = gltf.scene;
+          modelRef.current.material = volume_material;
           sceneRef.current.add(modelRef.current);
+
+          modelRef.current.traverse((object) => {
+            if (object.type === 'Mesh') {
+              object.material = volume_material;
+            }
+          });
+
+            
          
           setColorLegendData([])
           paintModel(colorDefault);

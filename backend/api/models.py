@@ -80,7 +80,7 @@ class File(models.Model):
             
 
             # Create a new mesh data block
-            dict = {"samples": [], "variables": []}
+            dict = {"samples": [], "variables": [], "volumes": ["Rel", "Abs"]}
 
         
             
@@ -112,10 +112,11 @@ class File(models.Model):
                 if sample_name not in dict["samples"] and sample_name != "nan":
                     dict["samples"].append(sample_name)
                     bpy.ops.mesh.primitive_uv_sphere_add(
-                        location=(0, 0, 0), radius=volume / 1000000
+                        location=(0, 0, 0), radius=volume / 10000000
                     )
                     parent = bpy.context.active_object
                     parent.name = sample_name
+                    parent.select_set(True)
         
 
                     # Create UV spheres
@@ -143,14 +144,17 @@ class File(models.Model):
                         location=(0, 0, 0), radius=volume
                     )
                     model_volumen_relativo = bpy.context.active_object
-                    model_volumen_relativo.name = "model_volumen_relativo" + sample_name
+                    model_volumen_relativo.name = dict["volumes"][0] + sample_name
                     model_volumen_relativo.parent = parent
-                    parent.select_set(True)
+                 
+
+                   
 
             bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius=volume * 10)
             spher = bpy.context.active_object
-            spher.name = "Volumen_Total" 
-            spher.select_set(True)
+            spher.name = dict["volumes"][1] 
+          
+            
             
             
             
@@ -171,6 +175,9 @@ class File(models.Model):
                     self.save()
                     
                     os.unlink(filepath)
+                    bpy.ops.object.select_all(action="SELECT")
+                    bpy.ops.object.delete(use_global=True)
+
                     print("numero", n_columns, n_samples)
   
 
