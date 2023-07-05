@@ -22,7 +22,6 @@ function App() {
           <Container maxWidth="xl" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/liho" element={<Home />} />
             <Route path="/about" element={<About/>} />
             <Route path="/tutorial" element={<Tutorial />} />
           </Routes>
