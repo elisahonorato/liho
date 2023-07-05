@@ -17,7 +17,7 @@ function App() {
   return (
     <LihoClient>
       <ThemeProvider theme={theme}>
-        <Router>
+        <Router basename="/liho">
         <Header />
           <Container maxWidth="xl" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
           <Routes>
