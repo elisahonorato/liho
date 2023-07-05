@@ -63,11 +63,17 @@ class File(models.Model):
     def generate_gltf(self, n_columns=None, n_samples=None, user_filename=None):
         try:
             import bpy
-            self.clean_blocks(bpy)
-            if bpy.context.scene.objects:
-                bpy.ops.object.select_all(action='SELECT')
-                bpy.ops.object.delete(use_global=False, confirm=False)
-          
+
+            if bpy.context.active_object is not None:
+                # Access the active object here
+                bpy.ops.object.select_all(action="SELECT")
+                bpy.ops.object.delete(use_global=False)
+                if bpy.context.scene.objects:
+                    bpy.ops.object.select_all(action="SELECT")
+                    bpy.ops.object.delete(use_global=False)
+            else:
+                bpy.ops.object.select_all(action="SELECT")
+                bpy.ops.object.delete(use_global=False)
                 
 
             volume = 100
@@ -86,35 +92,36 @@ class File(models.Model):
             
      
             columna = df.columns
+
             if n_samples != 'all' and n_columns != 'all':
                 n_samples = int(n_samples)
                 n_columns = int(n_columns)
-        
-
-            if n_samples or n_columns == 'all':
-                columns = columna[0 : int(len(columna))]
-                n_samples = int(len(df))
             else: 
-                columns = columna[0 : int(n_columns)]
+                print(int(len(df)))
+                n_samples = int(len(df))
+                n_columns = int(len(columna))
+
             intervalo = [-volume, volume]
-            print('gola')
       
 
 
-            for i, row in df.iloc[0: int(n_samples)].iterrows():
+            for i, row in df.iloc[0: n_samples].iterrows():
                 numero_x = intervalo[0]
 
                 sample_name = str(row[0])
-                if sample_name and sample_name.strip().lower() not in ["nan", ""]:
+                if sample_name not in dict["samples"] and sample_name != "nan":
                     dict["samples"].append(sample_name)
                     bpy.ops.mesh.primitive_uv_sphere_add(
                         location=(0, 0, 0), radius=volume / 1000000
                     )
                     parent = bpy.context.active_object
                     parent.name = sample_name
+        
 
                     # Create UV spheres
-                    for column in columns[1:]:
+                
+                    for column in columna[1: n_columns]:
+                      
                         r = round_number(row[column]) // 10
                         if r > 0:
                             if -(r + abs(numero_x)) < intervalo[0]:
@@ -150,7 +157,7 @@ class File(models.Model):
 
             with tempfile.NamedTemporaryFile(suffix='.glb', delete=False) as temp_file:
                 filepath = temp_file.name
-                self.export_scene(filepath)
+                bpy.ops.export_scene.gltf(filepath=filepath, export_format='GLB')
            
 
                 with open(filepath, "rb") as f:
@@ -164,6 +171,7 @@ class File(models.Model):
                     self.save()
                     
                     os.unlink(filepath)
+                    print("numero", n_columns, n_samples)
   
 
 
@@ -176,29 +184,11 @@ class File(models.Model):
             response = str(e) + "Error al generar el archivo GLTF"
             return response
 
-    def export_scene(self, file_path):
-        import bpy
-        bpy.ops.wm.save_as_mainfile(filepath=file_path)
-        bpy.ops.export_scene.gltf(filepath=file_path, export_format='GLB')
 
 
 
-    def clean_blocks(self, bpy):
-        for block in bpy.data.meshes:
-            if block.users == 0:
-                bpy.data.meshes.remove(block)
 
-        for block in bpy.data.materials:
-            if block.users == 0:
-                bpy.data.materials.remove(block)
 
-        for block in bpy.data.textures:
-            if block.users == 0:
-                bpy.data.textures.remove(block)
-
-        for block in bpy.data.images:
-            if block.users == 0:
-                bpy.data.images.remove(block)
 
 
 

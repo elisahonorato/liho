@@ -16,16 +16,20 @@ function Use() {
 
     const handleCapture = () => {
       const guiElement = document.getElementById('gui');
+      console.log("gui",guiElement);
 
       // Hide the element with ID 'gui'
       guiElement.style.display = 'none';
+      const sceneElement = document.getElementById('canvas');
+      console.log("scene",sceneElement);
+    
 
       html2canvas(document.getElementById("canvas")).then(canvas => {
         const screenshot = canvas.toDataURL();
 
         // Do something with the screenshot
         const link = document.createElement('a');
-        console.log(screenshot);
+      
         link.download = 'screenshot.png';
         link.href = screenshot;
         link.click();
@@ -78,7 +82,7 @@ function Use() {
               {/* Right column */}
               <Grid item xs={12} md={10}>
                 {gltfData != null && (
-                  <Box sx={{ flexGrow: 1 }}><ThreeScene ref={componentRef} apiData={gltfData} /></Box>
+                  <Box sx={{ flexGrow: 1 }}><ThreeScene divRef={componentRef} apiData={gltfData} /></Box>
 
                 )}
 
