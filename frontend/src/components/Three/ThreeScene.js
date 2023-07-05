@@ -26,6 +26,33 @@ function ThreeScene({ apiData }) {
     loadModel();
     console.log("apiData", apiData);
   }, [apiData]);
+  
+  const distribuir = (value) => {
+    if (value === true) {
+      const gridWidth = [-500, -250, 0, 250, 500];
+
+      if (modelRef.current) {
+        const parent = modelRef.current;
+
+        parent.children.forEach((child, index) => {
+          const i = Math.floor(index / gridWidth.length);
+          const j = index % gridWidth.length;
+          child.position.set(gridWidth[i], gridWidth[j], 0);
+        });
+
+        controlsRef.current.reset();
+        cameraRef.current.position.set(0, 0, 1000);
+      }
+    } else {
+      if (modelRef.current) {
+        const parent = modelRef.current;
+
+        parent.children.forEach((child) => {
+          child.position.set(0, 0, 0);
+        });
+      }
+    }
+  };
 
   const paintModel = (colorDict) => {
     setColorLegendData((prevData) => {
@@ -141,33 +168,6 @@ function ThreeScene({ apiData }) {
 
     };
   
-    const distribuir = (value) => {
-      if (value === true) {
-        const gridWidth = [-500, -250, 0, 250, 500];
-  
-        if (modelRef.current) {
-          const parent = modelRef.current;
-  
-          parent.children.forEach((child, index) => {
-            const i = Math.floor(index / gridWidth.length);
-            const j = index % gridWidth.length;
-            child.position.set(gridWidth[i], gridWidth[j], 0);
-          });
-  
-          controlsRef.current.reset();
-          cameraRef.current.position.set(0, 0, 1000);
-        }
-      } else {
-        if (modelRef.current) {
-          const parent = modelRef.current;
-  
-          parent.children.forEach((child) => {
-            child.position.set(0, 0, 0);
-          });
-        }
-      }
-    };
-  
     const handleDistribuir = (value) => {
       distribuir(value);
     };
@@ -222,7 +222,7 @@ function ThreeScene({ apiData }) {
           if (modelRef.current) {
             sceneRef.current.remove(modelRef.current);
           }
-          
+
           modelRef.current = gltf.scene;
           modelRef.current.material = volume_material;
           sceneRef.current.add(modelRef.current);
@@ -234,7 +234,7 @@ function ThreeScene({ apiData }) {
           });
 
             
-         
+          distribuir(true);
           setColorLegendData([])
           paintModel(colorDefault);
         },
