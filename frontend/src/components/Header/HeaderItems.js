@@ -8,12 +8,12 @@ const headerItems = [
   {
     label: 'Tutorial',
     slug: 'tutorial',
-    href: '/tutorial',
+    href: 'https://elisahonorato.github.io/tutorial/',
   },
   {
     label: 'Acerca de',
     slug: 'about',
-    href: '/about',
+    href: 'https://elisahonorato.github.io/about/',
   },
 ];
 
