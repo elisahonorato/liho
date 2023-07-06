@@ -4,7 +4,8 @@ import { ThemeProvider } from '@mui/material/styles';
 
 
 import theme from './components/Theme/Theme';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import Home from './components/Pages/Home'
 import Header from './components/Header/Header';
 import Tutorial from './components/Pages/Tutorial';
@@ -17,7 +18,7 @@ function App() {
   return (
     <LihoClient>
       <ThemeProvider theme={theme}>
-        <Router basename="/liho">
+        <BrowserRouter basename="">
         <Header />
           <Container maxWidth="xl" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
           <Routes>
@@ -32,7 +33,7 @@ function App() {
           </footer>
           </Container>
 
-        </Router>
+        </BrowserRouter>
       </ThemeProvider>
     </LihoClient>
   );
