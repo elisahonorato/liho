@@ -1,22 +1,19 @@
-const basePath = '/liho';
-
 const headerItems = [
   {
     label: '',
     slug: '',
-    href: `${basePath}/`,
+    href: '/',
   },
   {
     label: 'Tutorial',
     slug: 'tutorial',
-    href: `${basePath}/tutorial`,
+    href: '/tutorial',
   },
   {
     label: 'Acerca de',
     slug: 'about',
-    href: `${basePath}/about`,
+    href: '/about',
   },
 ];
 
 export default headerItems;
-
