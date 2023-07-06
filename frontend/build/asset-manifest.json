@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/liho/frontend/build/static/css/main.31d6cfe0.css",
-    "main.js": "/liho/frontend/build/static/js/main.d48fe17c.js",
-    "static/js/496.3521c230.chunk.js": "/liho/frontend/build/static/js/496.3521c230.chunk.js",
-    "index.html": "/liho/frontend/build/index.html",
-    "main.d48fe17c.js.map": "/liho/frontend/build/static/js/main.d48fe17c.js.map",
-    "496.3521c230.chunk.js.map": "/liho/frontend/build/static/js/496.3521c230.chunk.js.map"
+    "main.css": "/liho/frontend/build/static/static/css/main.31d6cfe0.css",
+    "main.js": "/liho/frontend/build/static/static/js/main.3eb793a9.js",
+    "static/js/496.3521c230.chunk.js": "/liho/frontend/build/static/static/js/496.3521c230.chunk.js",
+    "index.html": "/liho/frontend/build/static/index.html",
+    "main.3eb793a9.js.map": "/liho/frontend/build/static/static/js/main.3eb793a9.js.map",
+    "496.3521c230.chunk.js.map": "/liho/frontend/build/static/static/js/496.3521c230.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.d48fe17c.js"
+    "static/js/main.3eb793a9.js"
   ]
 }
