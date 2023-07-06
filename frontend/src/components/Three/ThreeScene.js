@@ -268,9 +268,6 @@ function ThreeScene({ apiData }) {
 
 
 
- 
-
-
     if (divRef.current) {
       divRef.current.appendChild(rendererRef.current.domElement);
     }
