@@ -64,35 +64,45 @@ const theme = createTheme({
       },
     },
     MuiPaper: {
-        styleOverrides: {
-          root: {
-            // Style for Paper component without border
-            '&.noBorder': {
-              border: 'none',
-            },
-            // Style for Paper component with border
-            '&.withBorder': {
-              border: '1.3px solid #B2B2B2',
-            },
+      styleOverrides: {
+        root: {
+          // Style for Paper component without border
+          '&.noBorder': {
+            border: 'none',
+          },
+          // Style for Paper component with border
+          '&.withBorder': {
+            border: '1.3px solid #B2B2B2',
           },
         },
       },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            // Button styles
-            textTransform: 'uppercase',
-            borderRadius: '20px',
-            backgroundColor: '#B2B2B2',
-            color: '#ffffff',            
-            '&:hover': {
-              backgroundColor: '#000000',
-            },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          // Button styles
+          textTransform: 'uppercase',
+          borderRadius: '20px',
+          backgroundColor: '#B2B2B2',
+          color: '#ffffff',
+          '&:hover': {
+            backgroundColor: '#000000',
+          },
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: '#B2B2B2',
+          textDecoration: 'none',
+          '&:hover': {
+            color: '#000000',
           },
         },
       },
     },
   },
-);
+});
 
 export default theme;

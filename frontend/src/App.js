@@ -5,11 +5,11 @@ import { ThemeProvider } from '@mui/material/styles';
 
 import theme from './components/Theme/Theme';
 import Home from './components/Pages/Home'
-import Header from './components/Header/Header';
 import Tutorial from './components/Pages/Tutorial';
 import About from './components/Pages/About/About';
 import { Container, Typography} from '@mui/material';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import Navbar from './components/Navbar/Navbar';
 
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
     <LihoClient>
       <ThemeProvider theme={theme}>
         <Router>
-          <Header />
+          <Navbar />
             <Container maxWidth="xl" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Routes>
               <Route path="/" element={<Home />} />
