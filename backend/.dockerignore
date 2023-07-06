@@ -1,0 +1,8 @@
+*
+!liho
+!api
+!manage.py
+!pyproject.toml
+!poetry.lock
+!static
+.log

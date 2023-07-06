@@ -1,0 +1,49 @@
+# cache
+__pycache__
+
+# dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/node_modules
+*.log
+
+
+# misc
+.DS_Store
+.venv.local
+.venv.development.local
+.venv.test.local
+.venv.production.local
+.venv
+
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# exploring
+/src/component/Points.js
+
+mediafiles/csv
+*.sqlite3
+*sqlite3
+*.db
+*.csv
+*.pem
+*.key
+backend/credentials
+backend/media/csv
+
+static
+venv
+.vscode
+backend/db.sqlite3
+backend/db.sqlite3
+*.env
