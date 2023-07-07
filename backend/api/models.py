@@ -80,7 +80,7 @@ class File(models.Model):
             
 
             # Create a new mesh data block
-            dict = {"samples": [], "variables": [], "volumes": ["Rel", "Abs"]}
+            dict = {"samples": [], "variables": [], "volumes": ["Rel", "Abs", int(volume)]}
 
         
             

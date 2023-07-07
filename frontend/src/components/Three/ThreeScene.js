@@ -1,12 +1,15 @@
 
 import React, { useEffect, useRef } from 'react';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 import {colorDefault, colorDaltonic, colorSequential, colorDivergent } from './colors';
 import TwoColumnPaper from './TwoColumnPaper';
 import SetGuiStyles from './SetGuiStyle';
+import createTextObject from './createTextObject';
 
 
 function ThreeScene({ apiData }) {
@@ -19,41 +22,130 @@ function ThreeScene({ apiData }) {
   const divRef = useRef(null);
   const controlsRef = useRef(null);
   const [colorLegendData, setColorLegendData] = React.useState([]);
-  const volume_material = new THREE.MeshBasicMaterial({ color: 0x00000, wireframe: true, transparent: true, opacity: 0.1 });
+  const volumeMaterialRef = useRef(null);
+  const sampleMaterialRef = useRef(null);
+  const volumeAbsRef = useRef(null);
+
+
+  useEffect(() => {
+    // Initialize the scene and renderer
+    sceneRef.current = new THREE.Scene();
+    sceneRef.current.background = new THREE.Color(0xffffff);
+
+    cameraRef.current = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      100000
+    );
+
+    cameraRef.current.position.z = 5;
+    
+    rendererRef.current = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, canvas: divRef.current.domElement, precision: 'highp', alpha: true });
+    rendererRef.current.setPixelRatio(window.devicePixelRatio);
+    rendererRef.current.setSize(window.innerWidth/2, window.innerHeight/2);
+    rendererRef.current.setClearColor(0xffffff, 0);
+    rendererRef.current.shadowMap.enabled = true;
+    rendererRef.current.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    if (divRef.current) {
+      divRef.current.appendChild(rendererRef.current.domElement);
+    }
+
+    // Position the camera
+    cameraRef.current.position.z = 5;
+
+    // Add controls
+    controlsRef.current = new OrbitControls(cameraRef.current, rendererRef.current.domElement);
+    controlsRef.current.enableDamping = true;
+    controlsRef.current.dampingFactor = 0.05;
+
+    volumeMaterialRef.current = new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.1,
+    });
+
+    sampleMaterialRef.current = new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.8,
+    });
+
+    // Cleanup function when the component unmounts
+    return () => {
+      sceneRef.current.remove(modelRef.current);
+      rendererRef.current.dispose();
+      if (divRef.current && rendererRef.current.domElement) {
+        divRef.current.removeChild(rendererRef.current.domElement);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     createGui();
     loadModel();
     console.log("apiData", apiData);
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+      controlsRef.current.update(); // Update controls in the animation loop
+
+      if (volumeAbsRef.current !== undefined && volumeAbsRef.current !== null ) {
+        volumeAbsRef.current.rotation.y += 0.002;
+      }
+    };
+    
+    animate();
   }, [apiData]);
   
   const distribuir = (value) => {
     if (value === true) {
-      const gridWidth = [-500, -250, 0, 250, 500];
-
+      const numChildren = modelRef.current.children.length - 1;
+      const sqrtNumChildren = Math.ceil(Math.sqrt(numChildren));
+  
+      const gridWidth = [];
+      const separation = 2000 / sqrtNumChildren;
+      const halfSeparation = separation / 2;
+  
+      const offsetX = -500 + (1000 - separation * sqrtNumChildren) / 2;
+      const offsetY = -500 + (1000 - separation * sqrtNumChildren) / 2;
+  
+      for (let i = 0; i < sqrtNumChildren; i++) {
+        for (let j = 0; j < sqrtNumChildren; j++) {
+          const x = offsetX + halfSeparation + i * separation;
+          const y = offsetY + halfSeparation + j * separation;
+          gridWidth.push(x, y, 0);
+        }
+      }
+  
       if (modelRef.current) {
         const parent = modelRef.current;
-
+  
         parent.children.forEach((child, index) => {
-          const i = Math.floor(index / gridWidth.length);
-          const j = index % gridWidth.length;
-          child.position.set(gridWidth[i], gridWidth[j], 0);
+          if (child.name !== apiData.volumes[1]) {
+            child.position.set(gridWidth[index * 3], gridWidth[index * 3 + 1], gridWidth[index * 3 + 2]);
+          }
         });
-
+  
         controlsRef.current.reset();
         cameraRef.current.position.set(0, 0, 1000);
+        cameraRef.current.lookAt(0, 0, 0);
       }
     } else {
       if (modelRef.current) {
         const parent = modelRef.current;
-
+  
         parent.children.forEach((child) => {
           child.position.set(0, 0, 0);
         });
       }
     }
   };
-
+  
   const paintModel = (colorDict) => {
     setColorLegendData((prevData) => {
       const updatedData = [prevData];
@@ -75,24 +167,19 @@ function ThreeScene({ apiData }) {
           const parent = modelRef.current.getObjectByName(sampleName);
 
           if (parent) {
-            parent.material = volume_material;
-
+            parent.material = volumeMaterialRef.current;
             for (let k = 0; k < parent.children.length; k++) {
               if (parent.children[k].name.includes(variable)) {
                 parent.children[k].visible = true;
-
                 const color = colorDict[i];
-                parent.children[k].material = new THREE.MeshBasicMaterial({
-                  color,
-                  wireframe: true,
-                  transparent: true,
-                  opacity: 0.8,
-                });
-              }
+                parent.children[k].material = sampleMaterialRef.current.clone();
+                parent.children[k].material.color = new THREE.Color(color);
+
             }
           }
         }
       }
+    }
 
 
     return updatedData;
@@ -115,7 +202,7 @@ function ThreeScene({ apiData }) {
       'Distribuir': true,
       'Volumen Relativo': false,
       'Volumen Absoluto': false,
-
+      'Mostrar Datos': false,
     };
   
     const handleChooseSample = (value) => {
@@ -163,15 +250,39 @@ function ThreeScene({ apiData }) {
           handleShowVolume(visibility, volume, child);
         });
       }
-
-  
-
     };
   
     const handleDistribuir = (value) => {
       distribuir(value);
     };
-  
+    const handleMostrarDatos = (value) => {
+      if (modelRef.current) {
+        const parent = modelRef.current;
+        parent.children.forEach((child) => {
+          if (child !== volumeAbsRef.current) {
+            if (value === true) {
+              if (child.getObjectByName("Text") !== undefined && child.getObjectByName("Text") !== null ) {
+                const sampleText = child.getObjectByName("Text");
+                sampleText.visible = true;
+              }
+              else
+              {
+                const sampleText = createTextObject(child.name, 10, 0x000000);
+                sampleText.name = "Text";
+                sampleText.visible = true;
+                child.add(sampleText);
+              }
+            }
+            else {
+              if (child.getObjectByName("Text") !== undefined && child.getObjectByName("Text") !== null ) {
+                child.getObjectByName("Text").visible = false;
+              }
+            }
+          }
+      });
+      }
+    };
+      
     const folder1 = guiRef.current.addFolder('Samples');
     const sampleOptions = ['All', ...apiData.samples];
     folder1.add(settings, 'Choose Sample', sampleOptions).onChange(handleChooseSample);
@@ -192,6 +303,20 @@ function ThreeScene({ apiData }) {
     folder4.add(settings, 'Volumen Absoluto').onChange((value) => {
       handleShowVolume(value, apiData.volumes[1], modelRef.current);
     });
+
+    const folder5 = guiRef.current.addFolder('Datos');
+    folder5.add(settings, 'Mostrar Datos').onChange((value) => {
+      handleMostrarDatos(value);
+    });
+    folder5.add(settings, 'Mostrar Datos').onChange((value) => {
+      handleMostrarDatos(value);
+    });
+
+
+
+
+
+
 
 
   
@@ -224,16 +349,21 @@ function ThreeScene({ apiData }) {
           }
 
           modelRef.current = gltf.scene;
-          modelRef.current.material = volume_material;
+          modelRef.current.material = volumeMaterialRef.current;
           sceneRef.current.add(modelRef.current);
 
           modelRef.current.traverse((object) => {
             if (object.type === 'Mesh') {
-              object.material = volume_material;
+              object.material = volumeMaterialRef.current;
             }
           });
-
-            
+          for (let i = 0; i < apiData.volumes.length; i++) {
+            if (modelRef.current.getObjectByName(apiData.volumes[1]) !== undefined) {
+              volumeAbsRef.current = modelRef.current.getObjectByName(apiData.volumes[1]);
+              volumeAbsRef.current.material = volumeMaterialRef.current;
+            }
+          }
+         
           distribuir(true);
           setColorLegendData([])
           paintModel(colorDefault);
@@ -251,52 +381,7 @@ function ThreeScene({ apiData }) {
     }
   };
 
-  useEffect(() => {
-    // Initialize the scene and renderer
-    sceneRef.current = new THREE.Scene();
-    sceneRef.current.background = new THREE.Color(0xffffff);
-    cameraRef.current = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    rendererRef.current = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, canvas: divRef.current.domElement, precision: 'highp', alpha: true });
-    rendererRef.current.setPixelRatio(window.devicePixelRatio);
-    rendererRef.current.setSize(window.innerWidth/2, window.innerHeight/2);
-    console.log(divRef.current);
 
-
-
-    if (divRef.current) {
-      divRef.current.appendChild(rendererRef.current.domElement);
-    }
-
-    // Position the camera
-    cameraRef.current.position.z = 5;
-
-    // Add controls
-    controlsRef.current = new OrbitControls(cameraRef.current, rendererRef.current.domElement);
-    controlsRef.current.enableDamping = true;
-    controlsRef.current.dampingFactor = 0.05;
-
-    // Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
-      controlsRef.current.update(); // Update controls in the animation loop
-    };
-    animate();
-
-    // Cleanup function when the component unmounts
-    return () => {
-      sceneRef.current.remove(modelRef.current);
-      rendererRef.current.dispose();
-      if (divRef.current && rendererRef.current.domElement) {
-        divRef.current.removeChild(rendererRef.current.domElement);
-      }
-    };
-  }, []);
 
   return (
     <TwoColumnPaper colorLegendData={colorLegendData} divRef={divRef} guiContainerRef={guiContainerRef} />
