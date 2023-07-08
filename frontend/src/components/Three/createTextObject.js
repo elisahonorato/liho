@@ -5,7 +5,7 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
 
 
-function createTextObject( text = '', fontSize = 10, color = 0x000000) {
+function createTextObject( text = '', fontSize = 10, color = 0x000000, samplePosition) {
   console.log('createTextObject');
   const font = new FontLoader().parse(FontData);
   const geometry = new TextGeometry(text, {
@@ -16,7 +16,7 @@ function createTextObject( text = '', fontSize = 10, color = 0x000000) {
   );
   const material = new THREE.MeshBasicMaterial({ color: color });
   const Typography = new THREE.Mesh(geometry, material);
-  Typography.position.set(0, 0, 0);
+  Typography.position.set(samplePosition.x, samplePosition.y, samplePosition.z);
   console.log(Typography);
 
   return Typography;

@@ -25,6 +25,9 @@ function ThreeScene({ apiData }) {
   const volumeMaterialRef = useRef(null);
   const sampleMaterialRef = useRef(null);
   const volumeAbsRef = useRef(null);
+  const mostrarDatos = useRef(false);
+  const fontSize = useRef(12);
+  const samplePosition = useRef({x: 0, y: 0, z: 0});
 
 
   useEffect(() => {
@@ -195,6 +198,7 @@ function ThreeScene({ apiData }) {
   
     guiRef.current = new GUI({ autoPlace: false });
     guiRef.current.domElement.id = 'gui';
+    mostrarDatos.current = false;
   
     const settings = {
       'Choose Sample': 'All',
@@ -202,8 +206,11 @@ function ThreeScene({ apiData }) {
       'Distribuir': true,
       'Volumen Relativo': false,
       'Volumen Absoluto': false,
-      'Mostrar Datos': false,
-      'fontSize': 12, // Default font size
+      'Mostrar Datos': mostrarDatos.current,
+      'fontSize': fontSize.current,
+      'samplePosition_y': samplePosition.current.y,
+      'samplePosition_x': samplePosition.current.x,
+      'samplePosition_z': samplePosition.current.z,
     };
   
     const handleChooseSample = (value) => {
@@ -262,20 +269,28 @@ function ThreeScene({ apiData }) {
         parent.children.forEach((child) => {
           if (child !== volumeAbsRef.current) {
             if (value === true) {
+              mostrarDatos.current = true;
               if (child.getObjectByName("Text") !== undefined && child.getObjectByName("Text") !== null ) {
-                const sampleText = child.getObjectByName("Text");
+                
+                child.remove(child.getObjectByName("Text"));
+                const sampleText = createTextObject(child.name, fontSize.current, 0x000000, samplePosition.current);
+                sampleText.name = "Text";
+                child.add(sampleText);
+                
                 sampleText.visible = true;
+              
               }
               else
               {
-                const sampleText = createTextObject(child.name, 10, 0x000000);
+                const sampleText = createTextObject(child.name, fontSize.current, 0x000000, samplePosition.current);
                 sampleText.position.y = apiData.volumes[2] + 10;
                 sampleText.name = "Text";
                 sampleText.visible = true;
                 child.add(sampleText);
               }
             }
-            else {
+            else if (value === false) {
+              mostrarDatos.current = false;
               if (child.getObjectByName("Text") !== undefined && child.getObjectByName("Text") !== null ) {
                 child.getObjectByName("Text").visible = false;
               }
@@ -310,16 +325,27 @@ function ThreeScene({ apiData }) {
     folder5.add(settings, 'Mostrar Datos').onChange((value) => {
       handleMostrarDatos(value);
     });
-    folder5.add(settings, 'fontSize', 6, 24).onChange((value) => {
-      handleMostrarDatos(value, settings['Mostrar Datos']);
+    folder5.add(settings, 'fontSize', 6, 100).onChange((value) => {
+      console.log(mostrarDatos.current)
+      fontSize.current = value;
+      handleMostrarDatos(mostrarDatos.current);
     });
+    folder5.add(settings, 'samplePosition_x', -200, 200).onChange((value) => {
+      samplePosition.current.x = value;
+      handleMostrarDatos(mostrarDatos.current);
+    });
+    folder5.add(settings, 'samplePosition_y', -200, 200).onChange((value) => {
+      samplePosition.current.y = value;
+      handleMostrarDatos(mostrarDatos.current);
+    });
+    folder5.add(settings, 'samplePosition_z', -200, 200).onChange((value) => {
+      samplePosition.current.z = value;
+      handleMostrarDatos(mostrarDatos.current);
+    });
+
+
+
     
-
-
-
-
-
-
   
     guiContainerRef.current?.appendChild(guiRef.current.domElement);
     SetGuiStyles(guiRef.current.domElement);
