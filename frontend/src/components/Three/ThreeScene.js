@@ -208,9 +208,9 @@ function ThreeScene({ apiData }) {
       'Volumen Absoluto': false,
       'Mostrar Datos': mostrarDatos.current,
       'fontSize': fontSize.current,
-      'samplePosition_y': samplePosition.current.y,
-      'samplePosition_x': samplePosition.current.x,
-      'samplePosition_z': samplePosition.current.z,
+      'Y': samplePosition.current.y,
+      'X': samplePosition.current.x,
+      'Z': samplePosition.current.z,
     };
   
     const handleChooseSample = (value) => {
@@ -330,15 +330,15 @@ function ThreeScene({ apiData }) {
       fontSize.current = value;
       handleMostrarDatos(mostrarDatos.current);
     });
-    folder5.add(settings, 'samplePosition_x', -200, 200).onChange((value) => {
+    folder5.add(settings, 'X', -200, 200).onChange((value) => {
       samplePosition.current.x = value;
       handleMostrarDatos(mostrarDatos.current);
     });
-    folder5.add(settings, 'samplePosition_y', -200, 200).onChange((value) => {
+    folder5.add(settings, 'Y', -200, 200).onChange((value) => {
       samplePosition.current.y = value;
       handleMostrarDatos(mostrarDatos.current);
     });
-    folder5.add(settings, 'samplePosition_z', -200, 200).onChange((value) => {
+    folder5.add(settings, 'Z', -200, 200).onChange((value) => {
       samplePosition.current.z = value;
       handleMostrarDatos(mostrarDatos.current);
     });
