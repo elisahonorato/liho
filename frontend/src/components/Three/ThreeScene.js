@@ -203,6 +203,7 @@ function ThreeScene({ apiData }) {
       'Volumen Relativo': false,
       'Volumen Absoluto': false,
       'Mostrar Datos': false,
+      'fontSize': 12, // Default font size
     };
   
     const handleChooseSample = (value) => {
@@ -268,6 +269,7 @@ function ThreeScene({ apiData }) {
               else
               {
                 const sampleText = createTextObject(child.name, 10, 0x000000);
+                sampleText.position.y = apiData.volumes[2] + 10;
                 sampleText.name = "Text";
                 sampleText.visible = true;
                 child.add(sampleText);
@@ -308,11 +310,10 @@ function ThreeScene({ apiData }) {
     folder5.add(settings, 'Mostrar Datos').onChange((value) => {
       handleMostrarDatos(value);
     });
-    folder5.add(settings, 'Mostrar Datos').onChange((value) => {
-      handleMostrarDatos(value);
+    folder5.add(settings, 'fontSize', 6, 24).onChange((value) => {
+      handleMostrarDatos(value, settings['Mostrar Datos']);
     });
-
-
+    
 
 
 

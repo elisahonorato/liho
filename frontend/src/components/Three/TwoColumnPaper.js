@@ -1,14 +1,27 @@
-import React from 'react';
-import { Paper, Typography, useMediaQuery } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Box, Paper, Typography, useMediaQuery } from '@mui/material';
 import theme from '../Theme/Theme';
 
-const TwoColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
+const ThreeColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const canvasRef = divRef; // Assign the same ref object
+
+  useEffect(() => {
+    const handleResize = () => {
+      const canvasHeight = canvasRef.current.clientHeight;
+      divRef.current.style.height = `${canvasHeight}px`;
+    };
+
+    handleResize(); // Initial resize
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <Paper id='canvas' style={{ display: 'flex', flexDirection: isSmallScreen ? 'column' : 'row' }}>
+    <Paper elevation={0} id="canvas" sx={{ display: 'flex', flexDirection: isSmallScreen ? 'column' : 'row' }}>
       <Paper
-        id='leyenda'
+        id="leyenda"
         elevation={0}
         style={{
           padding: '10px',
@@ -21,7 +34,7 @@ const TwoColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
           display: 'flex',
           flexWrap: 'wrap',
         }}
-        className='noBorder'
+        className="noBorder"
       >
         {colorLegendData.map((item) => (
           <div
@@ -51,7 +64,7 @@ const TwoColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
       </Paper>
       <Paper
         elevation={0}
-        className='noBorder'
+        className="noBorder"
         style={{
           flex: '1',
           height: '100%',
@@ -61,12 +74,39 @@ const TwoColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
           position: 'relative',
         }}
       >
-        <div style={{ position: 'absolute', flexDirection: 'revert', left: 0 }} ref={divRef} />
-
-        <div style={{ position: 'absolute', flexDirection: 'revert', right: 0 }} ref={guiContainerRef} />
+        <Box
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+          }}
+          ref={divRef}
+        >
+          {/* Three.js canvas */}
+          <div style={{ width: '100%', height: '100%' }} ref={canvasRef}>
+            {/* Render Three.js scene here */}
+          </div>
+        </Box>
+        <Box
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'flex-start',
+            zIndex: 2,
+          }}
+          ref={guiContainerRef}
+        >
+          {/* Contenido de la GUI */}
+        </Box>
       </Paper>
     </Paper>
   );
 };
 
-export default TwoColumnPaper;
+export default ThreeColumnPaper;

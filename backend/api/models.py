@@ -156,12 +156,12 @@ class File(models.Model):
           
             
             
-            
-            
 
             with tempfile.NamedTemporaryFile(suffix='.glb', delete=False) as temp_file:
                 filepath = temp_file.name
+                print(filepath)
                 bpy.ops.export_scene.gltf(filepath=filepath, export_format='GLB')
+                print(filepath)
            
 
                 with open(filepath, "rb") as f:

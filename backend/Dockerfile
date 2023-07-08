@@ -20,6 +20,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxkbcommon-x11-0 \
+    libxkbcommon.so.0 \
+    libxcb-xinerama0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Crea el directorio de trabajo
