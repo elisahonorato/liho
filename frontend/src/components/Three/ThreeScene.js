@@ -28,6 +28,7 @@ function ThreeScene({ apiData }) {
   const mostrarDatos = useRef(false);
   const fontSize = useRef(12);
   const samplePosition = useRef({x: 0, y: 0, z: 0});
+  const sampleDistance = useRef(2000);
 
 
   useEffect(() => {
@@ -111,7 +112,7 @@ function ThreeScene({ apiData }) {
       const sqrtNumChildren = Math.ceil(Math.sqrt(numChildren));
   
       const gridWidth = [];
-      const separation = 2000 / sqrtNumChildren;
+      const separation = sampleDistance.current / sqrtNumChildren;
       const halfSeparation = separation / 2;
   
       const offsetX = -500 + (1000 - separation * sqrtNumChildren) / 2;
@@ -204,6 +205,7 @@ function ThreeScene({ apiData }) {
       'Choose Sample': 'All',
       'Colores por Default': 'Default',
       'Distribuir': true,
+      'Distancia': sampleDistance.current,
       'Volumen Relativo': false,
       'Volumen Absoluto': false,
       'Mostrar Datos': mostrarDatos.current,
@@ -313,6 +315,11 @@ function ThreeScene({ apiData }) {
     const folder3 = guiRef.current.addFolder('Posiciones');
     folder3.add(settings, 'Distribuir').onChange(handleDistribuir);
 
+    folder3.add(settings, 'Distancia', 0, 100000).onChange((value) => {
+      sampleDistance.current = value;
+      handleDistribuir(true);
+    });
+
     const folder4 = guiRef.current.addFolder('Volumen');
     folder4.add(settings, 'Volumen Relativo').onChange((value) => {
       handleShowVolume(value, apiData.volumes[0], modelRef.current);
@@ -326,7 +333,6 @@ function ThreeScene({ apiData }) {
       handleMostrarDatos(value);
     });
     folder5.add(settings, 'fontSize', 6, 100).onChange((value) => {
-      console.log(mostrarDatos.current)
       fontSize.current = value;
       handleMostrarDatos(mostrarDatos.current);
     });
