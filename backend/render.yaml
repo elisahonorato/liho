@@ -33,3 +33,5 @@ services:
     healthCheckHttpProtocol: HTTP
     healthCheckHttpPort: 8000
     healthCheckHttpStatusCode: 200
+
+    
