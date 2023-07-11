@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsm6 \
     libfontconfig1 \
     libxext6 \
+    libXxf86vm \
+    libfreetype6 \
 
 
     && rm -rf /var/lib/apt/lists/*
