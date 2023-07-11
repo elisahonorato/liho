@@ -50,13 +50,8 @@ INSTALLED_APPS = [
     "corsheaders",
     'cloudinary_storage',
     'cloudinary',
+    'render.apps.RenderConfig',
 ]
-
-from dotenv import load_dotenv
-
-
-load_dotenv()
-
 
 
 
