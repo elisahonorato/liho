@@ -1,11 +1,13 @@
-import base64
-from django.core.files.base import ContentFile
-from django.core.validators import FileExtensionValidator
-from django.db import models
+import os
+from typing import Any
 import pandas as pd
+from django.db import models
 import requests
 import csv
-import io
+
+import random
+from django.core.validators import FileExtensionValidator
+import base64
 
 def round_number(number):
     if isinstance(number, str):
@@ -15,12 +17,13 @@ def round_number(number):
     return rounded_number
 
 def upload_to(instance, filename):
-    return 'csv/modelo1.csv'
+    return f'glb/{filename}'
 
 class GLTFFile(models.Model):
     type = "gltf"
     dict = None
     url = models.CharField(blank=False)
+
 
 class File(models.Model):
     type = "csv"
@@ -57,6 +60,7 @@ class File(models.Model):
             import bpy
 
             if bpy.context.active_object is not None:
+                # Access the active object here
                 bpy.ops.object.select_all(action="SELECT")
                 bpy.ops.object.delete(use_global=False)
                 if bpy.context.scene.objects:
@@ -67,15 +71,20 @@ class File(models.Model):
                 bpy.ops.object.delete(use_global=False)
 
             volume = 100
+
+            # Create a new mesh data block
             dict = {"samples": [], "variables": [], "volumes": ["Rel", "Abs", int(volume)]}
 
+            # Link the object to the scene
             df = pd.read_csv(self.url.url, sep=";", decimal=",", na_values=["", " ", '"', ""], header=self.has_headers())
+            # Filter columns to exclude 'Unnamed: 0' and 'dtype'
             columna = df.columns
 
             if n_samples != 'all' and n_columns != 'all':
                 n_samples = int(n_samples)
                 n_columns = int(n_columns)
-            else: 
+            else:
+                print(int(len(df)))
                 n_samples = int(len(df))
                 n_columns = int(len(columna))
 
@@ -87,11 +96,14 @@ class File(models.Model):
                 sample_name = str(row[0])
                 if sample_name not in dict["samples"] and sample_name != "nan":
                     dict["samples"].append(sample_name)
-                    bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius=volume / 10000000)
+                    bpy.ops.mesh.primitive_uv_sphere_add(
+                        location=(0, 0, 0), radius=volume / 10000000
+                    )
                     parent = bpy.context.active_object
                     parent.name = sample_name
                     parent.select_set(True)
 
+                    # Create UV spheres
                     for column in columna[1: n_columns]:
                         r = round_number(row[column]) // 10
                         if r > 0:
@@ -101,14 +113,18 @@ class File(models.Model):
                                 posicion_x = numero_x
                             numero_x += r
 
-                            bpy.ops.mesh.primitive_uv_sphere_add(location=(posicion_x, 0, 0), radius=r)
+                            bpy.ops.mesh.primitive_uv_sphere_add(
+                                location=(posicion_x, 0, 0), radius=r
+                            )
                             sphere = bpy.context.active_object
                             sphere.name = sample_name + "_" + column
                             sphere.parent = parent
                             if column not in dict["variables"]:
                                 dict["variables"].append(column)
 
-                    bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius=volume)
+                    bpy.ops.mesh.primitive_uv_sphere_add(
+                        location=(0, 0, 0), radius=volume
+                    )
                     model_volumen_relativo = bpy.context.active_object
                     model_volumen_relativo.name = dict["volumes"][0] + sample_name
                     model_volumen_relativo.parent = parent
@@ -117,15 +133,19 @@ class File(models.Model):
             spher = bpy.context.active_object
             spher.name = dict["volumes"][1]
 
-            with io.BytesIO() as glb_buffer:
-                bpy.ops.export_scene.gltf(filepath=glb_buffer, export_format='GLB')
-                glb_content = glb_buffer.getvalue()
+            glb_filename = f'{self.url.name}.glb'
+            glb_filepath = os.path.join('glb', glb_filename)
 
-            if glb_content:
+            bpy.ops.export_scene.gltf(filepath=glb_filepath, export_format='GLB')
+
+            with open(glb_filepath, "rb") as f:
+                content = f.read()
+
                 self.gltf = GLTFFile.objects.create()
                 self.gltf.dict = dict
-                gltf_base64 = base64.b64encode(glb_content).decode("utf-8")
+                gltf_base64 = base64.b64encode(content).decode("utf-8")
                 self.gltf.dict['content'] = gltf_base64
+
                 self.save()
 
                 bpy.ops.object.select_all(action="SELECT")
@@ -138,3 +158,4 @@ class File(models.Model):
         except Exception as e:
             response = str(e) + "Error al generar el archivo GLTF"
             return response
+
