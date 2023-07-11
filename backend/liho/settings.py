@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "corsheaders",
     'cloudinary_storage',
     'cloudinary',
-    'render.apps.RenderConfig',
 ]
 
 
