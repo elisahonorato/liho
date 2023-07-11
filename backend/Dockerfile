@@ -8,6 +8,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6:i386 \
     libfontconfig1:i386 \
     libglib2.0-0:i386 \
+    libsm6:i386 \
+    libice6:i386 \
+    libxrender1:i386 \
+    libxext6:i386 \
+    libgl1-mesa-glx:i386 \
+    libgl1-mesa-dri:i386 \
+    && rm -rf /var/lib/apt/lists/*
+    
 
 # Crea el directorio de trabajo
 WORKDIR /app
