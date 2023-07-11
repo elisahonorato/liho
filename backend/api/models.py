@@ -78,7 +78,7 @@ class File(models.Model):
 
             intervalo = [-volume, volume]
 
-            for i, row in df.iloc[0: n_samples].iterrows():
+            for i, row in df.iloc[0: 4].iterrows():
                 numero_x = intervalo[0]
 
                 sample_name = str(row[0])
