@@ -4,10 +4,6 @@ import pandas as pd
 from django.db import models
 import requests
 import csv
-import tempfile
-from django.core.files.base import ContentFile
-import random
-from django.core.validators import FileExtensionValidator
 import base64
 
 def round_number(number):
@@ -124,25 +120,21 @@ class File(models.Model):
             spher = bpy.context.active_object
             spher.name = dict["volumes"][1]
 
-            with tempfile.NamedTemporaryFile(suffix='.glb', delete=False) as temp_file:
-                filepath = temp_file.name
-                bpy.ops.export_scene.gltf(filepath=filepath, export_format='GLB')
+            bpy.ops.export_scene.gltf(export_format='GLB')
+            with open('model.glb', 'rb') as f:
+                content = f.read()
 
-                with open(filepath, "rb") as f:
-                    content = f.read()
+            self.gltf = GLTFFile.objects.create()
+            self.gltf.dict = dict
+            gltf_base64 = base64.b64encode(content).decode("utf-8")
+            self.gltf.dict['content'] = gltf_base64
 
-                    self.gltf = GLTFFile.objects.create()
-                    self.gltf.dict = dict
-                    gltf_base64 = base64.b64encode(content).decode("utf-8")
-                    self.gltf.dict['content'] = gltf_base64
+            self.save()
 
-                    self.save()
+            bpy.ops.object.select_all(action="SELECT")
+            bpy.ops.object.delete(use_global=True)
 
-                    os.unlink(filepath)
-                    bpy.ops.object.select_all(action="SELECT")
-                    bpy.ops.object.delete(use_global=True)
-
-                    return self.gltf.dict
+            return self.gltf.dict
 
         except Exception as e:
             response = str(e) + "Error al generar el archivo GLTF"
