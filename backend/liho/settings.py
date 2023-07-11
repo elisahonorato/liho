@@ -55,9 +55,9 @@ INSTALLED_APPS = [
 
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': 'drmqzh7ro',
+    'API_KEY': '763772225293998',
+    'API_SECRET': 'B6OJk9T2EVuJHSQPkoBsneZPnEs',
     'SECURE': True
 
 
