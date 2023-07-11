@@ -5,6 +5,7 @@ from django.db import models
 import pandas as pd
 import requests
 import csv
+import io
 
 def round_number(number):
     if isinstance(number, str):
@@ -116,8 +117,7 @@ class File(models.Model):
             spher = bpy.context.active_object
             spher.name = dict["volumes"][1]
 
-            # Export GLB to in-memory bytes object
-            with bpy_extras.io_utils.BytesIO() as glb_buffer:
+            with io.BytesIO() as glb_buffer:
                 bpy.ops.export_scene.gltf(filepath=glb_buffer, export_format='GLB')
                 glb_content = glb_buffer.getvalue()
 
