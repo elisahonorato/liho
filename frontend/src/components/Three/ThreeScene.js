@@ -29,12 +29,18 @@ function ThreeScene({ apiData }) {
   const fontSize = useRef(12);
   const samplePosition = useRef({x: 0, y: 0, z: 0});
   const sampleDistance = useRef(2000);
+  const modelPosition = useRef({x: 0, y: 0, z: 0});
 
 
   useEffect(() => {
     // Initialize the scene and renderer
     sceneRef.current = new THREE.Scene();
     sceneRef.current.background = new THREE.Color(0xffffff);
+    sceneRef.current.add(new THREE.AmbientLight(0x505050));
+    sceneRef.current.add(new THREE.HemisphereLight(0x606060, 0x404040));
+
+    const devicePixelRatio = window.devicePixelRatio || 1;
+
 
     cameraRef.current = new THREE.PerspectiveCamera(
       75,
@@ -43,14 +49,17 @@ function ThreeScene({ apiData }) {
       100000
     );
 
-    cameraRef.current.position.z = 5;
+
+   
     
     rendererRef.current = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, canvas: divRef.current.domElement, precision: 'highp', alpha: true });
-    rendererRef.current.setPixelRatio(window.devicePixelRatio);
-    rendererRef.current.setSize(window.innerWidth/2, window.innerHeight/2);
+    rendererRef.current.setPixelRatio(devicePixelRatio);
+    rendererRef.current.setSize(window.innerWidth, window.innerHeight);
     rendererRef.current.setClearColor(0xffffff, 0);
     rendererRef.current.shadowMap.enabled = true;
     rendererRef.current.shadowMap.type = THREE.PCFSoftShadowMap;
+    rendererRef.current.useLegacyLights = false;
+
 
     if (divRef.current) {
       divRef.current.appendChild(rendererRef.current.domElement);
@@ -63,6 +72,10 @@ function ThreeScene({ apiData }) {
     controlsRef.current = new OrbitControls(cameraRef.current, rendererRef.current.domElement);
     controlsRef.current.enableDamping = true;
     controlsRef.current.dampingFactor = 0.05;
+    controlsRef.current.screenSpacePanning = false; 
+    
+
+  
 
     volumeMaterialRef.current = new THREE.MeshBasicMaterial({
       color: 0x000000,
@@ -96,7 +109,9 @@ function ThreeScene({ apiData }) {
     const animate = () => {
       requestAnimationFrame(animate);
       rendererRef.current.render(sceneRef.current, cameraRef.current);
-      controlsRef.current.update(); // Update controls in the animation loop
+      controlsRef.current.update();
+
+  
 
       if (volumeAbsRef.current !== undefined && volumeAbsRef.current !== null ) {
         volumeAbsRef.current.rotation.y += 0.002;
@@ -191,6 +206,14 @@ function ThreeScene({ apiData }) {
 
     
   };
+  const moverModelo = () => {
+    if (modelRef.current) {
+      const parent = modelRef.current;
+      parent.position.set(modelPosition.current.x, modelPosition.current.y, modelPosition.current.z);
+    }
+  };
+
+
 
   const createGui = () => {
     if (guiRef.current) {
@@ -213,6 +236,7 @@ function ThreeScene({ apiData }) {
       'Y': samplePosition.current.y,
       'X': samplePosition.current.x,
       'Z': samplePosition.current.z,
+      'Mover Modelo': modelPosition.current.x,
     };
   
     const handleChooseSample = (value) => {
@@ -264,6 +288,16 @@ function ThreeScene({ apiData }) {
   
     const handleDistribuir = (value) => {
       distribuir(value);
+    };
+    const handleMoverModelo = (value) => {
+      modelPosition.current.x = value;
+
+      cameraRef.current.lookAt(modelPosition.current.x, 0, 0);
+
+
+    
+      
+      moverModelo();
     };
     const handleMostrarDatos = (value) => {
       if (modelRef.current) {
@@ -318,6 +352,10 @@ function ThreeScene({ apiData }) {
     folder3.add(settings, 'Distancia', 0, 100000).onChange((value) => {
       sampleDistance.current = value;
       handleDistribuir(true);
+    });
+
+    folder3.add(settings, 'Mover Modelo', -10000, 10000).onChange((value) => {
+      handleMoverModelo(value);
     });
 
     const folder4 = guiRef.current.addFolder('Volumen');

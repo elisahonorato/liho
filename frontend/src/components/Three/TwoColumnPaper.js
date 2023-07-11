@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import { Box, Paper, Typography, useMediaQuery } from '@mui/material';
+import { Box, Typography, useMediaQuery } from '@mui/material';
 import theme from '../Theme/Theme';
 
-const ThreeColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
+const ThreeColumnBox = ({ colorLegendData, divRef, guiContainerRef }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const canvasRef = divRef; // Assign the same ref object
 
   useEffect(() => {
     const handleResize = () => {
-      const canvasHeight = canvasRef.current.clientHeight;
+      const canvasHeight = divRef.current.clientHeight;
+      
       divRef.current.style.height = `${canvasHeight}px`;
+
+
     };
 
     handleResize(); // Initial resize
@@ -19,8 +21,11 @@ const ThreeColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
   }, []);
 
   return (
-    <Paper elevation={0} id="canvas" sx={{ display: 'flex', flexDirection: isSmallScreen ? 'column' : 'row' }}>
-      <Paper
+    <Box
+     elevation={0}
+      id="canvas" 
+      sx={{ display: 'flex', flexDirection: isSmallScreen ? 'column' : 'row', height: '100vh'}}>
+      <Box
         id="leyenda"
         elevation={0}
         style={{
@@ -31,8 +36,7 @@ const ThreeColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
           zIndex: 1,
           height: '100%',
           flexDirection: isSmallScreen ? 'row' : 'column',
-          display: 'flex',
-          flexWrap: 'wrap',
+          maxWidth: window.innerWidth/2,
         }}
         className="noBorder"
       >
@@ -61,8 +65,8 @@ const ThreeColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
             </Typography>
           </div>
         ))}
-      </Paper>
-      <Paper
+      </Box>
+      <Box
         elevation={0}
         className="noBorder"
         style={{
@@ -76,26 +80,23 @@ const ThreeColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
       >
         <Box
           style={{
-            position: 'relative',
-            width: '100%',
-            height: '100%',
             zIndex: 0,
+            position: 'cover',
+            flex: '1',
+            display: 'flex',
+            overflow: 'hidden',
+            maxWidth: divRef.current ? divRef.current.clientWidth : '80%',
+
+
           }}
           ref={divRef}
         >
-          {/* Three.js canvas */}
-          <div style={{ width: '100%', height: '100%' }} ref={canvasRef}>
-            {/* Render Three.js scene here */}
-          </div>
         </Box>
         <Box
           style={{
             position: 'absolute',
             right: 0,
             top: 0,
-            width: '100%',
-            height: '100%',
-            display: 'flex',
             justifyContent: 'flex-end',
             alignItems: 'flex-start',
             zIndex: 2,
@@ -104,9 +105,9 @@ const ThreeColumnPaper = ({ colorLegendData, divRef, guiContainerRef }) => {
         >
           {/* Contenido de la GUI */}
         </Box>
-      </Paper>
-    </Paper>
+      </Box>
+    </Box>
   );
 };
 
-export default ThreeColumnPaper;
+export default ThreeColumnBox;
