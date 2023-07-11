@@ -52,7 +52,9 @@ class File(models.Model):
 
     def has_headers(self):
         response = requests.get(self.url.url)
+        
         content = response.content.decode('utf-8')
+
 
         csv_reader = csv.reader(content.splitlines(), delimiter=',')
         first_row = next(csv_reader, [])
