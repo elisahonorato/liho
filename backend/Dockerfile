@@ -1,5 +1,5 @@
 # Utiliza una imagen base más reciente de Python
-FROM python:3.10.8-slim
+FROM python:3.10.8-buster
 
 # Instala las dependencias del sistema y elimina la caché
 RUN apt-get update && apt-get install -y --no-install-recommends \
