@@ -5,7 +5,9 @@ FROM python:3.10.8-buster
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libxft2:i386 \
-    && rm -rf /var/lib/apt/lists/*
+    libfreetype6:i386 \
+    libfontconfig1:i386 \
+    libglib2.0-0:i386 \
 
 # Crea el directorio de trabajo
 WORKDIR /app
