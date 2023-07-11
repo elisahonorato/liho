@@ -69,6 +69,7 @@ class File(models.Model):
 
             volume = 100
             dict = {"samples": [], "variables": [], "volumes": ["Rel", "Abs", int(volume)]}
+            vol_abs = 0
 
             df = pd.read_csv(self.url.url, sep=";", decimal=",", na_values=["", " ", '"', ""], header=self.has_headers())
             columna = df.columns
@@ -116,11 +117,12 @@ class File(models.Model):
                     bpy.ops.mesh.primitive_uv_sphere_add(
                         location=(0, 0, 0), radius=volume
                     )
+                    vol_abs += volume
                     model_volumen_relativo = bpy.context.active_object
                     model_volumen_relativo.name = dict["volumes"][0] + sample_name
                     model_volumen_relativo.parent = parent
 
-            bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius=volume * 10)
+            bpy.ops.mesh.primitive_uv_sphere_add(location=(0, 0, 0), radius=vol_abs)
             spher = bpy.context.active_object
             spher.name = dict["volumes"][1]
 
