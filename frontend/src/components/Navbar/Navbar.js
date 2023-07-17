@@ -5,7 +5,6 @@ import theme from '../Theme/Theme';
 
 const headerItems = [
   { to: '/', label: 'Home' },
-  { to: '/liho', label: 'Liho' },
   { to: '/about', label: 'About' },
   { to: '/tutorial', label: 'Tutorial' },
 ];
