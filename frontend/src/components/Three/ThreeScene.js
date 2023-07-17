@@ -12,14 +12,14 @@ import SetGuiStyles from './SetGuiStyle';
 import createTextObject from './createTextObject';
 
 
-function ThreeScene({ apiData }) {
+function ThreeScene({ apiData, componentRef}) {
   const guiContainerRef = useRef(null);
   const guiRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
   const modelRef = useRef(null);
   const cameraRef = useRef(null);
-  const divRef = useRef(null);
+  const divRef = useRef(componentRef);
   const controlsRef = useRef(null);
   const [colorLegendData, setColorLegendData] = React.useState([]);
   const volumeMaterialRef = useRef(null);
@@ -293,9 +293,6 @@ function ThreeScene({ apiData }) {
       modelPosition.current.x = value;
 
       cameraRef.current.lookAt(modelPosition.current.x, 0, 0);
-
-
-    
       
       moverModelo();
     };
@@ -438,6 +435,9 @@ function ThreeScene({ apiData }) {
           distribuir(true);
           setColorLegendData([])
           paintModel(colorDefault);
+
+       
+          
         },
         (xhr) => {
           console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
