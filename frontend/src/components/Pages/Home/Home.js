@@ -4,6 +4,7 @@ import UploadFile from '../../Upload/FileUpload';
 import { ThemeProvider } from '@mui/material/styles';
 import { Grid, Typography, Paper, Container, Box, Button} from '@mui/material';
 import theme from '../../Theme/Theme';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 
 
 
@@ -13,33 +14,48 @@ import html2canvas from 'html2canvas';
 function Use() {
     const [gltfData, setGltfData] = useState(null);
     const componentRef = useRef(null);
+    const modelRef = useRef(null);
 
     const handleCapture = () => {
       const guiElement = document.getElementById('gui');
-      console.log("gui",guiElement);
 
+  
       // Hide the element with ID 'gui'
       guiElement.style.display = 'none';
-      const sceneElement = document.getElementById('canvas');
-      console.log("scene",sceneElement);
-    
 
+  
       html2canvas(document.getElementById("canvas")).then(canvas => {
         const screenshot = canvas.toDataURL();
+   
+  
+        // Download the screenshot
+        const screenshotLink = document.createElement('a');
+        screenshotLink.download = 'screenshot.png';
+        screenshotLink.href = screenshot;
+        screenshotLink.click();
+  
+        // Export the GLTF file
+        const exporter = new GLTFExporter();
+        exporter.parse(modelRef.current, (gltf) => {
+          const gltfData = JSON.stringify(gltf);
 
-        // Do something with the screenshot
-        const link = document.createElement('a');
-      
-        link.download = 'screenshot.png';
-        link.href = screenshot;
-        link.click();
+          const gltfBlob = new Blob([gltfData], { type: 'application/octet-stream' });
+          const gltfUrl = URL.createObjectURL(gltfBlob);
 
-        // Show the element with ID 'gui' again
-        guiElement.style.display = 'block';
+          const gltfLink = document.createElement('a');
+          gltfLink.download = 'modelo.gltf';
+          gltfLink.href = gltfUrl;
+          gltfLink.click();
+
+          URL.revokeObjectURL(gltfUrl);
+
+          // Show the element with ID 'gui' again
+          guiElement.style.display = 'block';
+        });
       });
     };
-
-
+  
+  
     const handleUpload = (data) => {
       setGltfData(data);
     };
@@ -67,7 +83,7 @@ function Use() {
                 {gltfData != null && (
                   <Paper elevation={0} sx={{ p: 2, mt: 2}} className='withBorder'>
                     <Typography variant="h6" gutterBottom>
-                      2. Descarga tu gráfico
+                      2. Descarga tu gráfico y modelo 3D
                     </Typography>
                     <Button onClick={handleCapture}>
                       <Typography variant="body2" color="primary">
@@ -82,7 +98,7 @@ function Use() {
               {/* Right column */}
               <Grid item xs={12} md={10}>
                 {gltfData != null && (
-                  <Box sx={{ flexGrow: 1 }}><ThreeScene divRef={componentRef} apiData={gltfData} /></Box>
+                  <Box sx={{ flexGrow: 1 }}><ThreeScene divRef={componentRef} apiData={gltfData} model={modelRef} /></Box>
 
                 )}
 

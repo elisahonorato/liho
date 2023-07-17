@@ -9,7 +9,7 @@ import Tutorial from './components/Pages/Tutorial';
 import About from './components/Pages/About/About';
 import { Container, Typography} from '@mui/material';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar/Navbar';
 
 
 function App() {
