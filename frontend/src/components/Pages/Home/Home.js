@@ -14,7 +14,7 @@ import html2canvas from 'html2canvas';
 function Use() {
     const [gltfData, setGltfData] = useState(null);
     const componentRef = useRef(null);
-    const modelRef = useRef(null);
+    const gltfRef = useRef(null);
 
     const handleCapture = () => {
       const guiElement = document.getElementById('gui');
@@ -36,7 +36,7 @@ function Use() {
   
         // Export the GLTF file
         const exporter = new GLTFExporter();
-        exporter.parse(modelRef.current, (gltf) => {
+        exporter.parse(gltfRef.current, (gltf) => {
           const gltfData = JSON.stringify(gltf);
 
           const gltfBlob = new Blob([gltfData], { type: 'application/octet-stream' });
@@ -98,7 +98,7 @@ function Use() {
               {/* Right column */}
               <Grid item xs={12} md={10}>
                 {gltfData != null && (
-                  <Box sx={{ flexGrow: 1 }}><ThreeScene divRef={componentRef} apiData={gltfData} model={modelRef} /></Box>
+                  <Box sx={{ flexGrow: 1 }}><ThreeScene divRef={componentRef} apiData={gltfData} gltfRef={gltfRef}/></Box>
 
                 )}
 

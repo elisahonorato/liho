@@ -12,7 +12,7 @@ import SetGuiStyles from './SetGuiStyle';
 import createTextObject from './createTextObject';
 
 
-function ThreeScene({ apiData, componentRef}) {
+function ThreeScene({ apiData, componentRef, gltfRef}) {
   const guiContainerRef = useRef(null);
   const guiRef = useRef(null);
   const sceneRef = useRef(null);
@@ -419,6 +419,7 @@ function ThreeScene({ apiData, componentRef}) {
           modelRef.current = gltf.scene;
           modelRef.current.material = volumeMaterialRef.current;
           sceneRef.current.add(modelRef.current);
+          gltfRef.current = gltf.scene;
 
           modelRef.current.traverse((object) => {
             if (object.type === 'Mesh') {
@@ -455,7 +456,8 @@ function ThreeScene({ apiData, componentRef}) {
 
 
   return (
-    <TwoColumnPaper colorLegendData={colorLegendData} divRef={divRef} guiContainerRef={guiContainerRef} />
+    modelRef && <TwoColumnPaper colorLegendData={colorLegendData} divRef={divRef} guiContainerRef={guiContainerRef} />
+
   );
 }
 
