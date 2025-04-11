@@ -19,3 +19,22 @@ Visually link divergent or complementary sources of information from open source
 Develop an online platform, which through the three-dimensional and multivariable visualization of scientific data, promotes a form of inquiry through the detection of patterns.
 
 ![Alt text](https://github.com/elisahonorato/liho/blob/master/mediafiles/assets/diagram.png)
+
+
+Liho Technology Stack
+Frontend
+Liho’s interface is built as a Single Page Application (SPA) using React (JavaScript). It uses React Router DOM for navigation and Material-UI (MUI) with Emotion for UI design and styling. The frontend integrates Three.js for interactive 3D data visualization, supported by the dat.GUI library for adjusting visual parameters. It communicates with the backend via Axios HTTP requests.
+
+Backend
+The server side is developed in Python using the Django 4 framework. The application follows Django’s modular structure (with a main project liho and an api app), and implements a REST API using Django REST Framework to serve data to the frontend. It includes CORS middleware (Django CORS Headers) and manages media files through Cloudinary. Data processing relies on libraries such as Pandas.
+The backend was initially deployed using AWS EC2 and S3, but was later migrated to a more cost-effective and maintainable stack on Render.
+
+Database
+Liho uses a PostgreSQL database managed through Django ORM. The setup uses dj-database-url for environment-based configuration and connects via psycopg2.
+
+Data Visualization
+Interactive 3D data visualizations are handled by Three.js, leveraging GPU acceleration to render shapes, colors, and labels that represent multivariable datasets. dat.GUI enables real-time parameter control by the user.
+
+Deployment
+The frontend is hosted on GitHub Pages as a static site. The backend is containerized with Docker, served via Gunicorn and Nginx, and deployed on Render.com, using their free tier with managed PostgreSQL. This infrastructure allows both parts of the system to remain publicly available and fully integrated.
+
